@@ -16,3 +16,7 @@ node_modules/
 
 # Decap local backend
 .git-gateway/
+
+# Local dev server logs / pids (dev.sh)
+.dev-*.log
+.dev-*.pid

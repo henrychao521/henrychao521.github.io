@@ -1,101 +1,83 @@
 # /admin/ 後台啟用步驟
 
-Decap CMS（前 Netlify CMS）給你 **WordPress 級的所見即所得編輯體驗**，
-但所有內容存在 GitHub repo（純 markdown），完全免費、可版本控制。
+Decap CMS 給你 **WordPress 級的所見即所得編輯體驗**，
+所有內容存在 GitHub repo（純 markdown），完全免費、可版本控制。
 
-## 啟用流程（一次性，約 10 分鐘）
+---
 
-### Step 1 — 註冊 GitHub OAuth App
+## 🚀 目前採用：本機模式（Local Backend）
 
-1. 前往 https://github.com/settings/developers
-2. 點 **「OAuth Apps」** → **「New OAuth App」**
-3. 填入：
-   - **Application name**: `Henry × LivingTech CMS`
-   - **Homepage URL**: `https://henrychao521.github.io`
-   - **Authorization callback URL**: `https://decap-proxy.fly.dev/callback`
-4. 註冊後會拿到：
-   - **Client ID**（公開可貼）
-   - **Client Secret**（私密，等等需要）
-
-### Step 2 — 設定 OAuth Proxy
-
-GitHub OAuth 需要伺服器端代為處理 token 交換（不能純前端）。
-社群有現成的免費 proxy 可用。
-
-#### 選項 A：社群免費 proxy（**推薦初學**）
-
-預設設定已經指向：
-
-```yaml
-base_url: https://decap-proxy.fly.dev
-auth_endpoint: /api/auth
-```
-
-去這個 proxy 註冊：https://decap-proxy.fly.dev/
-
-#### 選項 B：自架（穩定，建議長期用）
+**不需要 OAuth proxy，最簡單路徑。**
+詳見 repo 根目錄的 [`QUICKSTART.md`](../QUICKSTART.md)。
 
 ```bash
-# 用 Cloudflare Workers 或 fly.io 部署
-npx create decap-cms-oauth-server
-# 參考 https://decapcms.org/docs/external-oauth-clients/
-```
-
-把自己的 base_url 寫到 `admin/config.yml`。
-
-### Step 3 — 本機測試（不用 OAuth）
-
-```bash
-cd /Volumes/128G/henrychao521.github.io
-npx decap-server &              # 啟用本機 proxy
-python3 -m http.server 8080     # 任意 static server
+cd henrychao521.github.io
+./dev.sh
 # 開瀏覽器：http://localhost:8080/admin/
-# 不會問你登入，直接寫文章存到本機 git
+# 直接寫文，不用登入
 ```
 
-### Step 4 — 部署到 GitHub Pages
+寫完 `git push` 上線。
 
-```bash
-git push                                  # 推主 branch
-# GitHub Pages 自動部署到 https://henrychao521.github.io
-# 開：https://henrychao521.github.io/admin/
-# 點 "Login with GitHub" → 授權 → 開始寫文
-```
+---
 
-## 使用流程（每次寫文）
+## 🌐 未來：走線上 OAuth（手機 / 平板 / 學校電腦也能寫）
 
-1. 打開 https://henrychao521.github.io/admin/
-2. 用 GitHub 登入（一次後會記住）
-3. 左側點 **「🛠 Maker 教學文」** 或 **「📝 教學心得」**
-4. **「New Maker 文章」** → 填標題、選分類、寫內文（Markdown，支援拖曳上傳圖片）
-5. **「Save」** → 存草稿（`draft: true`）
-6. **「Publish」** → 自動 commit 到 repo + GitHub Pages 重新 build
-7. 1–2 分鐘後文章就上線
+如果之後想任何裝置都能登入寫文，需要架 OAuth proxy。
+有兩條路：
 
-## 草稿審核流程（已啟用 editorial_workflow）
+### 路徑 A：Cloudflare Workers（推薦）
 
-```
-Draft (草稿)
-   ↓
-In Review (待審)
-   ↓
-Ready (準備發佈)
-   ↓
-Published (上線)
-```
+永久免費（每天 10 萬次請求）、不用搬站。
 
-每階段都會在 repo 開 PR，可以看 diff、加註解，再合併。
+1. 註冊 Cloudflare 帳號（用 GitHub 登入即可）
+2. 部署一個 OAuth proxy worker（程式碼約 50 行）
+3. 編輯本檔同層的 `config.yml`：
+   ```yaml
+   backend:
+     name: github
+     repo: henrychao521/henrychao521.github.io
+     branch: main
+     base_url: https://your-worker.workers.dev
+     auth_endpoint: /auth
+   ```
+4. 把 GitHub OAuth App 的 `Authorization callback URL` 改成 `https://your-worker.workers.dev/callback`
+
+需要時告訴我，我幫你寫 Worker 程式碼。
+
+### 路徑 B：搬站到 Netlify
+
+**最簡單**，但網址會從 `henrychao521.github.io` 變 `henrychao521.netlify.app`（可後續加自訂網域）。
+
+1. 註冊 Netlify
+2. Import GitHub repo
+3. Site settings → 啟用 Identity + Git Gateway
+4. 編輯 `config.yml`：
+   ```yaml
+   backend:
+     name: git-gateway
+     branch: main
+   ```
+
+---
+
+## 你目前 GitHub OAuth App 狀態
+
+- **Client ID**：`Ov23liMb94TWFOOaYsU0`（你已建立）
+- **Callback URL**：原本指 `https://decap-proxy.fly.dev/callback`（已失效）
+- **Client Secret**：未來啟用線上模式時才需要
+
+> **目前本機模式不需要用到上面這些。**保留 OAuth App 不用刪，未來改走 Cloudflare/Netlify 時可繼續用，只要更新 Callback URL。
+
+---
 
 ## 常見問題
 
 **Q: 我為什麼不直接用 WordPress？**
-A: 你已經有 livingtech.education 在用 WP。這個 /admin/ 是給「**程式碼多 / Markdown / GitHub 整合**」的技術文用，補 WP 的不足（WP 對 code block 不友善，不能跟 git 整合）。
+A: 你已經有 livingtech.education 在用 WP（保留中）。這個 /admin/ 是給「**程式碼多 / Markdown / GitHub 整合**」的技術文用，補 WP 的不足。
 
 **Q: 寫的文章可以同步到 WP 嗎？**
-A: 可以！未來如果要做反向同步，可以加一個 GitHub Action 把 `/posts/maker/*.md` 轉發到 WP API。先試用看看再決定。
+A: 可以，未來可以加 GitHub Action 把 `posts/maker/*.md` 透過 WP REST API 同步發過去。先試用看看再決定。
 
-**Q: 我可以從手機寫文嗎？**
-A: 可以。Decap CMS 響應式介面，手機平板都能用。
-
-**Q: 圖片會放哪？**
-A: `assets/uploads/`，會 commit 到 repo。圖檔大時建議外連 imgur 或 Cloudflare Images。
+**Q: 草稿審核流程？**
+A: `config.yml` 已啟用 `editorial_workflow`，後台可以分 Draft / In Review / Ready 三階段，每階段對應 git PR。

@@ -2,13 +2,16 @@ backend:
   name: github
   repo: henrychao521/henrychao521.github.io
   branch: main
-  base_url: https://decap-proxy.fly.dev
-  auth_endpoint: /api/auth
-  # 註：若要改用 Netlify Identity / 自架 OAuth proxy，請編輯這幾行。
-  # base_url 是社群 OAuth proxy；如要更穩定請自架（見 README）。
+  # 線上 OAuth proxy（如果未來要部署 Cloudflare Worker / Netlify，把這裡指過去）
+  # 目前不使用 — 我們走本機模式
+  # base_url: https://your-oauth-proxy.example.com
+  # auth_endpoint: /api/auth
 
 # Local development（本機 npx decap-server 時自動啟用）
-local_backend: true
+# 在 localhost 開站時會優先走這條，不需要 OAuth
+local_backend:
+  url: http://localhost:8081/api/v1
+  allowed_hosts: ['localhost', '127.0.0.1', '0.0.0.0']
 
 # 媒體上傳路徑
 media_folder: "assets/uploads"
