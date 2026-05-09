@@ -1,22 +1,23 @@
 [
   {
-    "slug": "2026-05-10-xiao-esp32s3-led-matrix",
-    "title": "[實作筆記] 用 XIAO ESP32S3 做 16×16 LED 中文跑馬燈，從 V1 到 V5 演進",
-    "date": "2026-05-10",
-    "excerpt": "256 顆 RGB LED、4 塊 8×8 面板拼成 16×16，從中文跑馬燈到貪吃蛇遊戲。這篇記錄完整 6 個版本的演進與踩過的坑。",
-    "categories": ["esp32", "electronics"],
-    "tags": ["WS2812B", "Arduino", "中文字型", "ST7735", "雙核心"],
-    "repo": "xiao-esp32s3-led-matrix",
-    "level": "⭐ 入門",
-    "hours": "2–4 hrs"
-  },
-  {
     "slug": "2026-05-10-grip-system-evolution",
     "title": "[專案紀錄] 握筆姿勢分析系統的三代演進 — 從 OpenCV 視窗到 WebRTC 全端",
     "date": "2026-05-10",
     "excerpt": "從一開始 cv2.imshow 視窗到後來 FastAPI + React + 自寫 aiortc，三代演進完整記錄。也是「為什麼老師需要寫程式」的好例子。",
-    "categories": ["vision", "ai", "teaching"],
-    "tags": ["MediaPipe", "YOLOv8", "FastAPI", "WebRTC", "aiortc", "React"],
+    "author": "Henry Chao",
+    "categories": [
+      "vision",
+      "ai",
+      "teaching"
+    ],
+    "tags": [
+      "MediaPipe",
+      "YOLOv8",
+      "FastAPI",
+      "WebRTC",
+      "aiortc",
+      "React"
+    ],
     "repo": "grip-system",
     "level": "⭐⭐⭐ 進階",
     "hours": "完整版需 6–10 hrs；最小可跑版 1 hr"
@@ -26,10 +27,42 @@
     "title": "[實作筆記] Pi 5 上的本地 LLM 對話機器人 — Llama 3.1 TAIDE，離線可用、零雲端",
     "date": "2026-05-10",
     "excerpt": "在 Raspberry Pi 5 8GB 上跑繁體中文 LLM，做出「跟你的小機器人對話」的離線實驗。約 2–4 tokens/sec，慢但很值得。",
-    "categories": ["llm", "pi"],
-    "tags": ["Raspberry Pi 5", "Ollama", "Llama", "TAIDE", "Telegram", "Docker"],
+    "author": "Henry Chao",
+    "categories": [
+      "llm",
+      "pi"
+    ],
+    "tags": [
+      "Raspberry Pi 5",
+      "Ollama",
+      "Llama",
+      "TAIDE",
+      "Telegram",
+      "Docker"
+    ],
     "repo": "moltbot",
     "level": "⭐⭐ 中階",
     "hours": "3–4 hrs（不含模型下載）"
+  },
+  {
+    "slug": "2026-05-10-xiao-esp32s3-led-matrix",
+    "title": "[實作筆記] 用 XIAO ESP32S3 做 16×16 LED 中文跑馬燈，從 V1 到 V5 演進",
+    "date": "2026-05-10",
+    "excerpt": "256 顆 RGB LED、4 塊 8×8 面板拼成 16×16，從中文跑馬燈到貪吃蛇遊戲。這篇記錄完整 6 個版本的演進與踩過的坑。",
+    "author": "Henry Chao",
+    "categories": [
+      "esp32",
+      "electronics"
+    ],
+    "tags": [
+      "WS2812B",
+      "Arduino",
+      "中文字型",
+      "ST7735",
+      "雙核心"
+    ],
+    "repo": "xiao-esp32s3-led-matrix",
+    "level": "⭐ 入門",
+    "hours": "2–4 hrs"
   }
 ]

@@ -1,0 +1,69 @@
+name: Build Post Indexes
+
+# 觸發時機：
+#   - posts/**/*.md 有變動時 push 上 main（最常見：透過 /admin/ 寫文後 push）
+#   - 手動觸發（從 GitHub Actions 頁面點 "Run workflow"）
+#
+# 行為：
+#   掃 posts/ 重建 index.json，如有變動則 commit 回 main。
+#   commit 訊息含 [skip ci] 避免無限迴圈。
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'posts/**/*.md'
+      - 'scripts/build-indexes.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-indexes
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PyYAML
+        run: pip install --quiet pyyaml
+
+      - name: Build index.json files
+        run: python3 scripts/build-indexes.py
+
+      - name: Commit if index changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add posts/maker/index.json posts/blog/index.json 2>/dev/null || true
+
+          if git diff --cached --quiet; then
+            echo "✓ index.json 沒有變動，不做 commit"
+            exit 0
+          fi
+
+          # 統計改了什麼
+          changed=$(git diff --cached --name-only | tr '\n' ', ' | sed 's/, $//')
+          maker_count=$(jq 'length' posts/maker/index.json 2>/dev/null || echo 0)
+          blog_count=$(jq 'length' posts/blog/index.json 2>/dev/null || echo 0)
+
+          git commit -m "chore: rebuild post indexes [skip ci]
+
+          maker: ${maker_count} posts
+          blog:  ${blog_count} posts
+          changed: ${changed}"
+
+          git push
+          echo "✓ 已 push 更新後的 index.json"

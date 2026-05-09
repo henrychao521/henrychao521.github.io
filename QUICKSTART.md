@@ -101,25 +101,34 @@ draft: false
 
 ---
 
-## 文章寫完後 — 別忘了更新索引
+## 文章索引 — 已自動化 ✅
 
-新增文章後，編輯 `posts/maker/index.json`，加一筆：
+`posts/maker/index.json` 與 `posts/blog/index.json` 由 GitHub Action 自動產生，
+**你不用管它**。流程：
 
-```json
-{
-  "slug": "2026-05-10-your-new-post",
-  "title": "...",
-  "date": "2026-05-10",
-  "excerpt": "...",
-  "categories": [...],
-  "tags": [...],
-  "repo": "...",
-  "level": "...",
-  "hours": "..."
-}
+```
+你 push 一篇新 .md
+      ↓
+GitHub Action 觸發（.github/workflows/build-indexes.yml）
+      ↓
+跑 scripts/build-indexes.py
+      ↓
+掃描 posts/maker/*.md + posts/blog/*.md
+      ↓
+產生新 index.json，commit 回 main（commit 訊息含 [skip ci]）
+      ↓
+GitHub Pages 重新 build → 站上看得到新文章
 ```
 
-> （後台寫的話，這步驟 Decap 不會自動做。我之後可以加個 GitHub Action 自動同步 — 暫時手動。）
+整個過程約 1–2 分鐘，全自動。
+
+### 要本機跑也行：
+
+```bash
+python3 scripts/build-indexes.py
+```
+
+> ⚠️ 你**只需要寫 .md**。index.json 不要手動編。
 
 ---
 
