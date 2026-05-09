@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>專案展示 — 趙珩宇 Henry</title>
+<meta name="description" content="24 個開源教學專案 — MediaPipe / YOLO / ESP32 / Pi / 本地 LLM">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦦</text></svg>">
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+    <a href="/" class="font-bold text-slate-900 flex items-center gap-2">
+      <span class="text-2xl">🦦</span><span class="hidden sm:inline">Henry × LivingTech</span>
+    </a>
+    <div class="flex-1"></div>
+    <a href="/projects.html" class="px-3 py-1.5 text-sm rounded bg-slate-100 font-semibold">專案</a>
+    <a href="/articles.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">教學文</a>
+    <a href="/maker.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">Maker</a>
+    <a href="https://livingtech.education" target="_blank" rel="noopener" class="px-3 py-1.5 text-sm rounded text-blue-600 hover:bg-blue-50">原站 ↗</a>
+  </div>
+</nav>
+
+<header class="bg-gradient-to-br from-indigo-700 to-purple-700 text-white">
+  <div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="text-sm opacity-80 mb-2">GitHub @henrychao521</div>
+    <h1 class="text-4xl md:text-5xl font-bold mb-2">開源專案展示</h1>
+    <p class="text-lg opacity-90">24 個 repo，依主題分組</p>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-10">
+
+  <!-- Filter -->
+  <div class="bg-white border border-slate-200 rounded-xl p-4 mb-6 sticky top-16 z-30">
+    <div class="flex flex-wrap gap-2 items-center">
+      <span class="text-sm text-slate-500 mr-1">主題：</span>
+      <button class="filter-tag active px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="all">全部</button>
+      <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="education">🎓 教育</button>
+      <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="camera">📷 邊緣 AI</button>
+      <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="llm">🤖 本地 LLM</button>
+      <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="hardware">🔌 硬體</button>
+      <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="platform">🏠 平台</button>
+      <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="archive">📦 早期</button>
+    </div>
+  </div>
+
+  <!-- Repos grid grouped by theme -->
+  <div id="projects-container">
+    <div class="text-center py-12 text-slate-400">⏳ 從 GitHub 拉取中...</div>
+  </div>
+</main>
+
+<footer class="bg-slate-900 text-slate-400 mt-16">
+  <div class="max-w-6xl mx-auto px-6 py-8 text-sm text-center">
+    <a href="https://github.com/henrychao521" target="_blank" rel="noopener" class="hover:text-white">GitHub @henrychao521 ↗</a>
+    · <a href="https://livingtech.education" target="_blank" rel="noopener" class="hover:text-white">livingtech.education ↗</a>
+  </div>
+</footer>
+
+<script src="/assets/js/shared.js"></script>
+<script>
+let allRepos = [];
+let currentTheme = getQuery('theme') || 'all';
+
+async function loadProjects() {
+  const container = document.getElementById('projects-container');
+  try {
+    allRepos = await fetchGHRepos();
+    render();
+  } catch (e) {
+    container.innerHTML = `<div class="text-center py-12 text-rose-500">⚠️ ${e.message}</div>`;
+  }
+}
+
+function render() {
+  const container = document.getElementById('projects-container');
+  const themes = currentTheme === 'all'
+    ? ['education', 'camera', 'llm', 'hardware', 'platform', 'archive']
+    : [currentTheme];
+
+  let html = '';
+  for (const theme of themes) {
+    const repos = allRepos
+      .filter(r => (PROJECT_META[r.name]?.theme || 'archive') === theme)
+      .sort((a, b) => {
+        // featured first
+        const af = PROJECT_META[a.name]?.featured ? 0 : 1;
+        const bf = PROJECT_META[b.name]?.featured ? 0 : 1;
+        if (af !== bf) return af - bf;
+        return new Date(b.pushed_at) - new Date(a.pushed_at);
+      });
+    if (repos.length === 0) continue;
+    html += `<section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+        ${THEME_NAMES[theme]} <span class="text-sm font-normal text-slate-500">(${repos.length})</span>
+      </h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        ${repos.map(repoCard).join('')}
+      </div>
+    </section>`;
+  }
+  container.innerHTML = html || '<div class="text-center py-12 text-slate-400">沒有符合的專案</div>';
+}
+
+function repoCard(repo) {
+  const meta = PROJECT_META[repo.name] || {};
+  const lang = repo.language || 'Other';
+  const featured = meta.featured ? `<span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 ml-1">⭐ Featured</span>` : '';
+  return `
+    <a href="${repo.html_url}" target="_blank" rel="noopener"
+       class="article-card bg-white border-2 ${THEME_COLORS[meta.theme] || 'border-slate-200'} rounded-xl p-5 block">
+      <div class="flex items-start justify-between mb-2">
+        <div class="text-3xl">${meta.emoji || '📦'}</div>
+        <span class="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600">${lang}</span>
+      </div>
+      <div class="font-bold text-slate-900 mb-1 break-all">${repo.name}${featured}</div>
+      <div class="text-sm text-slate-600 line-clamp-3 mb-3 min-h-[3.6em]">${repo.description || '(no description)'}</div>
+      <div class="flex items-center gap-3 text-xs text-slate-500 pt-2 border-t border-slate-100">
+        <span>★ ${repo.stargazers_count}</span>
+        <span>↻ ${formatDate(repo.pushed_at)}</span>
+        ${repo.private ? '<span class="text-amber-600">🔒 private</span>' : '<span class="text-emerald-600">🌐 public</span>'}
+      </div>
+    </a>
+  `;
+}
+
+document.querySelectorAll('.filter-tag').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTheme = btn.dataset.theme;
+    history.replaceState({}, '', currentTheme === 'all' ? '/projects.html' : `/projects.html?theme=${currentTheme}`);
+    render();
+  };
+});
+
+// Set active filter from query param on load
+document.addEventListener('DOMContentLoaded', () => {
+  const initBtn = document.querySelector(`.filter-tag[data-theme="${currentTheme}"]`);
+  if (initBtn) {
+    document.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
+    initBtn.classList.add('active');
+  }
+  loadProjects();
+});
+</script>
+</body>
+</html>

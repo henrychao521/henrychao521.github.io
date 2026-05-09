@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maker 教案 — 趙珩宇 Henry</title>
+<meta name="description" content="可上手的 Maker 教學光碟 — 從 LED 跑馬燈到邊緣 AI 攝影機">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦦</text></svg>">
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+    <a href="/" class="font-bold text-slate-900 flex items-center gap-2">
+      <span class="text-2xl">🦦</span><span class="hidden sm:inline">Henry × LivingTech</span>
+    </a>
+    <div class="flex-1"></div>
+    <a href="/projects.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">專案</a>
+    <a href="/articles.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">教學文</a>
+    <a href="/maker.html" class="px-3 py-1.5 text-sm rounded bg-slate-100 font-semibold">Maker</a>
+    <a href="https://livingtech.education" target="_blank" rel="noopener" class="px-3 py-1.5 text-sm rounded text-blue-600 hover:bg-blue-50">原站 ↗</a>
+  </div>
+</nav>
+
+<header class="bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 text-white">
+  <div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="text-sm opacity-80 mb-2">🛠 親手做、邊做邊學</div>
+    <h1 class="text-4xl md:text-5xl font-bold mb-2">Maker 教案目錄</h1>
+    <p class="text-lg opacity-90">每個專案都包含：硬體清單 · 難度 · 預估課時 · GitHub repo · 詳細教學</p>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-10">
+
+  <!-- Difficulty filter -->
+  <div class="bg-white border border-slate-200 rounded-xl p-4 mb-6 flex flex-wrap gap-2 items-center">
+    <span class="text-sm text-slate-500 mr-1">難度：</span>
+    <button class="filter-tag active px-3 py-1 text-sm rounded-full border border-slate-300" data-level="all">全部</button>
+    <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-level="1">⭐ 入門</button>
+    <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-level="2">⭐⭐ 中階</button>
+    <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-level="3">⭐⭐⭐ 進階</button>
+  </div>
+
+  <div id="catalog" class="grid md:grid-cols-2 gap-5"></div>
+
+  <!-- Empty state for posts (Decap CMS will write here) -->
+  <section class="mt-16">
+    <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+      <span>✍️</span> 最新 Maker 教學文
+    </h2>
+    <p class="text-sm text-slate-500 mb-4">用 <a href="/admin/" class="text-indigo-600 hover:underline">/admin/ 後台</a>（WordPress 級體驗）寫的技術深度文，會列在這裡。</p>
+    <div id="local-posts" class="grid md:grid-cols-2 gap-4">
+      <div class="col-span-full bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-400">⏳ 載入中…</div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 mt-16">
+  <div class="max-w-6xl mx-auto px-6 py-8 text-sm text-center">
+    <a href="https://github.com/henrychao521" target="_blank" rel="noopener" class="hover:text-white">GitHub @henrychao521 ↗</a>
+    · <a href="https://livingtech.education" target="_blank" rel="noopener" class="hover:text-white">livingtech.education ↗</a>
+  </div>
+</footer>
+
+<script>
+const CATALOG = [
+  {
+    title: '🌟 16×16 LED 中文跑馬燈',
+    repo: 'xiao-esp32s3-led-matrix',
+    level: 1,
+    hours: '2–4 hrs',
+    hardware: ['Seeed XIAO ESP32S3', 'WS2812B 16×16 (4×8×8)', '5V 10A 變壓器'],
+    description: '用 ESP32S3 驅動 256 顆 RGB LED，從中文跑馬燈到貪吃蛇遊戲，6 個版本逐步演進。',
+    skills: ['Arduino IDE', 'WS2812B 控制', 'WiFi AP', 'HTML 配置介面'],
+    cost: 'NT$ 600',
+  },
+  {
+    title: '🚗 ESP32-CAM 遙控車',
+    repo: 'esp32-arduino-sketches',
+    level: 2,
+    hours: '4–6 hrs',
+    hardware: ['XIAO ESP32S3 Sense', 'L298N 馬達驅動', '齒輪馬達 ×2', '18650 電池'],
+    description: '車身串流即時影像 + 雙馬達遙控，用瀏覽器當搖桿。延伸 OTA 韌體更新。',
+    skills: ['MJPEG 串流', 'PWM 馬達控制', 'AsyncWebServer', 'OTA 更新'],
+    cost: 'NT$ 1,200',
+  },
+  {
+    title: '🎮 全息投影 3D 模型互動',
+    repo: 'off-axis-pi',
+    level: 2,
+    hours: '3–5 hrs',
+    hardware: ['筆電 / Pi + 螢幕', 'Webcam', '透明玻璃（選）'],
+    description: '瀏覽器端純前端、雙手手勢控制 3D 模型旋轉縮放平移。零後端、純 JS。',
+    skills: ['MediaPipe Hands', 'Three.js', '指數插值平滑'],
+    cost: '0（用現有設備）',
+  },
+  {
+    title: '🏃 運動骨架辨識',
+    repo: 'sports-skeleton-analysis',
+    level: 1,
+    hours: '1–2 hrs',
+    hardware: ['筆電', 'Webcam'],
+    description: '用 YOLOv8-pose 偵測人體骨架，依關節角度分類深蹲 / 伏地挺身 / 開合跳。',
+    skills: ['YOLOv8-pose', 'OpenCV', 'numpy 角度計算'],
+    cost: '0',
+  },
+  {
+    title: '✏️ 握筆姿勢即時分析',
+    repo: 'grip-system',
+    level: 3,
+    hours: '6–10 hrs',
+    hardware: ['筆電 / Mac', 'Webcam', 'NT$10 硬幣（校正用）', '自製筆'],
+    description: 'MediaPipe + YOLO 自訓筆尖 + 硬幣絕對校正。FastAPI + React + 自寫 aiortc WebRTC。',
+    skills: ['MediaPipe Hand', 'YOLO 訓練', 'FastAPI', 'WebRTC', 'React'],
+    cost: 'NT$ 100',
+  },
+  {
+    title: '🤖 Pi5 本地 LLM 對話機器人',
+    repo: 'moltbot',
+    level: 2,
+    hours: '3–4 hrs（不含模型下載）',
+    hardware: ['Raspberry Pi 5 8GB', 'NVMe SSD', '主動式散熱器'],
+    description: '在 Pi5 上跑 Llama 3.1 TAIDE 8B Q4，用 LM Studio / Ollama 提供 OpenAI 相容介面。',
+    skills: ['Linux', 'systemd service', 'Ollama', 'Docker'],
+    cost: 'NT$ 4,000+ (Pi5 8G)',
+  },
+  {
+    title: '📷 Mac 多攝影機 AI 監控',
+    repo: 'camera-hub-mac',
+    level: 3,
+    hours: '8–12 hrs',
+    hardware: ['Mac (M 系列)', 'ESP32-CAM ×N', 'WiFi 路由器'],
+    description: 'YOLO + VLM (Qwen-VL) 雙引擎，動作觸發 + AI 智慧描述，Telegram 即時推播。',
+    skills: ['YOLOv8', 'VLM', 'Flask', 'Telegram Bot', 'SORT tracker'],
+    cost: 'NT$ 1,500（不含 Mac）',
+  },
+  {
+    title: '📊 學生學習歷程平台',
+    repo: 'student-portfolio-v3',
+    level: 1,
+    hours: '1–2 hrs',
+    hardware: ['任意瀏覽器'],
+    description: '純前端、SHA-256 密碼雜湊、稽核日誌雜湊鏈（類區塊鏈）。資安教學示範。',
+    skills: ['Web Crypto API', 'LocalStorage', 'Service Layer Pattern'],
+    cost: '0',
+  },
+  {
+    title: '🌆 台北即時資訊看板',
+    repo: 'taipei-dashboard',
+    level: 1,
+    hours: '2–3 hrs',
+    hardware: ['Pi 4 + 螢幕', 'Tailscale（選）'],
+    description: '天氣 / 地震 / 119 派遣 / 新聞 全螢幕跑馬燈儀表板，Flask + RSS。',
+    skills: ['Flask', 'systemd', 'RSS / API 聚合'],
+    cost: 'NT$ 1,500（Pi 4）',
+  },
+];
+
+let activeLevel = 'all';
+
+function levelStars(n) {
+  return '⭐'.repeat(n) + '☆'.repeat(3 - n);
+}
+
+function render() {
+  const container = document.getElementById('catalog');
+  const items = activeLevel === 'all' ? CATALOG : CATALOG.filter(c => c.level === parseInt(activeLevel));
+  container.innerHTML = items.map(item => `
+    <div class="article-card bg-white border-2 border-slate-200 rounded-xl p-5 flex flex-col">
+      <div class="flex items-start justify-between mb-2">
+        <h3 class="text-lg font-bold text-slate-900">${item.title}</h3>
+        <span class="text-amber-500 text-sm" title="難度">${levelStars(item.level)}</span>
+      </div>
+      <p class="text-sm text-slate-700 mb-3">${item.description}</p>
+      <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 mb-3">
+        <div>⏱ <b>${item.hours}</b></div>
+        <div>💰 <b>${item.cost}</b></div>
+      </div>
+      <div class="text-xs text-slate-600 mb-2"><b>硬體：</b>${item.hardware.join(' · ')}</div>
+      <div class="text-xs text-slate-600 mb-3"><b>技能：</b>${item.skills.map(s => `<span class="tag">${s}</span>`).join('')}</div>
+      <div class="mt-auto pt-3 border-t border-slate-100 flex gap-2">
+        <a href="https://github.com/henrychao521/${item.repo}" target="_blank" rel="noopener"
+           class="flex-1 text-center px-3 py-1.5 text-sm border border-slate-300 rounded hover:bg-slate-50">📦 GitHub</a>
+        <a href="/articles.html?q=${encodeURIComponent(item.title.replace(/^[^\s]+\s/, ''))}"
+           class="flex-1 text-center px-3 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">📚 找相關文</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('.filter-tag').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeLevel = btn.dataset.level;
+    render();
+  };
+});
+
+render();
+
+// ── 載入本地教學文（從 posts/maker/index.json） ──
+async function loadLocalPosts() {
+  const container = document.getElementById('local-posts');
+  try {
+    const res = await fetch('/posts/maker/index.json?_=' + Date.now());
+    if (!res.ok) throw new Error('No posts yet');
+    const posts = await res.json();
+    if (!Array.isArray(posts) || posts.length === 0) {
+      container.innerHTML = `<div class="col-span-full bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-400">
+        （目前還沒有文章。去 <a href="/admin/" class="text-indigo-600 hover:underline">/admin/</a> 寫第一篇吧！）
+      </div>`;
+      return;
+    }
+
+    // Sort by date desc
+    posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    container.innerHTML = posts.map(p => `
+      <a href="/post.html?slug=${p.slug}" class="article-card bg-white border border-slate-200 rounded-xl p-5 block">
+        <div class="text-xs text-slate-500 mb-1">${p.date}${p.level ? ' · ' + p.level : ''}${p.hours ? ' · ⏱ ' + p.hours : ''}</div>
+        <div class="font-semibold text-slate-900 leading-tight mb-2">${p.title}</div>
+        <div class="text-sm text-slate-600 mb-3 line-clamp-3">${p.excerpt || ''}</div>
+        <div class="flex flex-wrap gap-1">
+          ${(p.tags || []).slice(0,4).map(t => `<span class="tag">${t}</span>`).join('')}
+        </div>
+        ${p.repo ? `<div class="text-xs text-slate-500 mt-3 pt-2 border-t border-slate-100">📦 ${p.repo}</div>` : ''}
+      </a>
+    `).join('');
+  } catch (e) {
+    container.innerHTML = `<div class="col-span-full bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-400">
+      （目前還沒有文章。去 <a href="/admin/" class="text-indigo-600 hover:underline">/admin/</a> 寫第一篇吧！）
+    </div>`;
+  }
+}
+
+loadLocalPosts();
+</script>
+</body>
+</html>

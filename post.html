@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">載入中… — Henry × LivingTech</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦦</text></svg>">
+<style>
+  .article-body h1 { font-size: 2rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; color: #0f172a; }
+  .article-body h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; color: #0f172a; }
+  .article-body h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.75rem; color: #1e293b; }
+  .article-body p { margin: 1rem 0; line-height: 1.85; color: #334155; }
+  .article-body ul, .article-body ol { margin: 1rem 0; padding-left: 1.75rem; }
+  .article-body li { margin: 0.4rem 0; line-height: 1.75; color: #334155; }
+  .article-body code:not(pre code) { background: #f1f5f9; padding: 0.15em 0.4em; border-radius: 0.25rem; font-size: 0.9em; color: #be185d; }
+  .article-body pre { background: #0f172a; color: #f1f5f9; padding: 1rem 1.25rem; border-radius: 0.5rem; overflow-x: auto; margin: 1.25rem 0; font-size: 0.85em; }
+  .article-body pre code { color: inherit; background: transparent; padding: 0; }
+  .article-body table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; }
+  .article-body th, .article-body td { border: 1px solid #e2e8f0; padding: 0.5rem 0.75rem; text-align: left; }
+  .article-body th { background: #f8fafc; font-weight: 600; }
+  .article-body blockquote { border-left: 4px solid #4f46e5; background: #eef2ff; padding: 0.75rem 1rem; margin: 1rem 0; color: #4338ca; font-style: italic; }
+  .article-body a { color: #4f46e5; text-decoration: underline; text-underline-offset: 2px; }
+  .article-body a:hover { color: #4338ca; }
+  .article-body img { max-width: 100%; border-radius: 0.5rem; margin: 1rem 0; }
+  .article-body hr { border: 0; border-top: 1px solid #e2e8f0; margin: 2.5rem 0; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
+  <div class="max-w-4xl mx-auto px-4 py-3 flex items-center gap-4">
+    <a href="/" class="font-bold text-slate-900 flex items-center gap-2">
+      <span class="text-2xl">🦦</span><span class="hidden sm:inline">Henry × LivingTech</span>
+    </a>
+    <div class="flex-1"></div>
+    <a href="/projects.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">專案</a>
+    <a href="/articles.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">教學文</a>
+    <a href="/maker.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">Maker</a>
+  </div>
+</nav>
+
+<div id="error-state" class="hidden max-w-4xl mx-auto px-6 py-20 text-center">
+  <div class="text-6xl mb-4">😢</div>
+  <div class="text-xl font-bold text-slate-900 mb-2" id="error-title">找不到文章</div>
+  <div class="text-slate-600 mb-6" id="error-message">請確認連結是否正確</div>
+  <a href="/maker.html" class="inline-block px-5 py-2.5 bg-indigo-600 text-white rounded-lg">回 Maker 教案</a>
+</div>
+
+<article id="article" class="hidden">
+  <header class="bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900 text-white">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+      <a href="/maker.html" class="text-sm opacity-80 hover:opacity-100">← 回 Maker 教案</a>
+      <h1 id="article-title" class="text-3xl md:text-4xl font-bold mt-3 mb-3 leading-tight"></h1>
+      <div class="flex flex-wrap gap-3 text-sm opacity-90 mb-3">
+        <span id="article-date">—</span>
+        <span>·</span>
+        <span id="article-author">—</span>
+        <span>·</span>
+        <span id="article-level">—</span>
+        <span>·</span>
+        <span id="article-hours">—</span>
+      </div>
+      <div id="article-categories" class="flex flex-wrap gap-2"></div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 py-10">
+    <!-- Repo banner -->
+    <div id="repo-banner" class="hidden mb-8 bg-white border border-slate-200 rounded-xl p-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-xs text-slate-500 mb-1">對應 GitHub Repo</div>
+          <div class="font-mono text-slate-900 font-semibold" id="repo-name">—</div>
+        </div>
+        <a id="repo-link" href="#" target="_blank" rel="noopener"
+           class="px-4 py-2 bg-slate-900 text-white text-sm rounded hover:bg-slate-700">看程式碼 ↗</a>
+      </div>
+    </div>
+
+    <div id="article-body" class="article-body bg-white border border-slate-200 rounded-xl p-6 md:p-10"></div>
+
+    <div class="mt-8 flex items-center justify-between text-sm">
+      <a href="/maker.html" class="text-indigo-600 hover:underline">← 看更多 Maker 教案</a>
+      <a id="edit-link" href="#" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900">📝 在 GitHub 編輯</a>
+    </div>
+  </main>
+</article>
+
+<footer class="bg-slate-900 text-slate-400 mt-16">
+  <div class="max-w-4xl mx-auto px-6 py-8 text-sm text-center">
+    <a href="https://github.com/henrychao521" target="_blank" rel="noopener" class="hover:text-white">GitHub @henrychao521 ↗</a>
+    · <a href="https://livingtech.education" target="_blank" rel="noopener" class="hover:text-white">livingtech.education ↗</a>
+  </div>
+</footer>
+
+<script src="/assets/js/shared.js"></script>
+<script>
+async function loadPost() {
+  const slug = getQuery('slug');
+  if (!slug) {
+    document.getElementById('error-state').classList.remove('hidden');
+    return;
+  }
+
+  // Sanitize slug to prevent path traversal
+  if (!/^[a-z0-9\-]+$/i.test(slug)) {
+    document.getElementById('error-title').textContent = '無效的文章 slug';
+    document.getElementById('error-state').classList.remove('hidden');
+    return;
+  }
+
+  try {
+    // Try maker first, then blog
+    let url = `/posts/maker/${slug}.md`;
+    let res = await fetch(url);
+    if (!res.ok) {
+      url = `/posts/blog/${slug}.md`;
+      res = await fetch(url);
+    }
+    if (!res.ok) throw new Error('找不到此文章');
+
+    const raw = await res.text();
+    const { frontmatter, body } = parseFrontmatter(raw);
+
+    // Render
+    document.getElementById('page-title').textContent = `${frontmatter.title} — Henry × LivingTech`;
+    document.getElementById('article-title').textContent = frontmatter.title || '(無標題)';
+    document.getElementById('article-date').textContent = formatDate(frontmatter.date);
+    document.getElementById('article-author').textContent = frontmatter.author || 'Henry';
+    document.getElementById('article-level').textContent = frontmatter.level || '';
+    document.getElementById('article-hours').textContent = frontmatter.hours ? `⏱ ${frontmatter.hours}` : '';
+
+    if (frontmatter.categories) {
+      document.getElementById('article-categories').innerHTML =
+        frontmatter.categories.map(c => `<span class="px-2 py-0.5 rounded-full bg-white/15 text-xs">${c}</span>`).join('');
+    }
+
+    if (frontmatter.repo) {
+      document.getElementById('repo-banner').classList.remove('hidden');
+      document.getElementById('repo-name').textContent = frontmatter.repo;
+      document.getElementById('repo-link').href = `https://github.com/henrychao521/${frontmatter.repo}`;
+    }
+
+    document.getElementById('article-body').innerHTML = marked.parse(body);
+
+    // Edit link
+    document.getElementById('edit-link').href =
+      `https://github.com/henrychao521/henrychao521.github.io/edit/main${url}`;
+
+    document.getElementById('article').classList.remove('hidden');
+  } catch (e) {
+    document.getElementById('error-message').textContent = e.message;
+    document.getElementById('error-state').classList.remove('hidden');
+  }
+}
+
+function parseFrontmatter(raw) {
+  const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  if (!match) return { frontmatter: {}, body: raw };
+  try {
+    const frontmatter = jsyaml.load(match[1]) || {};
+    const body = match[2];
+    return { frontmatter, body };
+  } catch (e) {
+    return { frontmatter: {}, body: raw };
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadPost);
+</script>
+</body>
+</html>

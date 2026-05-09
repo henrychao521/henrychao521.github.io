@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>趙珩宇 Henry — 生活科技 × Maker × 開源</title>
+<meta name="description" content="生活科技教師、教科書作者、Maker。MediaPipe + YOLO + Pi/ESP32 邊緣 AI 教學整合。">
+<meta property="og:title" content="趙珩宇 Henry — 生活科技 × Maker × 開源">
+<meta property="og:description" content="24 個開源教學專案 + 600+ 篇教學文章">
+<meta property="og:type" content="website">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦦</text></svg>">
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<!-- ====== NAV ====== -->
+<nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+    <a href="/" class="font-bold text-slate-900 flex items-center gap-2">
+      <span class="text-2xl">🦦</span><span class="hidden sm:inline">Henry × LivingTech</span>
+    </a>
+    <div class="flex-1"></div>
+    <a href="/projects.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">專案</a>
+    <a href="/articles.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">教學文</a>
+    <a href="/maker.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">Maker</a>
+    <a href="https://livingtech.education" target="_blank" rel="noopener" class="px-3 py-1.5 text-sm rounded text-blue-600 hover:bg-blue-50">原站 ↗</a>
+  </div>
+</nav>
+
+<!-- ====== HERO ====== -->
+<header class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 text-white">
+  <div class="max-w-6xl mx-auto px-6 py-20">
+    <div class="text-sm opacity-80 mb-2">趙珩宇 / Henry Chao</div>
+    <h1 class="text-4xl md:text-6xl font-bold mb-4">生活科技 × Maker × 開源</h1>
+    <p class="text-xl opacity-90 max-w-2xl mb-8">
+      建國中學 + 台北線上實驗高中生活科技教師。專注於 <b>邊緣 AI</b>、<b>機器學習教學</b> 與 <b>跨平台 Maker 整合</b>。
+    </p>
+    <div class="flex flex-wrap gap-3">
+      <a href="/projects.html" class="px-5 py-2.5 bg-white text-indigo-700 rounded-lg font-semibold hover:bg-slate-100">看 24 個開源專案 →</a>
+      <a href="https://livingtech.education" target="_blank" rel="noopener" class="px-5 py-2.5 bg-white/20 text-white border border-white/40 rounded-lg font-semibold hover:bg-white/30">看 600+ 篇教學文 ↗</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 text-center">
+      <div class="bg-white/15 backdrop-blur rounded-lg p-4">
+        <div class="text-3xl font-bold" id="stat-repos">24</div>
+        <div class="text-sm opacity-80">GitHub Repos</div>
+      </div>
+      <div class="bg-white/15 backdrop-blur rounded-lg p-4">
+        <div class="text-3xl font-bold">616K+</div>
+        <div class="text-sm opacity-80">部落格瀏覽</div>
+      </div>
+      <div class="bg-white/15 backdrop-blur rounded-lg p-4">
+        <div class="text-3xl font-bold" id="stat-posts">—</div>
+        <div class="text-sm opacity-80">教學文章</div>
+      </div>
+      <div class="bg-white/15 backdrop-blur rounded-lg p-4">
+        <div class="text-3xl font-bold">8+</div>
+        <div class="text-sm opacity-80">教學年資</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-12 space-y-16">
+
+  <!-- ====== 五大主軸 ====== -->
+  <section>
+    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+      <span>🎯</span> 五大主軸
+    </h2>
+    <div class="grid md:grid-cols-3 gap-4">
+      <a href="/projects.html?theme=education" class="bg-white border border-slate-200 rounded-xl p-5 hover:border-indigo-400 hover:shadow-md transition group">
+        <div class="text-3xl mb-2">🎓</div>
+        <div class="font-bold text-slate-900 group-hover:text-indigo-600">教育類</div>
+        <div class="text-sm text-slate-600 mt-1">8 個專案 · 握筆 / 運動 / 學習歷程 / 報告自動化</div>
+      </a>
+      <a href="/projects.html?theme=camera" class="bg-white border border-slate-200 rounded-xl p-5 hover:border-orange-400 hover:shadow-md transition group">
+        <div class="text-3xl mb-2">📷</div>
+        <div class="font-bold text-slate-900 group-hover:text-orange-600">邊緣 AI 監控</div>
+        <div class="text-sm text-slate-600 mt-1">4 個專案 · ESP32-CAM + Pi + YOLO/VLM</div>
+      </a>
+      <a href="/projects.html?theme=llm" class="bg-white border border-slate-200 rounded-xl p-5 hover:border-purple-400 hover:shadow-md transition group">
+        <div class="text-3xl mb-2">🤖</div>
+        <div class="font-bold text-slate-900 group-hover:text-purple-600">本地 LLM</div>
+        <div class="text-sm text-slate-600 mt-1">3 個專案 · LM Studio / Ollama / Telegram</div>
+      </a>
+      <a href="/projects.html?theme=hardware" class="bg-white border border-slate-200 rounded-xl p-5 hover:border-emerald-400 hover:shadow-md transition group">
+        <div class="text-3xl mb-2">🔌</div>
+        <div class="font-bold text-slate-900 group-hover:text-emerald-600">硬體 / IoT</div>
+        <div class="text-sm text-slate-600 mt-1">5 個專案 · ESP32 / Pico / Arduino</div>
+      </a>
+      <a href="/projects.html?theme=platform" class="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-400 hover:shadow-md transition group">
+        <div class="text-3xl mb-2">🏠</div>
+        <div class="font-bold text-slate-900 group-hover:text-blue-600">平台 / 看板</div>
+        <div class="text-sm text-slate-600 mt-1">2 個專案 · Tailscale / Flask</div>
+      </a>
+      <a href="/articles.html" class="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl p-5 hover:shadow-md transition group">
+        <div class="text-3xl mb-2">📚</div>
+        <div class="font-bold text-slate-900 group-hover:text-indigo-700">教學文章</div>
+        <div class="text-sm text-slate-600 mt-1">即時拉自 livingtech.education</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ====== 最新文章（從 WP API） ====== -->
+  <section>
+    <div class="flex items-end justify-between mb-6">
+      <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <span>📝</span> 最新教學文章
+      </h2>
+      <a href="/articles.html" class="text-sm text-indigo-600 hover:underline">看全部 →</a>
+    </div>
+    <div id="latest-posts" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="col-span-full text-center py-8 text-slate-400">⏳ 從 livingtech.education 拉取中...</div>
+    </div>
+  </section>
+
+  <!-- ====== 精選專案 ====== -->
+  <section>
+    <div class="flex items-end justify-between mb-6">
+      <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <span>⭐</span> 精選專案
+      </h2>
+      <a href="/projects.html" class="text-sm text-indigo-600 hover:underline">看全部 24 個 →</a>
+    </div>
+    <div id="featured-projects" class="grid md:grid-cols-2 gap-4">
+      <div class="col-span-full text-center py-8 text-slate-400">⏳ 從 GitHub 拉取中...</div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 mt-16">
+  <div class="max-w-6xl mx-auto px-6 py-12 grid md:grid-cols-3 gap-8">
+    <div>
+      <div class="text-2xl mb-2">🦦 Henry × LivingTech</div>
+      <p class="text-sm">趙珩宇 — 建國中學 + 台北線上實驗高中生活科技教師</p>
+    </div>
+    <div>
+      <div class="font-semibold text-white mb-3">站台地圖</div>
+      <ul class="space-y-1 text-sm">
+        <li><a href="/" class="hover:text-white">首頁</a></li>
+        <li><a href="/projects.html" class="hover:text-white">專案展示</a></li>
+        <li><a href="/articles.html" class="hover:text-white">教學文章</a></li>
+        <li><a href="/maker.html" class="hover:text-white">Maker 教案</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="font-semibold text-white mb-3">外部連結</div>
+      <ul class="space-y-1 text-sm">
+        <li><a href="https://livingtech.education" target="_blank" rel="noopener" class="hover:text-white">livingtech.education ↗</a></li>
+        <li><a href="https://github.com/henrychao521" target="_blank" rel="noopener" class="hover:text-white">GitHub @henrychao521 ↗</a></li>
+        <li><a href="https://www.instagram.com/makerotter/" target="_blank" rel="noopener" class="hover:text-white">Instagram @makerotter ↗</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-slate-800 py-4 text-center text-xs">
+    © 2026 Henry Chao. Built with ❤️ + Claude Code.
+  </div>
+</footer>
+
+<script src="/assets/js/shared.js"></script>
+<script src="/assets/js/home.js"></script>
+</body>
+</html>

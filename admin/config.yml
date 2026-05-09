@@ -1,0 +1,104 @@
+backend:
+  name: github
+  repo: henrychao521/henrychao521.github.io
+  branch: main
+  base_url: https://decap-proxy.fly.dev
+  auth_endpoint: /api/auth
+  # 註：若要改用 Netlify Identity / 自架 OAuth proxy，請編輯這幾行。
+  # base_url 是社群 OAuth proxy；如要更穩定請自架（見 README）。
+
+# Local development（本機 npx decap-server 時自動啟用）
+local_backend: true
+
+# 媒體上傳路徑
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+# 文章草稿審核流程（Editorial Workflow — 像 WordPress 的 draft → publish）
+publish_mode: editorial_workflow
+
+# Site 基本資訊（在編輯器顯示）
+site_url: https://henrychao521.github.io
+display_url: https://henrychao521.github.io
+logo_url: https://henrychao521.github.io/favicon.ico
+
+# ─────────────────────────────────────────────
+# 內容類型（Collections）
+# ─────────────────────────────────────────────
+collections:
+
+  # ── Maker 教學文（主用，給技術深度文）──
+  - name: "maker"
+    label: "🛠 Maker 教學文"
+    label_singular: "Maker 文章"
+    folder: "posts/maker"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} — {{date | date('YYYY/MM/DD')}}"
+    sortable_fields: ['date', 'title']
+    view_groups:
+      - label: 年份
+        field: date
+        pattern: '\d{4}'
+    fields:
+      - { label: "標題", name: "title", widget: "string", hint: "建議：[類型] 簡短主題（仿 WordPress 風格）" }
+      - { label: "副標題 / 一句話描述", name: "subtitle", widget: "string", required: false }
+      - { label: "發佈日期", name: "date", widget: "datetime", default: "" }
+      - { label: "作者", name: "author", widget: "string", default: "Henry Chao" }
+      - { label: "封面圖", name: "cover", widget: "image", required: false, hint: "建議 16:9，1200×675" }
+      - label: "分類"
+        name: "categories"
+        widget: "select"
+        multiple: true
+        required: false
+        options:
+          - { label: "Arduino / ESP32", value: "esp32" }
+          - { label: "Raspberry Pi", value: "pi" }
+          - { label: "AI / 機器學習", value: "ai" }
+          - { label: "本地 LLM", value: "llm" }
+          - { label: "邊緣 AI 攝影機", value: "edge-cam" }
+          - { label: "MediaPipe / 視覺", value: "vision" }
+          - { label: "3D / 數位加工", value: "3d" }
+          - { label: "電子電路", value: "electronics" }
+          - { label: "教學心得", value: "teaching" }
+          - { label: "開箱分享", value: "review" }
+      - { label: "標籤 (tags, 用逗號分隔)", name: "tags", widget: "list", required: false }
+      - { label: "對應 GitHub Repo", name: "repo", widget: "string", required: false, hint: "例：grip-system" }
+      - { label: "難度", name: "level", widget: "select", required: false, options: ["⭐ 入門", "⭐⭐ 中階", "⭐⭐⭐ 進階"] }
+      - { label: "預估時數", name: "hours", widget: "string", required: false, hint: "例：2–4 hrs" }
+      - { label: "摘要 (顯示於列表)", name: "excerpt", widget: "text", required: false }
+      - label: "內文 (Markdown)"
+        name: "body"
+        widget: "markdown"
+        hint: "支援標題、列表、表格、code block、圖片（拖曳上傳）"
+      - { label: "草稿", name: "draft", widget: "boolean", default: false, required: false }
+
+  # ── 教學心得 / 隨筆（仿 WordPress 「亨利老師自言自語」）──
+  - name: "blog"
+    label: "📝 教學心得"
+    label_singular: "心得文"
+    folder: "posts/blog"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}}"
+    fields:
+      - { label: "標題", name: "title", widget: "string" }
+      - { label: "日期", name: "date", widget: "datetime" }
+      - { label: "封面圖", name: "cover", widget: "image", required: false }
+      - { label: "分類", name: "category", widget: "select", required: false, options: ["教學反思", "工具評測", "課堂紀錄", "活動心得"] }
+      - { label: "標籤", name: "tags", widget: "list", required: false }
+      - { label: "摘要", name: "excerpt", widget: "text", required: false }
+      - { label: "內文", name: "body", widget: "markdown" }
+      - { label: "草稿", name: "draft", widget: "boolean", default: false, required: false }
+
+  # ── 站內設定（單檔）──
+  - name: "settings"
+    label: "⚙️ 站內設定"
+    files:
+      - name: "site"
+        label: "Site Info"
+        file: "data/site.yml"
+        fields:
+          - { label: "站名", name: "title", widget: "string" }
+          - { label: "簡介", name: "description", widget: "text" }
+          - { label: "首頁精選文章 (slug 列表)", name: "featured_posts", widget: "list", required: false }

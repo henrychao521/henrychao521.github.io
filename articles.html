@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教學文章 — 趙珩宇 Henry</title>
+<meta name="description" content="600+ 篇教學文章鏡像 — 來源 livingtech.education">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦦</text></svg>">
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+    <a href="/" class="font-bold text-slate-900 flex items-center gap-2">
+      <span class="text-2xl">🦦</span><span class="hidden sm:inline">Henry × LivingTech</span>
+    </a>
+    <div class="flex-1"></div>
+    <a href="/projects.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">專案</a>
+    <a href="/articles.html" class="px-3 py-1.5 text-sm rounded bg-slate-100 font-semibold">教學文</a>
+    <a href="/maker.html" class="px-3 py-1.5 text-sm rounded hover:bg-slate-100">Maker</a>
+    <a href="https://livingtech.education" target="_blank" rel="noopener" class="px-3 py-1.5 text-sm rounded text-blue-600 hover:bg-blue-50">原站 ↗</a>
+  </div>
+</nav>
+
+<header class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white">
+  <div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="text-sm opacity-80 mb-2">
+      📚 鏡像來源：<a href="https://livingtech.education" target="_blank" rel="noopener" class="underline hover:no-underline">livingtech.education</a>（每篇連結回原站閱讀）
+    </div>
+    <h1 class="text-4xl md:text-5xl font-bold mb-2">教學文章</h1>
+    <p class="text-lg opacity-90" id="article-stats">⏳ 載入中…</p>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-10">
+
+  <!-- Search + filter -->
+  <div class="bg-white border border-slate-200 rounded-xl p-4 mb-6 sticky top-16 z-30 space-y-3">
+    <div class="flex gap-2">
+      <input id="search-input" type="search" placeholder="🔍 搜尋文章標題（按 Enter）"
+        class="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-indigo-400">
+      <button id="search-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">搜尋</button>
+      <button id="reset-btn" class="px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50">重置</button>
+    </div>
+    <div class="flex flex-wrap gap-2 items-center" id="category-filters">
+      <span class="text-sm text-slate-500 mr-1">分類：</span>
+      <button class="filter-tag active px-3 py-1 text-sm rounded-full border border-slate-300" data-cat="all">全部</button>
+      <span class="text-slate-400 text-xs">(載入中…)</span>
+    </div>
+  </div>
+
+  <!-- Posts grid -->
+  <div id="posts-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="col-span-full text-center py-12 text-slate-400">⏳ 從 livingtech.education 拉取中...</div>
+  </div>
+
+  <!-- Pagination -->
+  <div id="pagination" class="flex justify-center gap-2 mt-8"></div>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 mt-16">
+  <div class="max-w-6xl mx-auto px-6 py-8 text-sm text-center">
+    <a href="https://livingtech.education" target="_blank" rel="noopener" class="hover:text-white">livingtech.education ↗</a>
+    · <a href="https://github.com/henrychao521" target="_blank" rel="noopener" class="hover:text-white">GitHub @henrychao521 ↗</a>
+  </div>
+</footer>
+
+<script src="/assets/js/shared.js"></script>
+<script>
+let state = {
+  page: 1,
+  perPage: 12,
+  category: getQuery('cat') || 'all',
+  search: getQuery('q') || '',
+  totalPosts: 0,
+  totalPages: 1,
+  categories: []
+};
+
+// Whitelist categories to show as filter chips (frequent + tech-relevant)
+const FEATURED_CATEGORIES = [
+  'arduino', '電子電路', '3D', '數位加工', 'AI', 'Raspberry Pi', 'micro:bit',
+  'mblock', 'tello', '專題', '研習課程', '上課資料', '學生作品', '開箱分享',
+  '攝影', '老師說話囉', '線上教學'
+];
+
+async function loadCategories() {
+  try {
+    const cats = await fetchWPCategories();
+    state.categories = cats;
+
+    // Build filter chips
+    const container = document.getElementById('category-filters');
+    const showCats = cats
+      .filter(c => FEATURED_CATEGORIES.includes(c.name) && c.count > 0)
+      .sort((a,b) => b.count - a.count);
+
+    container.innerHTML = `
+      <span class="text-sm text-slate-500 mr-1">分類：</span>
+      <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300 ${state.category==='all'?'active':''}" data-cat="all">全部</button>
+      ${showCats.map(c => `
+        <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300 ${state.category==String(c.id)?'active':''}" data-cat="${c.id}">
+          ${c.name} <span class="text-xs opacity-60">(${c.count})</span>
+        </button>
+      `).join('')}
+    `;
+
+    container.querySelectorAll('.filter-tag').forEach(btn => {
+      btn.onclick = () => {
+        container.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.category = btn.dataset.cat;
+        state.page = 1;
+        updateURL();
+        loadPosts();
+      };
+    });
+  } catch (e) {
+    console.error('Failed to load categories', e);
+  }
+}
+
+function updateURL() {
+  const params = new URLSearchParams();
+  if (state.category !== 'all') params.set('cat', state.category);
+  if (state.search) params.set('q', state.search);
+  if (state.page > 1) params.set('page', state.page);
+  history.replaceState({}, '', `/articles.html${params.toString() ? '?' + params.toString() : ''}`);
+}
+
+async function loadPosts() {
+  const grid = document.getElementById('posts-grid');
+  grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">⏳ 載入中...</div>`;
+
+  let url = `${WP_API}/posts?per_page=${state.perPage}&page=${state.page}&_fields=id,date,title,excerpt,link,categories,jetpack_featured_media_url`;
+  if (state.category !== 'all') url += `&categories=${state.category}`;
+  if (state.search) url += `&search=${encodeURIComponent(state.search)}`;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) {
+      if (res.status === 400 && state.page > 1) {
+        // probably out of range, reset to last
+        state.page = 1; return loadPosts();
+      }
+      throw new Error(`HTTP ${res.status}`);
+    }
+    state.totalPosts = parseInt(res.headers.get('X-WP-Total') || '0');
+    state.totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1');
+    const posts = await res.json();
+
+    // Update header stat
+    document.getElementById('article-stats').textContent =
+      state.search
+        ? `🔍 搜尋「${state.search}」找到 ${state.totalPosts} 篇`
+        : state.category === 'all'
+          ? `共 ${state.totalPosts} 篇文章`
+          : `本分類 ${state.totalPosts} 篇`;
+
+    if (posts.length === 0) {
+      grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">沒有找到符合的文章</div>`;
+      document.getElementById('pagination').innerHTML = '';
+      return;
+    }
+
+    grid.innerHTML = posts.map(postCard).join('');
+    renderPagination();
+  } catch (e) {
+    grid.innerHTML = `<div class="col-span-full text-center py-12 text-rose-500">⚠️ ${e.message}</div>`;
+  }
+}
+
+function postCard(post) {
+  const title = decodeEntities(post.title.rendered);
+  const excerpt = truncate(stripHTML(post.excerpt.rendered).trim(), 100);
+  const date = formatDate(post.date);
+  const img = post.jetpack_featured_media_url || '';
+  const cats = (post.categories || []).slice(0, 3).map(cid => {
+    const c = state.categories.find(x => x.id === cid);
+    return c ? `<span class="tag">${c.name}</span>` : '';
+  }).join('');
+
+  return `
+    <a href="${post.link}" target="_blank" rel="noopener"
+       class="article-card bg-white border border-slate-200 rounded-xl overflow-hidden block">
+      ${img
+        ? `<img src="${img}" alt="" loading="lazy" class="w-full h-40 object-cover">`
+        : `<div class="w-full h-40 bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-4xl">📝</div>`
+      }
+      <div class="p-4">
+        <div class="text-xs text-slate-500 mb-1">${date}</div>
+        <div class="font-semibold text-slate-900 leading-tight mb-2">${title}</div>
+        <div class="text-sm text-slate-600 wp-excerpt mb-3">${excerpt}</div>
+        <div class="flex flex-wrap">${cats}</div>
+      </div>
+    </a>
+  `;
+}
+
+function renderPagination() {
+  const pag = document.getElementById('pagination');
+  if (state.totalPages <= 1) { pag.innerHTML = ''; return; }
+  let html = '';
+  const cur = state.page;
+  const total = state.totalPages;
+
+  const btn = (n, label, disabled = false) =>
+    `<button data-page="${n}" ${disabled?'disabled':''}
+       class="px-3 py-1.5 rounded border border-slate-300 ${n===cur?'bg-indigo-600 text-white':'bg-white hover:bg-slate-50'} ${disabled?'opacity-40 cursor-not-allowed':''}">
+       ${label}
+     </button>`;
+
+  html += btn(Math.max(1, cur-1), '‹', cur === 1);
+  // Show 1, current-1, current, current+1, total
+  const showSet = new Set([1, cur-1, cur, cur+1, total].filter(n => n >= 1 && n <= total));
+  let last = 0;
+  [...showSet].sort((a,b)=>a-b).forEach(n => {
+    if (n > last + 1) html += `<span class="px-2 text-slate-400">…</span>`;
+    html += btn(n, String(n));
+    last = n;
+  });
+  html += btn(Math.min(total, cur+1), '›', cur === total);
+
+  pag.innerHTML = html;
+  pag.querySelectorAll('button[data-page]').forEach(b => {
+    b.onclick = () => {
+      state.page = parseInt(b.dataset.page);
+      updateURL();
+      loadPosts();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+  });
+}
+
+// Search handlers
+const searchInput = document.getElementById('search-input');
+searchInput.value = state.search;
+document.getElementById('search-btn').onclick = () => {
+  state.search = searchInput.value.trim();
+  state.page = 1;
+  updateURL();
+  loadPosts();
+};
+searchInput.addEventListener('keypress', e => {
+  if (e.key === 'Enter') document.getElementById('search-btn').click();
+});
+document.getElementById('reset-btn').onclick = () => {
+  state.search = '';
+  state.category = 'all';
+  state.page = 1;
+  searchInput.value = '';
+  history.replaceState({}, '', '/articles.html');
+  loadCategories().then(loadPosts);
+};
+
+// Boot
+document.addEventListener('DOMContentLoaded', async () => {
+  if (getQuery('page')) state.page = parseInt(getQuery('page'));
+  await loadCategories();
+  loadPosts();
+});
+</script>
+</body>
+</html>

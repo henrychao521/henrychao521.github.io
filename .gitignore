@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+._*
+.AppleDouble
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Local dev
+.cache/
+node_modules/
+.env
+.env.local
+
+# Decap local backend
+.git-gateway/
