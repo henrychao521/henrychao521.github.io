@@ -1,5 +1,30 @@
 [
   {
+    "slug": "2026-05-10-camera-hub-mac-vlm",
+    "title": "[實作筆記] 用 Mac Studio 當 AI 大腦、ESP32-CAM 當眼睛 — 多攝影機 + VLM 智慧描述",
+    "date": "2026-05-10",
+    "excerpt": "把 AI 推論搬到 Mac、Pi 純當 hub。再進一步加入 VLM 智慧描述，讓系統不只說「有人」，還能說「畫面中有一名穿紅色上衣的男性，正在客廳沙發上看書」。",
+    "author": "Henry Chao",
+    "categories": [
+      "edge-cam",
+      "ai",
+      "vision"
+    ],
+    "tags": [
+      "Mac Studio",
+      "ESP32-CAM",
+      "YOLOv8",
+      "VLM",
+      "Qwen-VL",
+      "LM Studio",
+      "Telegram",
+      "Flask"
+    ],
+    "repo": "camera-hub-mac",
+    "level": "⭐⭐⭐ 進階",
+    "hours": "8–12 hrs"
+  },
+  {
     "slug": "2026-05-10-grip-system-evolution",
     "title": "[專案紀錄] 握筆姿勢分析系統的三代演進 — 從 OpenCV 視窗到 WebRTC 全端",
     "date": "2026-05-10",
@@ -43,6 +68,50 @@
     "repo": "moltbot",
     "level": "⭐⭐ 中階",
     "hours": "3–4 hrs（不含模型下載）"
+  },
+  {
+    "slug": "2026-05-10-off-axis-pi-3d-gesture",
+    "title": "[實作筆記] 雙手在空中操作 3D 模型 — 純前端、零後端的全息互動實驗",
+    "date": "2026-05-10",
+    "excerpt": "瀏覽器端純前端、雙手手勢控制 3D 模型旋轉縮放平移。原本是「臉部追蹤 Off-axis 全像投影」實驗，後來才發現「雙手手勢」更實用。",
+    "author": "Henry Chao",
+    "categories": [
+      "vision",
+      "teaching"
+    ],
+    "tags": [
+      "MediaPipe",
+      "Three.js",
+      "手勢辨識",
+      "Off-axis",
+      "全息投影",
+      "純前端"
+    ],
+    "repo": "off-axis-pi",
+    "level": "⭐⭐ 中階",
+    "hours": "3–5 hrs"
+  },
+  {
+    "slug": "2026-05-10-sports-skeleton-pe-class",
+    "title": "[實作筆記] 用 YOLOv8-pose 給體育課當第二位老師 — 即時運動姿態分類",
+    "date": "2026-05-10",
+    "excerpt": "用 YOLOv8-pose 偵測人體 17 點骨架，依關節角度自動分類「深蹲 / 伏地挺身 / 開合跳 / 站立」。給體育老師當數鏡子用。",
+    "author": "Henry Chao",
+    "categories": [
+      "vision",
+      "ai",
+      "teaching"
+    ],
+    "tags": [
+      "YOLOv8-pose",
+      "MediaPipe",
+      "體育教學",
+      "姿態估計",
+      "OpenCV"
+    ],
+    "repo": "sports-skeleton-analysis",
+    "level": "⭐ 入門",
+    "hours": "1–2 hrs"
   },
   {
     "slug": "2026-05-10-xiao-esp32s3-led-matrix",
