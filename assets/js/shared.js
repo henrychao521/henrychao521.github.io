@@ -83,6 +83,7 @@ const PROJECT_META = {
   // theme: education / camera / llm / hardware / platform / archive
   // featured: boolean
   // emoji: visual icon
+  'shadowless-lamp-sim':      { theme: 'education', featured: true,  emoji: '🔦' },
   'grip-system':              { theme: 'education', featured: true,  emoji: '✏️' },
   'grip-system-prototype':    { theme: 'education', featured: false, emoji: '🧪' },
   'handpose-legacy':          { theme: 'education', featured: false, emoji: '🤚' },
