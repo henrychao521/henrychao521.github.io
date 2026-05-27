@@ -27,8 +27,8 @@
   {
     "slug": "2026-05-10-grip-system-evolution",
     "title": "[專案紀錄] 握筆姿勢分析系統的三代演進 — 從 OpenCV 視窗到 WebRTC 全端",
-    "date": "2026-05-10",
-    "excerpt": "從一開始 cv2.imshow 視窗到後來 FastAPI + React + 自寫 aiortc，三代演進完整記錄。也是「為什麼老師需要寫程式」的好例子。",
+    "date": "2026-05-27",
+    "excerpt": "從 cv2.imshow 桌面視窗到 FastAPI + React + 自寫 aiortc 的三代架構演進紀錄,涵蓋硬幣絕對校正、WebRTC 自主實作與 2026/05 新增的教學文件套件。",
     "author": "Henry Chao",
     "categories": [
       "vision",
@@ -72,8 +72,8 @@
   {
     "slug": "2026-05-10-off-axis-pi-3d-gesture",
     "title": "[實作筆記] 雙手在空中操作 3D 模型 — 純前端、零後端的全息互動實驗",
-    "date": "2026-05-10",
-    "excerpt": "瀏覽器端純前端、雙手手勢控制 3D 模型旋轉縮放平移。原本是「臉部追蹤 Off-axis 全像投影」實驗，後來才發現「雙手手勢」更實用。",
+    "date": "2026-05-27",
+    "excerpt": "瀏覽器端零後端、雙手手勢控制 3D 模型旋轉縮放平移的實驗紀錄。從臉部追蹤 Off-axis 視差實作出發,最終演進為以雙手手勢為主軸的教學互動工具。",
     "author": "Henry Chao",
     "categories": [
       "vision",
