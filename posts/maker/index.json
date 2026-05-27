@@ -1,5 +1,50 @@
 [
   {
+    "slug": "2026-05-10-grip-system-evolution",
+    "title": "[專案紀錄] 握筆姿勢分析系統的三代演進 — 從 OpenCV 視窗到 WebRTC 全端",
+    "date": "2026-05-27",
+    "excerpt": "從 cv2.imshow 桌面視窗到 FastAPI + React + 自寫 aiortc 的三代架構演進紀錄,涵蓋硬幣絕對校正、WebRTC 自主實作與 2026/05 新增的教學文件套件。",
+    "author": "Henry Chao",
+    "categories": [
+      "vision",
+      "ai",
+      "teaching"
+    ],
+    "tags": [
+      "MediaPipe",
+      "YOLOv8",
+      "FastAPI",
+      "WebRTC",
+      "aiortc",
+      "React"
+    ],
+    "repo": "grip-system",
+    "level": "⭐⭐⭐ 進階",
+    "hours": "完整版需 6–10 hrs;最小可跑版 1 hr"
+  },
+  {
+    "slug": "2026-05-10-off-axis-pi-3d-gesture",
+    "title": "[實作筆記] 雙手在空中操作 3D 模型 — 純前端、零後端的全息互動實驗",
+    "date": "2026-05-27",
+    "excerpt": "瀏覽器端零後端、雙手手勢控制 3D 模型旋轉縮放平移的實驗紀錄。從臉部追蹤 Off-axis 視差實作出發,最終演進為以雙手手勢為主軸的教學互動工具。",
+    "author": "Henry Chao",
+    "categories": [
+      "vision",
+      "teaching"
+    ],
+    "tags": [
+      "MediaPipe",
+      "Three.js",
+      "手勢辨識",
+      "Off-axis",
+      "全息投影",
+      "純前端"
+    ],
+    "repo": "off-axis-pi",
+    "level": "⭐⭐ 中階",
+    "hours": "3–5 hrs"
+  },
+  {
     "slug": "2026-05-10-camera-hub-mac-vlm",
     "title": "[實作筆記] 用 Mac Studio 當 AI 大腦、ESP32-CAM 當眼睛 — 多攝影機 + VLM 智慧描述",
     "date": "2026-05-10",
@@ -25,29 +70,6 @@
     "hours": "8–12 hrs"
   },
   {
-    "slug": "2026-05-10-grip-system-evolution",
-    "title": "[專案紀錄] 握筆姿勢分析系統的三代演進 — 從 OpenCV 視窗到 WebRTC 全端",
-    "date": "2026-05-27",
-    "excerpt": "從 cv2.imshow 桌面視窗到 FastAPI + React + 自寫 aiortc 的三代架構演進紀錄,涵蓋硬幣絕對校正、WebRTC 自主實作與 2026/05 新增的教學文件套件。",
-    "author": "Henry Chao",
-    "categories": [
-      "vision",
-      "ai",
-      "teaching"
-    ],
-    "tags": [
-      "MediaPipe",
-      "YOLOv8",
-      "FastAPI",
-      "WebRTC",
-      "aiortc",
-      "React"
-    ],
-    "repo": "grip-system",
-    "level": "⭐⭐⭐ 進階",
-    "hours": "完整版需 6–10 hrs；最小可跑版 1 hr"
-  },
-  {
     "slug": "2026-05-10-moltbot-pi5-local-llm",
     "title": "[實作筆記] Pi 5 上的本地 LLM 對話機器人 — Llama 3.1 TAIDE，離線可用、零雲端",
     "date": "2026-05-10",
@@ -68,28 +90,6 @@
     "repo": "moltbot",
     "level": "⭐⭐ 中階",
     "hours": "3–4 hrs（不含模型下載）"
-  },
-  {
-    "slug": "2026-05-10-off-axis-pi-3d-gesture",
-    "title": "[實作筆記] 雙手在空中操作 3D 模型 — 純前端、零後端的全息互動實驗",
-    "date": "2026-05-27",
-    "excerpt": "瀏覽器端零後端、雙手手勢控制 3D 模型旋轉縮放平移的實驗紀錄。從臉部追蹤 Off-axis 視差實作出發,最終演進為以雙手手勢為主軸的教學互動工具。",
-    "author": "Henry Chao",
-    "categories": [
-      "vision",
-      "teaching"
-    ],
-    "tags": [
-      "MediaPipe",
-      "Three.js",
-      "手勢辨識",
-      "Off-axis",
-      "全息投影",
-      "純前端"
-    ],
-    "repo": "off-axis-pi",
-    "level": "⭐⭐ 中階",
-    "hours": "3–5 hrs"
   },
   {
     "slug": "2026-05-10-sports-skeleton-pe-class",
