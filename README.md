@@ -2,7 +2,7 @@
 
 🦦 **趙珩宇 Henry × LivingTech** 個人作品站
 
-整合 24 個 GitHub 開源專案 + 600+ 篇 [livingtech.education](https://livingtech.education) 教學文章，
+整合 GitHub 公開專案（6 個，其中 5 個可線上體驗） + 600+ 篇 [livingtech.education](https://livingtech.education) 教學文章，
 並提供 WordPress 級的 **Decap CMS 後台** 寫新文章。
 
 🌐 **線上：** https://henrychao521.github.io
@@ -13,8 +13,8 @@
 
 | 頁面 | 內容 |
 |------|------|
-| `/` (`index.html`) | 首頁：精選專案 + 最新 6 篇文章 + 五大主軸 |
-| `/projects.html` | 24 個 repo 展示（依主題篩選） |
+| `/` (`index.html`) | 首頁：5 個精選作品（含線上 demo）+ 最新 6 篇文章 |
+| `/projects.html` | 公開 repo 展示（互動教學 / 模擬器 / 即時平台） |
 | `/articles.html` | livingtech.education 文章鏡像（搜尋 + 分類） |
 | `/maker.html` | Maker 教案 catalog（含難度、課時、硬體清單） |
 | `/admin/` | Decap CMS 寫作後台（GitHub OAuth 登入） |
@@ -90,7 +90,7 @@ excerpt: "從 4 塊 8×8 面板拼成 16×16，用 ESP32S3 跑中文跑馬燈。
 
 - WordPress 站（livingtech.education）：**保留**所有原文章，繼續寫一般教學
 - 本站：
-  - 顯示 GitHub 24 個專案
+  - 顯示 GitHub 公開專案
   - 透過 WP REST API **動態鏡像** WP 文章列表
   - 提供 `/admin/` 寫**技術深度文**（程式碼、git 整合）
 - 兩站雙向交叉連結

@@ -10,7 +10,7 @@ async function loadLatestPosts() {
       const date = formatDate(post.date);
       const img = post.jetpack_featured_media_url || '';
       return `
-        <a href="${post.link}" target="_blank" rel="noopener" class="article-card bg-white border border-slate-200 rounded-xl p-5 block">
+        <a href="${post.link}" target="_blank" rel="noopener" class="article-card reveal bg-white border border-slate-200 rounded-xl p-5 block">
           ${img ? `<img src="${img}" alt="" loading="lazy" class="w-full h-32 object-cover rounded-lg mb-3 -mt-1">` : ''}
           <div class="text-xs text-slate-500 mb-1">${date}</div>
           <div class="font-semibold text-slate-900 leading-tight mb-1">${title}</div>
@@ -18,43 +18,61 @@ async function loadLatestPosts() {
         </a>
       `;
     }).join('');
+    observeReveals(container);
   } catch (e) {
     container.innerHTML = `<div class="col-span-full text-center py-8 text-rose-500">⚠️ 無法拉取文章：${e.message}</div>`;
   }
 }
 
-async function loadFeaturedProjects() {
+/** 精選專案：先用 META 立即渲染，GitHub API 回來後再補即時資訊 */
+function renderFeaturedProjects() {
   const container = document.getElementById('featured-projects');
-  try {
-    const repos = await fetchGHRepos();
-    const featured = repos
-      .filter(r => PROJECT_META[r.name]?.featured)
-      .slice(0, 6);
+  container.innerHTML = FEATURED_ORDER.map(name => {
+    const m = PROJECT_META[name];
+    const themeName = THEME_NAMES[m.theme] || '';
+    return `
+      <article class="featured-card reveal group relative bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col" data-repo="${name}">
+        <div class="bg-gradient-to-br ${m.gradient} px-6 py-7 relative overflow-hidden">
+          <div class="cover-glow"></div>
+          <div class="flex items-center justify-between relative">
+            <span class="text-5xl drop-shadow-sm">${m.emoji}</span>
+            <span class="text-[11px] font-semibold bg-white/25 text-white backdrop-blur px-2.5 py-1 rounded-full">${themeName}</span>
+          </div>
+        </div>
+        <div class="p-6 flex-1 flex flex-col">
+          <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-indigo-700 transition">${m.title}</h3>
+          <p class="text-sm text-slate-600 leading-relaxed mb-4 flex-1">${m.blurb}</p>
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            ${(m.tags || []).map(t => `<span class="text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">${t}</span>`).join('')}
+          </div>
+          <div class="flex items-center gap-2">
+            ${m.demo ? `<a href="${m.demo}" target="_blank" rel="noopener" class="flex-1 text-center text-sm font-semibold px-4 py-2 rounded-lg bg-slate-900 text-white hover:bg-indigo-600 transition">🚀 線上體驗</a>` : ''}
+            <a href="https://github.com/${GH_USER}/${name}" target="_blank" rel="noopener" class="text-sm font-medium px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:border-slate-900 hover:text-slate-900 transition">GitHub</a>
+          </div>
+          <div class="repo-live mt-4 pt-3 border-t border-slate-100 flex items-center gap-3 text-xs text-slate-400">
+            <span>⏳ 同步 GitHub 資訊中…</span>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+  observeReveals(container);
+}
 
-    container.innerHTML = featured.map(repo => {
-      const meta = PROJECT_META[repo.name] || {};
-      const themeName = THEME_NAMES[meta.theme] || '';
-      const lang = repo.language || 'Other';
-      return `
-        <a href="${repo.html_url}" target="_blank" rel="noopener"
-           class="article-card bg-white border-2 ${THEME_COLORS[meta.theme] || 'border-slate-200'} rounded-xl p-5 block">
-          <div class="flex items-start justify-between mb-2">
-            <div class="text-3xl">${meta.emoji || '📦'}</div>
-            <span class="text-xs px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600">${themeName}</span>
-          </div>
-          <div class="font-bold text-slate-900 mb-1">${repo.name}</div>
-          <div class="text-sm text-slate-600 line-clamp-2 mb-3">${repo.description || '(no description)'}</div>
-          <div class="flex items-center gap-3 text-xs text-slate-500">
-            <span>${lang}</span>
-            <span>★ ${repo.stargazers_count}</span>
-            <span>↻ ${formatDate(repo.pushed_at)}</span>
-          </div>
-        </a>
-      `;
-    }).join('');
-  } catch (e) {
-    container.innerHTML = `<div class="col-span-full text-center py-8 text-rose-500">⚠️ 無法拉取 repo：${e.message}</div>`;
-  }
+/** 用 GitHub API 補上精選卡片的即時資訊（語言／星數／更新日） */
+async function hydrateFeaturedProjects() {
+  const repos = await fetchGHReposSafe();
+  const byName = Object.fromEntries(repos.map(r => [r.name, r]));
+  document.querySelectorAll('#featured-projects [data-repo]').forEach(card => {
+    const repo = byName[card.dataset.repo];
+    const live = card.querySelector('.repo-live');
+    if (!repo || !live) { if (live) live.remove(); return; }
+    live.innerHTML = `
+      <span class="inline-flex items-center gap-1"><span class="lang-dot lang-${(repo.language || 'Other').replace('+','p')}"></span>${repo.language || '—'}</span>
+      <span>★ ${repo.stargazers_count}</span>
+      <span>更新 ${formatDate(repo.pushed_at)}</span>
+    `;
+  });
 }
 
 /** Update post count stat */
@@ -69,9 +87,34 @@ async function updatePostStat() {
   } catch (e) { /* silent */ }
 }
 
+/** 進場顯示動畫。動畫只是加分項——任何偵測不到的情況一律直接顯示，
+ *  避免內容卡在 opacity:0（錨點跳轉、iframe 內 viewport 異常、舊瀏覽器）。 */
+function observeReveals(scope) {
+  const els = (scope || document).querySelectorAll('.reveal:not(.shown)');
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  if (!('IntersectionObserver' in window) || !vh) {
+    els.forEach(el => el.classList.add('shown'));
+    return;
+  }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) { en.target.classList.add('shown'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.05 });
+  els.forEach(el => {
+    if (el.getBoundingClientRect().top < vh) {
+      el.classList.add('shown');   // 已在視窗內或上方 → 直接顯示
+    } else {
+      io.observe(el);
+    }
+  });
+}
+
 // Boot
 document.addEventListener('DOMContentLoaded', () => {
+  renderFeaturedProjects();
+  hydrateFeaturedProjects();
   loadLatestPosts();
-  loadFeaturedProjects();
   updatePostStat();
+  observeReveals();
 });
