@@ -45,6 +45,7 @@
     <div class="flex flex-wrap gap-2 items-center">
       <span class="text-sm text-slate-500 mr-1">主題：</span>
       <button class="filter-tag active px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="all">全部</button>
+      <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="twin">🧊 3D 數位孿生</button>
       <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="teaching">🎓 互動教學</button>
       <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="sim">🔬 模擬器</button>
       <button class="filter-tag px-3 py-1 text-sm rounded-full border border-slate-300" data-theme="platform">🌐 即時平台</button>
@@ -83,7 +84,7 @@ async function loadProjects() {
 function render() {
   const container = document.getElementById('projects-container');
   const themes = currentTheme === 'all'
-    ? ['teaching', 'sim', 'platform', 'misc']
+    ? ['twin', 'teaching', 'sim', 'platform', 'misc']
     : [currentTheme];
 
   let html = '';

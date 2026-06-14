@@ -32,12 +32,19 @@ function renderFeaturedProjects() {
     const themeName = THEME_NAMES[m.theme] || '';
     return `
       <article class="featured-card reveal group relative bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col" data-repo="${name}">
-        <div class="bg-gradient-to-br ${m.gradient} px-6 py-7 relative overflow-hidden">
-          <div class="cover-glow"></div>
-          <div class="flex items-center justify-between relative">
-            <span class="text-5xl drop-shadow-sm">${m.emoji}</span>
-            <span class="text-[11px] font-semibold bg-white/25 text-white backdrop-blur px-2.5 py-1 rounded-full">${themeName}</span>
-          </div>
+        <div class="relative overflow-hidden ${m.cover ? 'h-44' : 'bg-gradient-to-br ' + m.gradient + ' px-6 py-7'}">
+          ${m.cover ? `
+            <img src="${m.cover}" alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/75 via-slate-900/15 to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 p-4 flex items-center justify-between">
+              <span class="text-4xl drop-shadow-lg">${m.emoji}</span>
+              <span class="text-[11px] font-semibold bg-white/25 text-white backdrop-blur px-2.5 py-1 rounded-full">${themeName}</span>
+            </div>` : `
+            <div class="cover-glow"></div>
+            <div class="flex items-center justify-between relative">
+              <span class="text-5xl drop-shadow-sm">${m.emoji}</span>
+              <span class="text-[11px] font-semibold bg-white/25 text-white backdrop-blur px-2.5 py-1 rounded-full">${themeName}</span>
+            </div>`}
         </div>
         <div class="p-6 flex-1 flex flex-col">
           <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-indigo-700 transition">${m.title}</h3>

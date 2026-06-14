@@ -82,6 +82,15 @@ async function fetchGHRepos() {
 // demo: 線上體驗網址；title/blurb: 中文展示文案（比 repo description 完整）
 
 const PROJECT_META = {
+  'x5-roomtour-viewer': {
+    theme: 'twin', featured: true, emoji: '🧊',
+    title: 'X5 RoomTour — 真實空間 3D 數位孿生',
+    blurb: '一支 Insta360 X5 360° 影片 →（COLMAP + Brush）3D 高斯潑濺，重建出照片級、可在瀏覽器走動的空間。第一人稱行走（物理碰撞 + WebXR）、從點雲自動產生建築平面圖與尺寸量測、攝影機即時人流追蹤、校園多樓層擴展。全程 Apple Silicon 本機、無需 NVIDIA / CUDA。',
+    tags: ['3D 高斯潑濺', 'COLMAP / Brush', 'PlayCanvas / WebXR', '即時數位孿生'],
+    demo: 'https://henrychao521.github.io/x5-roomtour-viewer/',
+    cover: '/assets/covers/x5-roomtour.jpg',
+    gradient: 'from-cyan-500 via-blue-600 to-indigo-700',
+  },
   'pc13110-platform': {
     theme: 'teaching', featured: true, emoji: '📐',
     title: 'PC13110 工程設計學習平台',
@@ -133,6 +142,7 @@ const PROJECT_META = {
 
 /** 精選專案在首頁/專案頁的固定排序 */
 const FEATURED_ORDER = [
+  'x5-roomtour-viewer',
   'pc13110-platform',
   'livingtech-tools',
   'shadowless-lamp-sim',
@@ -141,6 +151,7 @@ const FEATURED_ORDER = [
 ];
 
 const THEME_NAMES = {
+  twin:     '🧊 3D 數位孿生',
   teaching: '🎓 互動教學平台',
   sim:      '🔬 模擬器',
   platform: '🌐 即時資訊平台',
@@ -148,6 +159,7 @@ const THEME_NAMES = {
 };
 
 const THEME_COLORS = {
+  twin:     'border-cyan-200 hover:border-cyan-400',
   teaching: 'border-emerald-200 hover:border-emerald-400',
   sim:      'border-sky-200 hover:border-sky-400',
   platform: 'border-violet-200 hover:border-violet-400',
@@ -156,6 +168,7 @@ const THEME_COLORS = {
 
 /** GitHub API 失敗（rate limit 等）時的離線備援資料 */
 const REPO_FALLBACK = [
+  { name: 'x5-roomtour-viewer',     language: 'JavaScript', pushed_at: '2026-06-14', stargazers_count: 0, html_url: 'https://github.com/henrychao521/x5-roomtour-viewer', description: 'X5 RoomTour — Insta360 X5 → 3D 高斯潑濺真實空間數位孿生（可走動 / 量測 / 即時人流）' },
   { name: 'pc13110-platform',       language: 'HTML',       pushed_at: '2026-06-11', stargazers_count: 0, html_url: 'https://github.com/henrychao521/pc13110-platform',       description: 'PC13110 工程設計學習平台 — 對應普通型高中生活科技教科書的互動學習平台' },
   { name: 'shadowless-lamp-sim',    language: 'HTML',       pushed_at: '2026-06-01', stargazers_count: 0, html_url: 'https://github.com/henrychao521/shadowless-lamp-sim',    description: '外科手術無影燈光學模擬器 — Three.js + IESSpotLight 真實光錐疊加' },
   { name: 'living-portal',          language: 'Python',     pushed_at: '2026-05-29', stargazers_count: 0, html_url: 'https://github.com/henrychao521/living-portal',          description: 'Henry Living Tech Portal — 整合台鐵即時地圖、北台灣水文監測、台北即時看板的統一入口' },
