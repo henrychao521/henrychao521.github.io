@@ -165,6 +165,8 @@
             <div id="feedback-text" class="feedback-overlay">偵測中...</div>
         </div>
 
+        <div id="advice" style="max-width:640px;margin:14px auto 0;padding:12px 16px;border-radius:12px;border-left:5px solid #10b981;background:#f8fafc;color:#334155;font-size:15px;line-height:1.7;text-align:left;">把手放進鏡頭，我會即時判斷你的握姿並給修正建議。</div>
+
         <div class="controls" id="controls" style="display:none;">
             <!-- CodePen 無法存到 Google Drive，改為下載圖片 -->
             <button class="btn-download" onclick="capture('Snapshot')">📸 拍照並下載截圖</button>
@@ -180,6 +182,7 @@
         const canvasCtx = canvasElement.getContext('2d');
         const statusDiv = document.getElementById('status');
         const feedbackDiv = document.getElementById('feedback-text');
+        const adviceDiv = document.getElementById('advice');
 
         // --- 握姿分析邏輯 (JavaScript 版) ---
         function analyzeGrip(landmarks) {
@@ -199,21 +202,26 @@
             const handSize = Math.hypot(wrist.x - middleTip.x, wrist.y - middleTip.y);
             const pinchRatio = (handSize > 0) ? (pinchDist / handSize) : 1.0;
 
-            let status = "✅ 正確握姿";
-            let color = "#10b981"; // 綠色
+            const RED = "#ef4444", AMBER = "#f59e0b", GREEN = "#10b981";
 
             if (thumbWrapDist < 0.05) {
-                status = "❌ 錯誤：包指";
-                color = "#ef4444"; // 紅色
+                // 包指再細分：拇指尖在食指 PIP「上方」(y 較小) = 包食指；否則 = 內包
+                const isOver = thumbTip.y < (indexPip.y - 0.005);
+                if (isOver) {
+                    return { status: "❌ 拇指包食指", color: RED,
+                        advice: "您的拇指尖跨越在食指上方。請把拇指移到食指的「側邊」，不要壓在食指上方。" };
+                }
+                return { status: "❌ 大拇指內包", color: RED,
+                    advice: "您的拇指縮在食指下方／內側。請讓拇指自然往外側伸出，和食指之間形成圓圓的「虎口」。" };
             } else if (pinchDist < 0.04) {
-                status = "❌ 錯誤：握太低";
-                color = "#ef4444";
+                return { status: "❌ 握太低", color: RED,
+                    advice: "拇指和食指太靠近、握得太低。請往上握，指尖距離筆尖約 1.5 公分以上。" };
             } else if (pinchRatio >= 0.3) {
-                status = "⚠️ 錯誤：太鬆";
-                color = "#f59e0b"; // 橘色
+                return { status: "⚠️ 握太鬆", color: AMBER,
+                    advice: "握筆太鬆，筆容易晃動。請用拇指、食指、中指三個點，輕輕但穩穩地抓住筆桿。" };
             }
-
-            return { status, color };
+            return { status: "✅ 正確握姿", color: GREEN,
+                advice: "很好！維持拇指、食指、中指的穩定「三指三角」握法，繼續保持。" };
         }
 
         function onResults(results) {
@@ -223,22 +231,26 @@
             if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
                 for (const landmarks of results.multiHandLandmarks) {
                     drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS,
-                        { color: '#00FF00', lineWidth: 3 });
-                    drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 1 });
+                        { color: 'rgba(0,230,118,0.65)', lineWidth: 1.5 });
+                    drawLandmarks(canvasCtx, landmarks, { color: '#FF3B3B', lineWidth: 1, radius: 2 });
 
                     // 執行分析
                     const analysis = analyzeGrip(landmarks);
                     feedbackDiv.textContent = analysis.status;
                     feedbackDiv.style.color = analysis.color;
+                    adviceDiv.textContent = analysis.advice;
+                    adviceDiv.style.borderLeftColor = analysis.color;
 
-                    // 畫出外框顏色
+                    // 畫出外框顏色（細）
                     canvasCtx.strokeStyle = analysis.color;
-                    canvasCtx.lineWidth = 5;
+                    canvasCtx.lineWidth = 3;
                     canvasCtx.strokeRect(0, 0, canvasElement.width, canvasElement.height);
                 }
             } else {
                 feedbackDiv.textContent = "🖐️ 請將手放入鏡頭";
                 feedbackDiv.style.color = "white";
+                adviceDiv.textContent = "請將握筆的手完整放入鏡頭。";
+                adviceDiv.style.borderLeftColor = "#94a3b8";
             }
             canvasCtx.restore();
         }
