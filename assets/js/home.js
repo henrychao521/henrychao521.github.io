@@ -24,45 +24,39 @@ async function loadLatestPosts() {
   }
 }
 
-/** 精選專案：先用 META 立即渲染，GitHub API 回來後再補即時資訊 */
+/** 精選專案 — 雜誌式佈局：首張為主打大區塊，其餘為編號卡片 */
 function renderFeaturedProjects() {
   const container = document.getElementById('featured-projects');
-  container.innerHTML = FEATURED_ORDER.map(name => {
+  const card = (name, idx, big) => {
     const m = PROJECT_META[name];
     const themeName = THEME_NAMES[m.theme] || '';
+    const url = m.demo || `https://github.com/${GH_USER}/${name}`;
+    const num = String(idx + 1).padStart(2, '0');
+    const bg = m.cover ? `<img src="${m.cover}" alt="" loading="lazy" class="w-full h-full object-cover">` : '';
+    const phClass = m.cover ? '' : `bg-gradient-to-br ${m.gradient}`;
+    const h = big ? 'h-[300px] md:h-[420px]' : 'h-[230px]';
+    const titleSize = big ? 'text-3xl md:text-4xl' : 'text-xl';
+    const blurb = big ? `<p class="text-slate-200 max-w-2xl text-sm md:text-base mt-2">${truncate(m.blurb, 60)}</p>` : '';
     return `
-      <article class="featured-card reveal group relative bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col" data-repo="${name}">
-        <div class="relative overflow-hidden ${m.cover ? 'h-44' : 'bg-gradient-to-br ' + m.gradient + ' px-6 py-7'}">
-          ${m.cover ? `
-            <img src="${m.cover}" alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/75 via-slate-900/15 to-transparent"></div>
-            <div class="absolute inset-x-0 bottom-0 p-4 flex items-center justify-between">
-              <span class="text-4xl drop-shadow-lg">${m.emoji}</span>
-              <span class="text-[11px] font-semibold bg-white/25 text-white backdrop-blur px-2.5 py-1 rounded-full">${themeName}</span>
-            </div>` : `
-            <div class="cover-glow"></div>
-            <div class="flex items-center justify-between relative">
-              <span class="text-5xl drop-shadow-sm">${m.emoji}</span>
-              <span class="text-[11px] font-semibold bg-white/25 text-white backdrop-blur px-2.5 py-1 rounded-full">${themeName}</span>
-            </div>`}
-        </div>
-        <div class="p-6 flex-1 flex flex-col">
-          <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-indigo-700 transition">${m.title}</h3>
-          <p class="text-sm text-slate-600 leading-relaxed mb-4 flex-1">${m.blurb}</p>
-          <div class="flex flex-wrap gap-1.5 mb-5">
-            ${(m.tags || []).map(t => `<span class="text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">${t}</span>`).join('')}
+      <a class="mag-card reveal ${h} ${big ? 'mb-6' : ''}" href="${url}" target="_blank" rel="noopener">
+        <div class="mag-ph ${phClass}">${bg}</div>
+        <div class="mag-ov"></div>
+        <div class="mag-body p-5 ${big ? 'md:p-8' : ''} text-white">
+          <div class="flex items-baseline gap-2">
+            <span class="mag-num ${big ? 'text-5xl' : 'text-3xl'}">${num}</span>
+            <span class="mag-kicker text-indigo-100 mt-1">${themeName}</span>
           </div>
-          <div class="flex items-center gap-2">
-            ${m.demo ? `<a href="${m.demo}" target="_blank" rel="noopener" class="flex-1 text-center text-sm font-semibold px-4 py-2 rounded-lg bg-slate-900 text-white hover:bg-indigo-600 transition">🚀 線上體驗</a>` : ''}
-            <a href="https://github.com/${GH_USER}/${name}" target="_blank" rel="noopener" class="text-sm font-medium px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:border-slate-900 hover:text-slate-900 transition">GitHub</a>
-          </div>
-          <div class="repo-live mt-4 pt-3 border-t border-slate-100 flex items-center gap-3 text-xs text-slate-400">
-            <span>⏳ 同步 GitHub 資訊中…</span>
+          <div>
+            <h3 class="mag-title serif ${titleSize} font-black">${m.title}</h3>
+            ${blurb}
           </div>
         </div>
-      </article>
-    `;
-  }).join('');
+      </a>`;
+  };
+  const [first, ...rest] = FEATURED_ORDER;
+  container.innerHTML =
+    card(first, 0, true) +
+    `<div class="grid md:grid-cols-3 gap-6">${rest.map((n, i) => card(n, i + 1, false)).join('')}</div>`;
   observeReveals(container);
 }
 
@@ -120,7 +114,6 @@ function observeReveals(scope) {
 // Boot
 document.addEventListener('DOMContentLoaded', () => {
   renderFeaturedProjects();
-  hydrateFeaturedProjects();
   loadLatestPosts();
   updatePostStat();
   observeReveals();

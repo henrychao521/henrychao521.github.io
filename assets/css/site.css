@@ -227,3 +227,17 @@ body {
   opacity:0; transition:opacity .25s; pointer-events:none;
 }
 .featured-card:hover::after{ opacity:.9; }
+
+/* ═══════════ 雜誌式作品佈局 ═══════════ */
+.serif{ font-family:"Noto Serif TC",serif; }
+.mag-num{ font-family:"Noto Serif TC",serif; font-weight:900; line-height:1; color:rgba(255,255,255,.85); }
+.mag-card{ position:relative; overflow:hidden; border-radius:18px; display:block; text-decoration:none; }
+.mag-card .mag-ph{ position:absolute; inset:0; transition:transform .5s ease; }
+.mag-card:hover .mag-ph{ transform:scale(1.05); }
+.mag-card .mag-ov{ position:absolute; inset:0;
+  background:linear-gradient(to top,rgba(15,23,42,.93),rgba(15,23,42,.12) 55%,transparent),
+             linear-gradient(to bottom,rgba(11,16,32,.55),transparent 28%); }
+.mag-num,.mag-kicker{ text-shadow:0 1px 6px rgba(0,0,0,.5); }
+.mag-card .mag-body{ position:absolute; inset:0; display:flex; flex-direction:column; justify-content:space-between; }
+.mag-kicker{ font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; }
+.mag-card:hover .mag-title{ text-decoration:underline; text-underline-offset:3px; }

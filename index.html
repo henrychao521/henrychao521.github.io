@@ -11,7 +11,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦦</text></svg>">
 </head>
@@ -37,12 +37,9 @@
 
 <!-- ====== HERO ====== -->
 <header class="hero relative overflow-hidden text-white">
-  <div class="hero-blob hero-blob-1"></div>
-  <div class="hero-blob hero-blob-2"></div>
-  <div class="hero-blob hero-blob-3"></div>
-  <div class="hero-grid"></div>
+  <canvas id="hero-bg" class="absolute inset-0 w-full h-full" aria-hidden="true"></canvas>
 
-  <div class="max-w-6xl mx-auto px-6 pt-20 pb-16 relative">
+  <div class="max-w-6xl mx-auto px-6 pt-20 pb-16 relative z-10">
     <div class="inline-flex items-center gap-2 text-sm bg-white/10 border border-white/15 backdrop-blur px-3 py-1 rounded-full mb-5">
       <span class="pulse-dot"></span> 趙珩宇 / Henry Chao — 建國中學 生活科技教師
     </div>
@@ -106,8 +103,8 @@
       <a href="/projects.html" class="text-sm font-medium text-indigo-600 hover:underline">所有專案 →</a>
     </div>
     <p class="text-slate-500 mb-8">每一個都能直接點開線上體驗，不用安裝任何東西。</p>
-    <div id="featured-projects" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div class="col-span-full text-center py-8 text-slate-400">⏳ 載入中…</div>
+    <div id="featured-projects">
+      <div class="text-center py-8 text-slate-400">⏳ 載入中…</div>
     </div>
   </section>
 
@@ -183,5 +180,6 @@
 
 <script src="/assets/js/shared.js"></script>
 <script src="/assets/js/home.js"></script>
+<script src="/assets/js/hero-bg.js"></script>
 </body>
 </html>
