@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AI 握筆姿勢教練 (CodePen 版)</title>
+    <!-- 引入 MediaPipe 函式庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <style>
+        /* CSS 樣式區 (請複製到 CodePen CSS 區塊) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 640px;
+            height: 480px;
+            margin: 0 auto;
+            background: black;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* 鏡頭與畫布重疊與水平翻轉 */
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 640px;
+            height: 480px;
+            transform: scaleX(-1);
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 640px;
+            height: 480px;
+            transform: scaleX(-1);
+        }
+
+        .feedback-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 14px;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-correct {
+            background-color: #10b981;
+            grid-column: span 3;
+            font-size: 16px;
+        }
+
+        .btn-error {
+            background-color: #ef4444;
+        }
+
+        .btn-download {
+            background-color: #3b82f6;
+            grid-column: span 3;
+            margin-top: 10px;
+        }
+
+        #status {
+            margin-top: 15px;
+            color: #6b7280;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HTML 結構區 (請複製到 CodePen HTML 區塊) -->
+    <div class="container">
+        <h2>🖐️ AI 握筆教練 (CodePen 版)</h2>
+        <div id="loading">載入 AI 模型中，請稍候... <div class="loader"></div>
+        </div>
+
+        <div class="video-container" id="video-wrapper" style="display:none;">
+            <video id="input_video"></video>
+            <canvas id="output_canvas"></canvas>
+            <div id="feedback-text" class="feedback-overlay">偵測中...</div>
+        </div>
+
+        <div class="controls" id="controls" style="display:none;">
+            <!-- CodePen 無法存到 Google Drive，改為下載圖片 -->
+            <button class="btn-download" onclick="capture('Snapshot')">📸 拍照並下載截圖</button>
+        </div>
+
+        <div id="status">準備就緒</div>
+    </div>
+
+    <script>
+        // JS 程式碼區 (請複製到 CodePen JS 區塊)
+        const videoElement = document.getElementById('input_video');
+        const canvasElement = document.getElementById('output_canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        const statusDiv = document.getElementById('status');
+        const feedbackDiv = document.getElementById('feedback-text');
+
+        // --- 握姿分析邏輯 (JavaScript 版) ---
+        function analyzeGrip(landmarks) {
+            const thumbTip = landmarks[4];
+            const indexPip = landmarks[6];
+            const indexTip = landmarks[8];
+            const middleTip = landmarks[12];
+            const wrist = landmarks[0];
+
+            // 1. 包指檢查 (Thumb Wrap)
+            const thumbWrapDist = Math.hypot(thumbTip.x - indexPip.x, thumbTip.y - indexPip.y);
+
+            // 2. 握太低檢查 (Too Low)
+            const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+
+            // 3. 太鬆檢查 (Loose)
+            const handSize = Math.hypot(wrist.x - middleTip.x, wrist.y - middleTip.y);
+            const pinchRatio = (handSize > 0) ? (pinchDist / handSize) : 1.0;
+
+            let status = "✅ 正確握姿";
+            let color = "#10b981"; // 綠色
+
+            if (thumbWrapDist < 0.05) {
+                status = "❌ 錯誤：包指";
+                color = "#ef4444"; // 紅色
+            } else if (pinchDist < 0.04) {
+                status = "❌ 錯誤：握太低";
+                color = "#ef4444";
+            } else if (pinchRatio >= 0.3) {
+                status = "⚠️ 錯誤：太鬆";
+                color = "#f59e0b"; // 橘色
+            }
+
+            return { status, color };
+        }
+
+        function onResults(results) {
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                for (const landmarks of results.multiHandLandmarks) {
+                    drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS,
+                        { color: '#00FF00', lineWidth: 3 });
+                    drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 1 });
+
+                    // 執行分析
+                    const analysis = analyzeGrip(landmarks);
+                    feedbackDiv.textContent = analysis.status;
+                    feedbackDiv.style.color = analysis.color;
+
+                    // 畫出外框顏色
+                    canvasCtx.strokeStyle = analysis.color;
+                    canvasCtx.lineWidth = 5;
+                    canvasCtx.strokeRect(0, 0, canvasElement.width, canvasElement.height);
+                }
+            } else {
+                feedbackDiv.textContent = "🖐️ 請將手放入鏡頭";
+                feedbackDiv.style.color = "white";
+            }
+            canvasCtx.restore();
+        }
+
+        const hands = new Hands({
+            locateFile: (file) => {
+                return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+            }
+        });
+
+        hands.setOptions({
+            maxNumHands: 1,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+
+        hands.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => {
+                await hands.send({ image: videoElement });
+            },
+            width: 640,
+            height: 480
+        });
+
+        camera.start()
+            .then(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('video-wrapper').style.display = 'block';
+                document.getElementById('controls').style.display = 'grid';
+            })
+            .catch(err => {
+                statusDiv.textContent = "無法啟動相機 (請確保在 CodePen 有開啟允許相機): " + err;
+            });
+
+        // 拍照並下載功能 (CodePen 專用)
+        window.capture = function (label) {
+            statusDiv.textContent = "截圖下載中...";
+
+            // 建立暫存畫布來合併影像與骨架 (簡單版只截圖原始影像)
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 640;
+            tempCanvas.height = 480;
+            const ctx = tempCanvas.getContext('2d');
+
+            // 繪製視訊
+            ctx.drawImage(videoElement, 0, 0, 640, 480);
+
+            // (選擇性) 繪製骨架 Canvas 到截圖上
+            ctx.drawImage(canvasElement, 0, 0, 640, 480);
+
+            // 下載機制
+            const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.9);
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            link.download = `handpose_${label}_${timestamp}.jpg`;
+            link.href = dataUrl;
+            link.click();
+
+            statusDiv.textContent = "已下載截圖！";
+            setTimeout(() => { statusDiv.textContent = "準備就緒"; }, 2000);
+        }
+    </script>
+</body>
+
+</html>

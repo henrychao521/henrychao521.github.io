@@ -131,6 +131,14 @@ const PROJECT_META = {
     demo: 'https://henrychao521.github.io/ai-physics-demos/',
     gradient: 'from-fuchsia-500 via-rose-500 to-orange-500',
   },
+  'grip-coach': {
+    theme: 'teaching', featured: true, emoji: '🖐️',
+    title: 'AI 握筆姿勢教練（瀏覽器版）',
+    blurb: '用 webcam + MediaPipe Hands 在瀏覽器即時辨識握筆姿勢，標出手部關鍵點與骨架、即時提示握姿，並可一鍵拍照下載截圖。純前端、開啟相機即用，不需安裝、影像不外傳。',
+    tags: ['MediaPipe Hands', 'webcam 即時辨識', '手部關鍵點骨架', '純前端 / 開相機即用'],
+    demo: 'https://henrychao521.github.io/grip-coach/',
+    gradient: 'from-rose-500 via-pink-600 to-purple-600',
+  },
   'living-portal': {
     theme: 'platform', featured: true, emoji: '🌐',
     title: 'Henry Living Tech Portal',
@@ -156,6 +164,7 @@ const FEATURED_ORDER = [
   'shadowless-lamp-sim',
   'ai-physics-demos',
   'taiwan-engineering-geo',
+  'grip-coach',
   'living-portal',
 ];
 
