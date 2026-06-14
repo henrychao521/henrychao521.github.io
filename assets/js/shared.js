@@ -123,6 +123,14 @@ const PROJECT_META = {
     demo: 'https://henrychao521.github.io/shadowless-lamp-sim/',
     gradient: 'from-sky-600 via-blue-700 to-indigo-700',
   },
+  'ai-physics-demos': {
+    theme: 'sim', featured: true, emoji: '🌈',
+    title: 'AI 協作互動作品集 — 物理・工程・資料',
+    blurb: '與 AI 協作打造的 8 個瀏覽器互動作品：3D 光譜干涉、繞射成像（可拖曳擋板）、摩爾紋（雙色／彩虹拍頻）、「干涉×摩爾＝同一種疊加」整合教學、外科無影燈、RC 氣墊船工程模擬、全台房市數據儀表板。純前端、可離線課堂演示，手機可用。',
+    tags: ['8 個互動作品', '物理/光學模擬', '資料視覺化', '純前端 / Canvas'],
+    demo: 'https://henrychao521.github.io/ai-physics-demos/',
+    gradient: 'from-fuchsia-500 via-rose-500 to-orange-500',
+  },
   'living-portal': {
     theme: 'platform', featured: true, emoji: '🌐',
     title: 'Henry Living Tech Portal',
@@ -146,6 +154,7 @@ const FEATURED_ORDER = [
   'pc13110-platform',
   'livingtech-tools',
   'shadowless-lamp-sim',
+  'ai-physics-demos',
   'taiwan-engineering-geo',
   'living-portal',
 ];
@@ -171,6 +180,7 @@ const REPO_FALLBACK = [
   { name: 'x5-roomtour-viewer',     language: 'JavaScript', pushed_at: '2026-06-14', stargazers_count: 0, html_url: 'https://github.com/henrychao521/x5-roomtour-viewer', description: 'X5 RoomTour — Insta360 X5 → 3D 高斯潑濺真實空間數位孿生（可走動 / 量測 / 即時人流）' },
   { name: 'pc13110-platform',       language: 'HTML',       pushed_at: '2026-06-11', stargazers_count: 0, html_url: 'https://github.com/henrychao521/pc13110-platform',       description: 'PC13110 工程設計學習平台 — 對應普通型高中生活科技教科書的互動學習平台' },
   { name: 'shadowless-lamp-sim',    language: 'HTML',       pushed_at: '2026-06-01', stargazers_count: 0, html_url: 'https://github.com/henrychao521/shadowless-lamp-sim',    description: '外科手術無影燈光學模擬器 — Three.js + IESSpotLight 真實光錐疊加' },
+  { name: 'ai-physics-demos',       language: 'HTML',       pushed_at: '2026-06-14', stargazers_count: 0, html_url: 'https://github.com/henrychao521/ai-physics-demos',       description: 'AI 協作互動作品集 — 繞射/摩爾紋/光譜干涉/無影燈/氣墊船/房市，純前端互動' },
   { name: 'living-portal',          language: 'Python',     pushed_at: '2026-05-29', stargazers_count: 0, html_url: 'https://github.com/henrychao521/living-portal',          description: 'Henry Living Tech Portal — 整合台鐵即時地圖、北台灣水文監測、台北即時看板的統一入口' },
   { name: 'taiwan-engineering-geo', language: 'JavaScript', pushed_at: '2026-05-20', stargazers_count: 0, html_url: 'https://github.com/henrychao521/taiwan-engineering-geo', description: '200 個台灣工程地景的互動學習活動：看實景或衛星空照圖、在地圖上點出位置' },
   { name: 'livingtech-tools',       language: 'JavaScript', pushed_at: '2026-05-16', stargazers_count: 0, html_url: 'https://github.com/henrychao521/livingtech-tools',       description: '數位線鋸機互動教學平台｜對應 108 課綱國中生活科技' },

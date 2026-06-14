@@ -192,3 +192,38 @@ body {
   background: #4f46e5;
   color: white;
 }
+
+/* ═══════════ 現代化潤飾 (v2) ═══════════ */
+/* 流動漸層標題 */
+.grad-text{ background-size:200% auto; animation:grad-shift 6s linear infinite; }
+@keyframes grad-shift{ to{ background-position:200% center; } }
+
+/* 漸層發光主 CTA */
+.btn-glow{
+  background:linear-gradient(120deg,#6366f1,#a855f7,#0ea5e9);
+  background-size:180% auto;
+  box-shadow:0 8px 28px -6px rgba(124,77,255,.6);
+  animation:grad-shift 5s linear infinite;
+}
+.btn-glow:hover{ box-shadow:0 14px 40px -6px rgba(124,77,255,.85); }
+
+/* 技術跑馬燈 */
+.marquee{ overflow:hidden; }
+.marquee-track{ display:flex; gap:2.4rem; width:max-content; animation:marquee 32s linear infinite; padding:.8rem 0; }
+.marquee:hover .marquee-track{ animation-play-state:paused; }
+.marquee-track span{ display:inline-flex; align-items:center; gap:.5rem; white-space:nowrap;
+  color:#475569; font-weight:600; font-size:.88rem; }
+.marquee-track span::before{ content:'◆'; color:#a5b4fc; font-size:.55rem; }
+@keyframes marquee{ to{ transform:translateX(-50%); } }
+@media (prefers-reduced-motion: reduce){ .marquee-track{ animation:none; } .grad-text,.btn-glow{ animation:none; } }
+
+/* 精選卡懸停漸層描邊 */
+.featured-card{ position:relative; }
+.featured-card::after{
+  content:''; position:absolute; inset:0; border-radius:1rem; padding:1.5px;
+  background:linear-gradient(120deg,#818cf8,#e879f9,#38bdf8);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  opacity:0; transition:opacity .25s; pointer-events:none;
+}
+.featured-card:hover::after{ opacity:.9; }
