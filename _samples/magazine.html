@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>樣本 C — 雜誌式佈局</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  body{font-family:"Noto Sans TC",system-ui,sans-serif;margin:0}
+  .serif{font-family:"Noto Serif TC",serif}
+  .num{font-family:"Noto Serif TC",serif;font-weight:900;color:#c7d2fe;line-height:1}
+  .mag-card{position:relative;overflow:hidden;border-radius:18px}
+  .mag-card .ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,23,42,.92),rgba(15,23,42,.1) 55%,transparent)}
+  .mag-card:hover img,.mag-card:hover .ph{transform:scale(1.05)}
+  .mag-card img,.mag-card .ph{transition:transform .5s}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#6366f1;font-weight:700}
+</style>
+</head>
+<body class="bg-white text-slate-900">
+
+<nav class="border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-5 py-4 flex items-center">
+    <a class="font-bold flex items-center gap-2"><span class="text-2xl">🦦</span> Henry × LivingTech</a>
+    <div class="flex-1"></div>
+    <a class="px-3 py-1.5 text-sm">專案</a><a class="px-3 py-1.5 text-sm">教學文</a><a class="px-3 py-1.5 text-sm">Maker</a>
+  </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-5 py-12">
+  <div class="flex items-end justify-between border-b-2 border-slate-900 pb-3 mb-9">
+    <h1 class="serif text-4xl md:text-5xl font-black">作品選輯</h1>
+    <span class="text-slate-500 text-sm mb-1">Selected Works · 2026</span>
+  </div>
+
+  <!-- 主打大區塊 -->
+  <a class="mag-card block h-[420px] mb-6 group">
+    <div class="ph w-full h-full bg-gradient-to-br from-cyan-600 via-blue-700 to-indigo-800"></div>
+    <div class="ov"></div>
+    <div class="absolute top-5 left-6 flex items-baseline gap-3">
+      <span class="num text-5xl">01</span><span class="kicker text-cyan-200 mt-2">3D 數位孿生</span>
+    </div>
+    <div class="absolute bottom-0 p-7 text-white">
+      <h2 class="serif text-3xl md:text-4xl font-black mb-2 max-w-2xl">X5 RoomTour — 把真實空間變成可走動的 3D</h2>
+      <p class="text-slate-200 max-w-2xl">一支 360° 影片 → 3D 高斯潑濺，照片級、可在瀏覽器第一人稱行走。</p>
+    </div>
+  </a>
+
+  <!-- 不對稱網格 -->
+  <div class="grid md:grid-cols-3 gap-6">
+    <a class="mag-card block h-[300px] md:row-span-2 md:h-auto group">
+      <div class="ph w-full h-full bg-gradient-to-br from-fuchsia-500 via-rose-500 to-orange-500"></div>
+      <div class="ov"></div>
+      <div class="absolute top-4 left-5 flex items-baseline gap-2"><span class="num text-4xl">02</span><span class="kicker text-rose-100 mt-1">模擬器</span></div>
+      <div class="absolute bottom-0 p-6 text-white">
+        <h3 class="serif text-2xl font-black mb-1">AI 協作互動作品集</h3>
+        <p class="text-sm text-slate-200">繞射・摩爾紋・光譜干涉・無影燈・氣墊船・房市 — 8 個瀏覽器互動。</p>
+      </div>
+    </a>
+    <a class="mag-card block h-[230px] group">
+      <div class="ph w-full h-full bg-gradient-to-br from-sky-600 to-indigo-700"></div><div class="ov"></div>
+      <div class="absolute top-3 left-4 flex items-baseline gap-2"><span class="num text-3xl">03</span><span class="kicker text-sky-100 mt-1">模擬器</span></div>
+      <div class="absolute bottom-0 p-5 text-white"><h3 class="serif text-xl font-black">外科無影燈光學模擬器</h3></div>
+    </a>
+    <a class="mag-card block h-[230px] group">
+      <div class="ph w-full h-full bg-gradient-to-br from-amber-500 to-rose-500"></div><div class="ov"></div>
+      <div class="absolute top-3 left-4 flex items-baseline gap-2"><span class="num text-3xl">04</span><span class="kicker text-amber-100 mt-1">教學平台</span></div>
+      <div class="absolute bottom-0 p-5 text-white"><h3 class="serif text-xl font-black">PC13110 工程設計學習平台</h3></div>
+    </a>
+    <a class="mag-card block h-[230px] group">
+      <div class="ph w-full h-full bg-gradient-to-br from-emerald-500 to-teal-600"></div><div class="ov"></div>
+      <div class="absolute top-3 left-4 flex items-baseline gap-2"><span class="num text-3xl">05</span><span class="kicker text-emerald-100 mt-1">教學平台</span></div>
+      <div class="absolute bottom-0 p-5 text-white"><h3 class="serif text-xl font-black">生活科技互動教具系列</h3></div>
+    </a>
+    <a class="mag-card block h-[230px] group">
+      <div class="ph w-full h-full bg-gradient-to-br from-violet-600 to-fuchsia-600"></div><div class="ov"></div>
+      <div class="absolute top-3 left-4 flex items-baseline gap-2"><span class="num text-3xl">06</span><span class="kicker text-violet-100 mt-1">即時資訊</span></div>
+      <div class="absolute bottom-0 p-5 text-white"><h3 class="serif text-xl font-black">Living Tech Portal</h3></div>
+    </a>
+  </div>
+</main>
+<footer class="bg-slate-950 text-slate-400 text-center text-xs py-6">© 2026 Henry Chao · 雜誌式佈局樣本</footer>
+</body>
+</html>

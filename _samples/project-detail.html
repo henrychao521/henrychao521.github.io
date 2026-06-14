@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>樣本 B — 專案 detail 頁</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  body{font-family:"Noto Sans TC",system-ui,sans-serif;margin:0}
+  .grad-text{background:linear-gradient(120deg,#22d3ee,#3b82f6,#6366f1);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero{background:radial-gradient(ellipse 70% 60% at 70% 0%,rgba(34,211,238,.25),transparent),#0f172a}
+  .btn-glow{background:linear-gradient(120deg,#0ea5e9,#6366f1);box-shadow:0 10px 30px -8px rgba(56,130,246,.7)}
+  .pill{display:inline-block;font-size:13px;background:#eef2ff;color:#3730a3;border-radius:99px;padding:4px 12px;margin:3px}
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-2 text-sm">
+    <a href="#" class="font-bold flex items-center gap-2 mr-2"><span class="text-2xl">🦦</span> Henry × LivingTech</a>
+    <div class="flex-1"></div>
+    <a class="px-3 py-1.5 rounded-lg hover:bg-slate-100">專案</a>
+    <a class="px-3 py-1.5 rounded-lg hover:bg-slate-100">教學文</a>
+    <a class="px-3 py-1.5 rounded-lg hover:bg-slate-100">Maker</a>
+  </div>
+</nav>
+
+<header class="hero text-white">
+  <div class="max-w-5xl mx-auto px-6 pt-10 pb-12">
+    <div class="text-sm text-slate-400 mb-5"><a class="hover:text-white">專案</a> <span class="mx-1">/</span> <span class="text-cyan-300">🧊 3D 數位孿生</span></div>
+    <h1 class="text-4xl md:text-5xl font-black leading-tight mb-4">X5 RoomTour <span class="grad-text">真實空間 3D 數位孿生</span></h1>
+    <p class="text-lg text-slate-300 max-w-3xl mb-7">一支 Insta360 X5 360° 影片，重建出照片級、可在瀏覽器走動的 3D 空間。全程 Apple Silicon 本機、無需 NVIDIA / CUDA。</p>
+    <div class="flex flex-wrap gap-3">
+      <a class="btn-glow px-6 py-3 rounded-xl font-bold text-white">🚀 開啟線上體驗</a>
+      <a class="px-6 py-3 bg-white/10 border border-white/25 rounded-xl font-bold backdrop-blur">GitHub 原始碼 ↗</a>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-6 py-12 space-y-14">
+  <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm aspect-video bg-gradient-to-br from-cyan-600 via-blue-700 to-indigo-800 flex items-center justify-center text-white/70 text-sm">
+    （此處為作品互動截圖 / 嵌入式即時預覽）
+  </div>
+
+  <section class="grid md:grid-cols-3 gap-5">
+    <div class="bg-white border border-slate-200 rounded-xl p-5">
+      <div class="text-2xl mb-2">🚶</div><div class="font-bold mb-1">第一人稱行走</div>
+      <p class="text-sm text-slate-600">物理碰撞 + WebXR，戴上頭顯即可走進空間。</p>
+    </div>
+    <div class="bg-white border border-slate-200 rounded-xl p-5">
+      <div class="text-2xl mb-2">📐</div><div class="font-bold mb-1">自動平面圖與量測</div>
+      <p class="text-sm text-slate-600">從點雲自動產生建築平面圖與尺寸量測。</p>
+    </div>
+    <div class="bg-white border border-slate-200 rounded-xl p-5">
+      <div class="text-2xl mb-2">👥</div><div class="font-bold mb-1">即時人流追蹤</div>
+      <p class="text-sm text-slate-600">攝影機即時人流追蹤、校園多樓層擴展。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-black mb-3">技術棧</h2>
+    <div>
+      <span class="pill">3D Gaussian Splatting</span><span class="pill">COLMAP / Brush</span>
+      <span class="pill">PlayCanvas / WebXR</span><span class="pill">即時數位孿生</span><span class="pill">Apple Silicon 本機</span>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-black mb-3">開發紀錄</h2>
+    <p class="text-slate-600 leading-relaxed">從 360° 影片抽幀 → COLMAP 估計相機位姿 → Brush 訓練 3D 高斯潑濺 → 匯出 PlayCanvas 場景。可在此放開發日誌、技術細節、教學文章連結⋯</p>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-black mb-4">相關專案</h2>
+    <div class="grid md:grid-cols-3 gap-4">
+      <a class="block bg-white border border-slate-200 rounded-xl p-4 hover:border-indigo-300 transition"><div class="text-xl mb-1">🔦</div><div class="font-bold text-sm">外科無影燈模擬器</div></a>
+      <a class="block bg-white border border-slate-200 rounded-xl p-4 hover:border-indigo-300 transition"><div class="text-xl mb-1">🌈</div><div class="font-bold text-sm">AI 協作互動作品集</div></a>
+      <a class="block bg-white border border-slate-200 rounded-xl p-4 hover:border-indigo-300 transition"><div class="text-xl mb-1">🌐</div><div class="font-bold text-sm">Living Tech Portal</div></a>
+    </div>
+  </section>
+</main>
+
+<footer class="bg-slate-950 text-slate-400 text-center text-xs py-6">© 2026 Henry Chao · 專案 detail 頁樣本</footer>
+</body>
+</html>
