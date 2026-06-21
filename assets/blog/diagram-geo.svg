@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" font-family="'Noto Sans TC',system-ui,sans-serif">
+  <defs>
+    <marker id="ag" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#94a3b8"/>
+    </marker>
+    <style>
+      .t{font-weight:700;font-size:14px;fill:#0f172a}
+      .s{font-size:11px;fill:#475569}
+      .cap{font-size:12px;fill:#64748b}
+      .stg{font-size:10px;font-weight:700;letter-spacing:1px;fill:#fff}
+    </style>
+  </defs>
+  <text x="450" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">台灣工程地景 — 一題的遊戲迴圈</text>
+
+  <!-- 1 出題 -->
+  <rect x="14" y="58" width="158" height="96" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <rect x="14" y="58" width="158" height="22" rx="11" fill="#3b82f6"/>
+  <text x="93" y="73" text-anchor="middle" class="stg">① 出題</text>
+  <text x="93" y="102" text-anchor="middle" class="t">工程地景影像</text>
+  <text x="93" y="122" text-anchor="middle" class="s">衛星空照 / 街景</text>
+  <text x="93" y="139" text-anchor="middle" class="s">＋ 地區・設施・觀察提示</text>
+
+  <!-- 2 玩家點擊 -->
+  <rect x="196" y="58" width="158" height="96" rx="12" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <rect x="196" y="58" width="158" height="22" rx="11" fill="#8b5cf6"/>
+  <text x="275" y="73" text-anchor="middle" class="stg">② 玩家猜測</text>
+  <text x="275" y="102" text-anchor="middle" class="t">Leaflet 地圖點擊</text>
+  <text x="275" y="122" text-anchor="middle" class="s">放下標記</text>
+  <text x="275" y="139" text-anchor="middle" class="s">按「確認猜測」</text>
+
+  <!-- 3 距離 -->
+  <rect x="378" y="58" width="158" height="96" rx="12" fill="#ecfeff" stroke="#a5f3fc"/>
+  <rect x="378" y="58" width="158" height="22" rx="11" fill="#06b6d4"/>
+  <text x="457" y="73" text-anchor="middle" class="stg">③ 算距離</text>
+  <text x="457" y="102" text-anchor="middle" class="t">Haversine 球面距離</text>
+  <text x="457" y="122" text-anchor="middle" class="s">猜測點 ↔ 正解</text>
+  <text x="457" y="139" text-anchor="middle" class="s">經緯度 → 公里</text>
+
+  <!-- 4 分數 -->
+  <rect x="560" y="58" width="158" height="96" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+  <rect x="560" y="58" width="158" height="22" rx="11" fill="#f97316"/>
+  <text x="639" y="73" text-anchor="middle" class="stg">④ 換算分數</text>
+  <text x="639" y="102" text-anchor="middle" class="t">遞減函式</text>
+  <text x="639" y="122" text-anchor="middle" class="s">越近分數越高</text>
+  <text x="639" y="139" text-anchor="middle" class="s">每題上限 1000 分</text>
+
+  <!-- 5 揭曉 -->
+  <rect x="742" y="58" width="146" height="96" rx="12" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <rect x="742" y="58" width="146" height="22" rx="11" fill="#22c55e"/>
+  <text x="815" y="73" text-anchor="middle" class="stg">⑤ 揭曉正解</text>
+  <text x="815" y="102" text-anchor="middle" class="t">畫連線 + 距離</text>
+  <text x="815" y="122" text-anchor="middle" class="s">結構・設計重點</text>
+  <text x="815" y="139" text-anchor="middle" class="s">維基延伸閱讀</text>
+
+  <!-- arrows -->
+  <line x1="174" y1="106" x2="194" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ag)"/>
+  <line x1="356" y1="106" x2="376" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ag)"/>
+  <line x1="538" y1="106" x2="558" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ag)"/>
+  <line x1="720" y1="106" x2="740" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ag)"/>
+
+  <!-- loop back arrow -->
+  <path d="M815,154 L815,190 L93,190 L93,156" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#ag)"/>
+  <text x="450" y="186" text-anchor="middle" class="cap">下一題（深度模式會在揭曉後追問 2 題）</text>
+
+  <text x="450" y="222" text-anchor="middle" class="cap">純前端：Leaflet + OpenStreetMap/CARTO 底圖、Esri 衛星影像；進度以 localStorage 保存於「檔案」</text>
+</svg>

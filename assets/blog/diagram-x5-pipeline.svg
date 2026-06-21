@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 260" font-family="'Noto Sans TC',system-ui,sans-serif">
+  <defs>
+    <marker id="ax" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#94a3b8"/>
+    </marker>
+    <style>
+      .box{rx:12;}
+      .t{font-weight:700;font-size:15px;fill:#0f172a}
+      .s{font-size:11.5px;fill:#475569}
+      .cap{font-size:12px;fill:#64748b}
+      .stg{font-size:10px;font-weight:700;letter-spacing:1px;fill:#fff}
+    </style>
+  </defs>
+  <text x="460" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">X5 RoomTour — 從一支 360° 影片到可走進的瀏覽器數位孿生</text>
+
+  <!-- row of stages -->
+  <!-- 1 capture -->
+  <rect x="14" y="60" width="138" height="92" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <rect x="14" y="60" width="138" height="22" rx="11" fill="#3b82f6"/>
+  <text x="83" y="75" text-anchor="middle" class="stg">① 拍攝</text>
+  <text x="83" y="104" text-anchor="middle" class="t">Insta360 X5</text>
+  <text x="83" y="124" text-anchor="middle" class="s">360° 環拍影片</text>
+  <text x="83" y="140" text-anchor="middle" class="s">手持繞行教室一圈</text>
+
+  <!-- 2 frames -->
+  <rect x="178" y="60" width="138" height="92" rx="12" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <rect x="178" y="60" width="138" height="22" rx="11" fill="#8b5cf6"/>
+  <text x="247" y="75" text-anchor="middle" class="stg">② 抽幀</text>
+  <text x="247" y="104" text-anchor="middle" class="t">影格取樣</text>
+  <text x="247" y="124" text-anchor="middle" class="s">ffmpeg 去模糊、</text>
+  <text x="247" y="140" text-anchor="middle" class="s">等距抽 ~350 張</text>
+
+  <!-- 3 colmap -->
+  <rect x="342" y="60" width="138" height="92" rx="12" fill="#ecfeff" stroke="#a5f3fc"/>
+  <rect x="342" y="60" width="138" height="22" rx="11" fill="#06b6d4"/>
+  <text x="411" y="75" text-anchor="middle" class="stg">③ COLMAP SfM</text>
+  <text x="411" y="104" text-anchor="middle" class="t">相機位姿</text>
+  <text x="411" y="124" text-anchor="middle" class="s">特徵配對 + BA</text>
+  <text x="411" y="140" text-anchor="middle" class="s">→ 稀疏點雲 / 350 視角</text>
+
+  <!-- 4 brush -->
+  <rect x="506" y="60" width="138" height="92" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+  <rect x="506" y="60" width="138" height="22" rx="11" fill="#f97316"/>
+  <text x="575" y="75" text-anchor="middle" class="stg">④ Brush 3DGS</text>
+  <text x="575" y="104" text-anchor="middle" class="t">高斯潑濺訓練</text>
+  <text x="575" y="124" text-anchor="middle" class="s">~135 萬高斯點</text>
+  <text x="575" y="140" text-anchor="middle" class="s">Apple Silicon 本機</text>
+
+  <!-- 5 compress -->
+  <rect x="670" y="60" width="100" height="92" rx="12" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <rect x="670" y="60" width="100" height="22" rx="11" fill="#22c55e"/>
+  <text x="720" y="75" text-anchor="middle" class="stg">⑤ 壓縮</text>
+  <text x="720" y="104" text-anchor="middle" class="t">SOG</text>
+  <text x="720" y="124" text-anchor="middle" class="s">量化、瘦身</text>
+  <text x="720" y="140" text-anchor="middle" class="s">適合網路傳輸</text>
+
+  <!-- 6 web -->
+  <rect x="796" y="60" width="110" height="92" rx="12" fill="#eef2ff" stroke="#c7d2fe"/>
+  <rect x="796" y="60" width="110" height="22" rx="11" fill="#6366f1"/>
+  <text x="851" y="75" text-anchor="middle" class="stg">⑥ 瀏覽器</text>
+  <text x="851" y="104" text-anchor="middle" class="t">PlayCanvas</text>
+  <text x="851" y="124" text-anchor="middle" class="s">WebXR + 碰撞</text>
+  <text x="851" y="140" text-anchor="middle" class="s">第一人稱行走</text>
+
+  <!-- arrows -->
+  <line x1="154" y1="106" x2="176" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="318" y1="106" x2="340" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="482" y1="106" x2="504" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="646" y1="106" x2="668" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="772" y1="106" x2="794" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+
+  <text x="460" y="184" text-anchor="middle" class="cap">全程不需 NVIDIA / CUDA — 一般 Mac 即可重建；成果以靜態檔部署在 GitHub Pages</text>
+  <text x="460" y="206" text-anchor="middle" class="cap" font-style="italic">延伸：點雲 → 自動產生建築平面圖與尺寸量測；攝影機影像 → 即時人流軌跡追蹤</text>
+</svg>

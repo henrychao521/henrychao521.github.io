@@ -1,114 +1,160 @@
 [
   {
     "slug": "2026-06-21-living-tech-portal",
-    "title": "[專案分享] 一個畫面看完全台即時資訊 — Living Tech Portal",
+    "title": "[完整教學] Living Tech Portal：把全台即時開放資料聚合成一個監控儀表板",
     "date": "2026-06-21",
-    "excerpt": "把分散的台灣即時開放資料整合成一個即時監控看板：天氣、地震、消防、台鐵高鐵、空品、太空…每分鐘更新，順便當開放資料的活教材。",
+    "excerpt": "天氣、地震、消防 119、台鐵高鐵即時位置、航機、YouBike、空品、太空站…台灣的即時開放資料散落在十幾個公開 API。這篇完整拆解我怎麼用一層 FastAPI 後端把它們聚合、正規化、加快取，經 Cloudflare Tunnel 對外，前端再用看板式 UI 加 Leaflet 地圖做成 18 個每分鐘自動刷新的即時面板——一個畫面看完全台，也順便當成開放資料的活教材。",
     "author": "Henry Chao",
+    "cover": "/assets/blog/portal-dashboard.png",
     "tags": [
       "開放資料",
-      "即時看板",
-      "資料素養",
-      "防災"
+      "FastAPI",
+      "CloudflareTunnel",
+      "Leaflet",
+      "資料視覺化",
+      "API串接"
     ],
+    "repo": "living-portal",
+    "level": "⭐⭐ 中階",
+    "hours": "閱讀約 9 分鐘",
     "category": "專案分享"
   },
   {
     "slug": "2026-06-21-livingtech-tools-digital-jigs",
-    "title": "[專案分享] 動手前，先在數位環境把機具練熟 — 國中數位教具系列",
+    "title": "[完整教學] 動手前，先在數位環境把機具練熟 — 國中生活科技數位教具系列",
     "date": "2026-06-21",
-    "excerpt": "一整套國中機具的數位模擬教具：認識部件、安全題、步驟動畫、操作模擬、故障圖鑑五段式闖關，安全過關才解鎖實作。",
+    "excerpt": "把『第一次碰機具的緊張』先留在瀏覽器裡。一整套對應 108 課綱的國中生活科技數位教具：認識部件、安全闖關、步驟動畫、操作模擬器、故障圖鑑五段式設計，安全題滿分才解鎖實作模擬。全程純前端、零後端、GitHub Pages 部署，目前已累積 16 件以上機具與教具。這篇完整拆解設計理念、五段式架構、SVG 互動熱點、闖關 gating 與 localStorage 進度，以及怎麼接回三年的課綱單元。",
     "author": "Henry Chao",
+    "cover": "/assets/blog/tools-list.png",
     "tags": [
       "生活科技",
       "機具安全",
       "五段式闖關",
-      "差異化教學"
+      "差異化教學",
+      "純前端",
+      "GitHub Pages"
     ],
+    "repo": "livingtech-tools",
+    "level": "⭐⭐ 中階",
+    "hours": "閱讀約 12 分鐘",
     "category": "專案分享"
   },
   {
     "slug": "2026-06-21-pc13110-engineering-platform",
-    "title": "[專案分享] 把課本變成可以動手玩的工程實驗室 — 高中工程設計學習平台",
+    "title": "[完整教學] PC13110：把工程設計課本變成可以走進去闖關的像素實驗室",
     "date": "2026-06-21",
-    "excerpt": "把高中『工程設計』整章改寫成可在瀏覽器動手操作的學習平台：像素大廳捏角色、走進實驗室闖關，五大主題二十多個互動模組。",
+    "excerpt": "把高中生活科技『工程設計』整章，重寫成一個純前端、零後端、可直接掛 GitHub Pages 的學習平台：先在像素大廳捏一個自己的工程師角色，走進 tile-based 的工程實驗室，用 WASD 移動、走到傳送門按 E 進入章節闖關，完成度與 8 項成就全部存在瀏覽器 localStorage。五大主題、27 個互動模組，對應工程設計流程七階段。這篇拆解大廳怎麼動、進度怎麼存、成就怎麼解。",
     "author": "Henry Chao",
+    "cover": "/assets/blog/pc13110-lobby.png",
     "tags": [
       "108課綱",
       "工程設計",
       "遊戲化學習",
-      "互動教材"
+      "互動教材",
+      "localStorage",
+      "Canvas"
     ],
+    "repo": "pc13110-platform",
+    "level": "⭐⭐ 中階",
+    "hours": "閱讀約 9 分鐘",
     "category": "專案分享"
   },
   {
     "slug": "2026-06-21-physics-interactive-sims",
-    "title": "[專案分享] 三十幾個可以拖著玩的物理模擬 — 物理互動模擬平台",
+    "title": "[完整教學] 三十幾個拖著玩的物理模擬：用純前端把看不見的物理變成可調的畫面",
     "date": "2026-06-21",
-    "excerpt": "把力學、熱學、波動、光學、電磁、近代物理裡看不見的概念，做成可即時調參數的互動模擬，開網頁、手機平板都能玩。",
+    "excerpt": "把國高中物理六大領域裡看不見的概念，做成 30 多個可即時調參數的互動模擬：拖一下滑桿，物理模型逐幀重算、Canvas 重繪、公式與數據同步更新。這篇完整拆解背後的技術——requestAnimationFrame 動畫迴圈、滑桿綁定物理參數、波疊加的解析式取樣與拋體的半隱式 Euler 積分，全程純前端、開網頁就能跑、手機平板也能玩。",
     "author": "Henry Chao",
+    "cover": "/assets/blog/physics-superposition.png",
     "tags": [
       "物理教學",
       "互動模擬",
+      "Canvas",
+      "數值方法",
       "視覺化",
-      "自主探究"
+      "AI協作"
     ],
+    "repo": "ai-physics-demos",
+    "level": "⭐⭐ 中階",
+    "hours": "閱讀約 12 分鐘",
     "category": "專案分享"
   },
   {
     "slug": "2026-06-21-shadowless-lamp-sim",
-    "title": "[專案分享] 為什麼手術燈不會有影子？ — 無影燈光學模擬器",
+    "title": "[完整教學] 為什麼手術燈幾乎沒有影子？ — 從零拆解無影燈光學模擬器",
     "date": "2026-06-21",
-    "excerpt": "無影燈不是消滅影子，而是用很多顆燈從不同角度補光把影子『稀釋』。做成可調參數的模擬，談光學原理與工程上的取捨。",
+    "excerpt": "外科手術無影燈不是『消滅』影子，而是用很多顆燈從不同角度同時補光，把深本影『稀釋』成幾乎看不見的淡半影。這篇把整個互動模擬器拆給你看：純前端 Canvas 2D 幾何光線投射怎麼算照度、線段相交怎麼判斷遮擋、用『未被遮擋的光源比例』如何呈現本影與半影，並對照 IEC 60601-2-41 醫療標準，最後接回 108 課綱的『光與照明』與工程設計『取捨』。",
     "author": "Henry Chao",
+    "cover": "/assets/blog/lamp-raytrace.png",
     "tags": [
       "光學",
+      "幾何光線追跡",
       "探究實作",
       "設計取捨",
+      "PWA",
       "跨域"
     ],
+    "repo": "shadowless-lamp-sim",
+    "level": "⭐⭐ 中階",
+    "hours": "閱讀約 9 分鐘",
     "category": "專案分享"
   },
   {
     "slug": "2026-06-21-taiwan-engineering-geo",
-    "title": "[專案分享] 用猜謎地圖，把『工程』和『地理』放回同一張圖 — 台灣工程地景",
+    "title": "[完整教學] 台灣工程地景：用猜謎地圖，把『工程』與『地理』縫回同一張圖",
     "date": "2026-06-21",
-    "excerpt": "看一張工程地景的衛星影像，在地圖上猜它在台灣哪裡，越近分數越高。揭曉後認識它的結構與設計重點，附維基延伸閱讀。",
+    "excerpt": "看一張工程地景的衛星空照圖，在地圖上點出你猜的位置，越近分數越高——揭曉後再認識它的結構與設計決策。這篇拆解整個遊戲怎麼運作：Leaflet 互動地圖、Haversine 球面距離計分、200 個工程景點與 151 條維基延伸，全程純前端、用 localStorage 保存進度，並對應到 108 課綱的工程與設計、跨域整合。",
     "author": "Henry Chao",
+    "cover": "/assets/blog/geo-landing.png",
     "tags": [
       "教學遊戲",
       "工程設計",
       "地理",
-      "跨域"
+      "跨域",
+      "Leaflet",
+      "Haversine"
     ],
+    "repo": "taiwan-engineering-geo",
+    "level": "⭐⭐ 中階",
+    "hours": "閱讀約 9 分鐘",
     "category": "專案分享"
   },
   {
     "slug": "2026-06-21-taiwan-housing-data",
-    "title": "[專案分享] 用真實實價資料，練資料識讀 — 全台房市數據系統",
+    "title": "[完整教學] 全台房市實證數據系統：把內政部開放資料變成可互動的資料識讀儀表板",
     "date": "2026-06-21",
-    "excerpt": "以內政部實價登錄為底的全台房市儀表板，三十幾個縣市、四十四季價量軌跡。本來自己想看，後來發現很適合當資料識讀教材。",
+    "excerpt": "拿內政部的實價登錄與住宅價格指數這些公開資料，清洗成結構化 JSON，再用 Chart.js 畫成「價格折線＋成交量柱狀」的雙軸圖，做成一個能下拉切換全台 34 個縣市、即時重繪的房市儀表板。這篇完整拆解整條資料流：開放資料 → 清洗正規化 → 視覺化 → 衍生指標，以及它在資料素養課堂上怎麼用——重點不是房市本身，而是「用真實資料說話」這件事。",
     "author": "Henry Chao",
+    "cover": "/assets/blog/housing-dashboard.png",
     "tags": [
       "資料素養",
       "資料視覺化",
       "開放資料",
+      "Chart.js",
       "數據識讀"
     ],
+    "level": "⭐⭐ 中階",
+    "hours": "閱讀約 9 分鐘",
     "category": "專案分享"
   },
   {
     "slug": "2026-06-21-x5-roomtour-3d-classroom",
-    "title": "[專案分享] 把教室變成可以走進去的 3D 數位孿生 — X5 RoomTour",
+    "title": "[完整教學] X5 RoomTour：從一支 360° 影片到可走進的 3D 數位孿生",
     "date": "2026-06-21",
-    "excerpt": "拿一支 360° 相機在教室繞一圈，就能重建成可在瀏覽器裡第一人稱走動的照片級 3D 空間。聊聊它在空間與工程製圖教學上能怎麼用。",
+    "excerpt": "拿一支 Insta360 X5 在教室繞一圈，就能重建成可在瀏覽器第一人稱走動的照片級 3D 空間。這篇完整拆解整條 pipeline：360° 影片 → COLMAP 求相機位姿 → Brush 3D 高斯潑濺 → PlayCanvas + WebXR 即時渲染，全程 Apple Silicon 本機、無需 NVIDIA／CUDA。",
     "author": "Henry Chao",
+    "cover": "/assets/covers/x5-roomtour.jpg",
     "tags": [
-      "3D數位孿生",
-      "高斯潑濺",
-      "空間教學",
-      "工程製圖"
+      "3D高斯潑濺",
+      "COLMAP",
+      "Brush",
+      "PlayCanvas",
+      "WebXR",
+      "數位孿生"
     ],
+    "repo": "x5-roomtour-viewer",
+    "level": "⭐⭐⭐ 進階",
+    "hours": "閱讀約 10 分鐘",
     "category": "專案分享"
   }
 ]

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" font-family="'Noto Sans TC',system-ui,sans-serif">
+  <defs>
+    <marker id="ax" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#94a3b8"/>
+    </marker>
+    <style>
+      .t{font-weight:700;font-size:14px;fill:#0f172a}
+      .s{font-size:11px;fill:#475569}
+      .cap{font-size:12px;fill:#64748b}
+      .stg{font-size:10px;font-weight:700;letter-spacing:1px;fill:#fff}
+    </style>
+  </defs>
+  <text x="450" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">PC13110 工程設計學習平台 — 一條「捏角色 → 探索 → 闖關 → 解鎖」的學習動線</text>
+
+  <!-- 1 create -->
+  <rect x="14" y="60" width="150" height="96" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <rect x="14" y="60" width="150" height="22" rx="11" fill="#3b82f6"/>
+  <text x="89" y="75" text-anchor="middle" class="stg">① 角色創建</text>
+  <text x="89" y="104" text-anchor="middle" class="t">捏工程師角色</text>
+  <text x="89" y="124" text-anchor="middle" class="s">膚色 / 髮型 / 配件</text>
+  <text x="89" y="140" text-anchor="middle" class="s">輸入暱稱、班級代碼</text>
+
+  <!-- 2 explore -->
+  <rect x="190" y="60" width="150" height="96" rx="12" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <rect x="190" y="60" width="150" height="22" rx="11" fill="#8b5cf6"/>
+  <text x="265" y="75" text-anchor="middle" class="stg">② 大廳探索</text>
+  <text x="265" y="104" text-anchor="middle" class="t">像素工程實驗室</text>
+  <text x="265" y="124" text-anchor="middle" class="s">WASD 走動、找 NPC</text>
+  <text x="265" y="140" text-anchor="middle" class="s">布告欄 / 遊樂場</text>
+
+  <!-- 3 portal -->
+  <rect x="366" y="60" width="150" height="96" rx="12" fill="#ecfeff" stroke="#a5f3fc"/>
+  <rect x="366" y="60" width="150" height="22" rx="11" fill="#06b6d4"/>
+  <text x="441" y="75" text-anchor="middle" class="stg">③ 傳送門</text>
+  <text x="441" y="104" text-anchor="middle" class="t">走近章節傳送門</text>
+  <text x="441" y="124" text-anchor="middle" class="s">距離判斷 + 按 E</text>
+  <text x="441" y="140" text-anchor="middle" class="s">進入該章關卡</text>
+
+  <!-- 4 module -->
+  <rect x="542" y="60" width="150" height="96" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+  <rect x="542" y="60" width="150" height="22" rx="11" fill="#f97316"/>
+  <text x="617" y="75" text-anchor="middle" class="stg">④ 章節模組</text>
+  <text x="617" y="104" text-anchor="middle" class="t">互動闖關</text>
+  <text x="617" y="124" text-anchor="middle" class="s">可調圖表 / 分頁</text>
+  <text x="617" y="140" text-anchor="middle" class="s">5 章 × 27 模組</text>
+
+  <!-- 5 save -->
+  <rect x="718" y="60" width="168" height="96" rx="12" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <rect x="718" y="60" width="168" height="22" rx="11" fill="#22c55e"/>
+  <text x="802" y="75" text-anchor="middle" class="stg">⑤ 進度與成就</text>
+  <text x="802" y="104" text-anchor="middle" class="t">解鎖成就、存進度</text>
+  <text x="802" y="124" text-anchor="middle" class="s">8 項成就 / 完成度</text>
+  <text x="802" y="140" text-anchor="middle" class="s">寫入 localStorage</text>
+
+  <!-- arrows -->
+  <line x1="166" y1="108" x2="188" y2="108" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="342" y1="108" x2="364" y2="108" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="518" y1="108" x2="540" y2="108" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="694" y1="108" x2="716" y2="108" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+
+  <!-- loop back arrow -->
+  <path d="M802,156 C802,196 441,200 441,196 C200,200 89,196 89,160" fill="none" stroke="#cbd5e1" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ax)"/>
+  <text x="450" y="214" text-anchor="middle" class="cap" font-style="italic">回到大廳繼續探索下一個傳送門 — 直到走訪 5 門、完成全部 27 個模組</text>
+
+  <text x="450" y="238" text-anchor="middle" class="cap">純前端、零後端：所有角色外觀與學習進度都存在瀏覽器 localStorage，可直接部署 GitHub Pages</text>
+</svg>

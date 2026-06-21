@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" font-family="'Noto Sans TC',system-ui,sans-serif">
+  <defs>
+    <marker id="ax" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#94a3b8"/>
+    </marker>
+    <style>
+      .t{font-weight:700;font-size:15px;fill:#0f172a}
+      .s{font-size:11px;fill:#475569}
+      .cap{font-size:12px;fill:#64748b}
+      .stg{font-size:10px;font-weight:700;letter-spacing:1px;fill:#fff}
+    </style>
+  </defs>
+  <text x="450" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">全台房市數據系統 — 從開放資料到可互動的實證儀表板</text>
+
+  <!-- 1 source -->
+  <rect x="14" y="58" width="172" height="96" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <rect x="14" y="58" width="172" height="22" rx="11" fill="#3b82f6"/>
+  <text x="100" y="73" text-anchor="middle" class="stg">① 開放資料</text>
+  <text x="100" y="102" text-anchor="middle" class="t">官方原始資料</text>
+  <text x="100" y="122" text-anchor="middle" class="s">實價登錄 / 住宅價格指數</text>
+  <text x="100" y="140" text-anchor="middle" class="s">CSV·逐筆交易，格式不一</text>
+
+  <!-- 2 clean -->
+  <rect x="222" y="58" width="172" height="96" rx="12" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <rect x="222" y="58" width="172" height="22" rx="11" fill="#8b5cf6"/>
+  <text x="308" y="73" text-anchor="middle" class="stg">② 清洗整理</text>
+  <text x="308" y="102" text-anchor="middle" class="t">結構化 JSON</text>
+  <text x="308" y="122" text-anchor="middle" class="s">正規化、依縣市分組</text>
+  <text x="308" y="140" text-anchor="middle" class="s">每縣市一組季度序列</text>
+
+  <!-- 3 chart -->
+  <rect x="430" y="58" width="172" height="96" rx="12" fill="#ecfeff" stroke="#a5f3fc"/>
+  <rect x="430" y="58" width="172" height="22" rx="11" fill="#06b6d4"/>
+  <text x="516" y="73" text-anchor="middle" class="stg">③ 視覺化</text>
+  <text x="516" y="102" text-anchor="middle" class="t">Chart.js 雙軸圖</text>
+  <text x="516" y="122" text-anchor="middle" class="s">折線=價格指數</text>
+  <text x="516" y="140" text-anchor="middle" class="s">柱狀=成交量</text>
+
+  <!-- 4 metrics -->
+  <rect x="638" y="58" width="172" height="96" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+  <rect x="638" y="58" width="172" height="22" rx="11" fill="#f97316"/>
+  <text x="724" y="73" text-anchor="middle" class="stg">④ 衍生指標</text>
+  <text x="724" y="102" text-anchor="middle" class="t">由序列即時計算</text>
+  <text x="724" y="122" text-anchor="middle" class="s">實證單價 / 結轉棟數</text>
+  <text x="724" y="140" text-anchor="middle" class="s">季變動 QoQ / 五年成長率</text>
+
+  <!-- arrows -->
+  <line x1="188" y1="106" x2="220" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="396" y1="106" x2="428" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="604" y1="106" x2="636" y2="106" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+
+  <!-- feedback loop: dropdown -->
+  <rect x="318" y="186" width="264" height="30" rx="15" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="450" y="205" text-anchor="middle" class="s" font-weight="700" fill="#166534">▼ 下拉切換 34 個縣市 → 即時換資料集並重繪</text>
+  <line x1="724" y1="156" x2="724" y2="201" stroke="#86efac" stroke-width="2"/>
+  <line x1="724" y1="201" x2="584" y2="201" stroke="#86efac" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="316" y1="201" x2="150" y2="201" stroke="#86efac" stroke-width="2"/>
+  <line x1="150" y1="201" x2="150" y2="156" stroke="#86efac" stroke-width="2" marker-end="url(#ax)"/>
+
+  <text x="450" y="240" text-anchor="middle" class="cap">純前端、靜態部署：開放資料一次清洗成 JSON，瀏覽器端即時計算指標、即時重繪</text>
+</svg>

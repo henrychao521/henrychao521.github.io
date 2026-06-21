@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" font-family="'Noto Sans TC',system-ui,sans-serif">
+  <defs>
+    <marker id="ax" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#94a3b8"/>
+    </marker>
+    <style>
+      .t{font-weight:700;font-size:14px;fill:#0f172a}
+      .s{font-size:10.5px;fill:#475569}
+      .cap{font-size:12px;fill:#64748b}
+      .stg{font-size:10px;font-weight:700;letter-spacing:1px;fill:#fff}
+      .lock{font-size:10px;font-weight:700;fill:#b45309}
+    </style>
+  </defs>
+  <text x="450" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">數位教具 — 每件機具的「五段式闖關」</text>
+
+  <!-- 1 認識部件 -->
+  <rect x="14" y="56" width="160" height="96" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <rect x="14" y="56" width="160" height="22" rx="11" fill="#3b82f6"/>
+  <text x="94" y="71" text-anchor="middle" class="stg">① 認識部件</text>
+  <text x="94" y="100" text-anchor="middle" class="t">部件熱點圖解</text>
+  <text x="94" y="120" text-anchor="middle" class="s">平面圖 / 3D 視角 / 實照</text>
+  <text x="94" y="137" text-anchor="middle" class="s">點熱點看名稱・冷知識</text>
+
+  <!-- 2 安全闖關 -->
+  <rect x="190" y="56" width="160" height="96" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+  <rect x="190" y="56" width="160" height="22" rx="11" fill="#f97316"/>
+  <text x="270" y="71" text-anchor="middle" class="stg">② 安全闖關</text>
+  <text x="270" y="100" text-anchor="middle" class="t">安全選擇題</text>
+  <text x="270" y="120" text-anchor="middle" class="s">建立安全意識</text>
+  <text x="270" y="137" text-anchor="middle" class="lock">🔒 滿分才解鎖後續</text>
+
+  <!-- 3 步驟動畫 -->
+  <rect x="366" y="56" width="158" height="96" rx="12" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <rect x="366" y="56" width="158" height="22" rx="11" fill="#8b5cf6"/>
+  <text x="445" y="71" text-anchor="middle" class="stg">③ 步驟動畫</text>
+  <text x="445" y="100" text-anchor="middle" class="t">操作步驟</text>
+  <text x="445" y="120" text-anchor="middle" class="s">逐步示範</text>
+  <text x="445" y="137" text-anchor="middle" class="s">建立正確流程順序</text>
+
+  <!-- 4 操作模擬器 -->
+  <rect x="540" y="56" width="158" height="96" rx="12" fill="#ecfeff" stroke="#a5f3fc"/>
+  <rect x="540" y="56" width="158" height="22" rx="11" fill="#06b6d4"/>
+  <text x="619" y="71" text-anchor="middle" class="stg">④ 操作模擬器</text>
+  <text x="619" y="100" text-anchor="middle" class="t">參數化模擬</text>
+  <text x="619" y="120" text-anchor="middle" class="s">切割 / 鑽孔互動</text>
+  <text x="619" y="137" text-anchor="middle" class="s">多材料 × 多鑽頭</text>
+
+  <!-- 5 故障圖鑑 -->
+  <rect x="714" y="56" width="172" height="96" rx="12" fill="#fef2f2" stroke="#fecaca"/>
+  <rect x="714" y="56" width="172" height="22" rx="11" fill="#ef4444"/>
+  <text x="800" y="71" text-anchor="middle" class="stg">⑤ 故障 / 事故圖鑑</text>
+  <text x="800" y="100" text-anchor="middle" class="t">異常情境</text>
+  <text x="800" y="120" text-anchor="middle" class="s">為什麼會壞</text>
+  <text x="800" y="137" text-anchor="middle" class="s">怎麼預防・怎麼排除</text>
+
+  <!-- arrows -->
+  <line x1="176" y1="104" x2="188" y2="104" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="352" y1="104" x2="364" y2="104" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="526" y1="104" x2="538" y2="104" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+  <line x1="700" y1="104" x2="712" y2="104" stroke="#94a3b8" stroke-width="2" marker-end="url(#ax)"/>
+
+  <text x="450" y="184" text-anchor="middle" class="cap">純前端、零後端：SVG 互動熱點 + 闖關 gating + localStorage 進度，部署在 GitHub Pages</text>
+  <text x="450" y="206" text-anchor="middle" class="cap" font-style="italic">安全前置 — 沒在數位環境通過安全關，就不會進到實作模擬；降低進實作教室後的風險</text>
+</svg>

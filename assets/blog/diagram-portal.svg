@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 280" font-family="'Noto Sans TC',system-ui,sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#94a3b8"/>
+    </marker>
+    <style>
+      .t{font-weight:700;font-size:14px;fill:#0f172a}
+      .s{font-size:11px;fill:#475569}
+      .cap{font-size:12px;fill:#64748b}
+      .stg{font-size:10px;font-weight:700;letter-spacing:1px;fill:#fff}
+      .src{font-size:11.5px;fill:#334155}
+    </style>
+  </defs>
+  <text x="450" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">Living Tech Portal — 開放資料聚合架構</text>
+
+  <!-- LEFT: data sources -->
+  <rect x="14" y="50" width="178" height="180" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <rect x="14" y="50" width="178" height="22" rx="11" fill="#3b82f6"/>
+  <text x="103" y="65" text-anchor="middle" class="stg">① 開放資料來源</text>
+  <text x="32" y="96" class="src">🚆 TDX 運輸資料流通</text>
+  <text x="46" y="112" class="s">台鐵 / 高鐵 / 航班 / YouBike</text>
+  <text x="32" y="134" class="src">🌦 CWA 中央氣象署</text>
+  <text x="46" y="150" class="s">天氣 / 地震</text>
+  <text x="32" y="172" class="src">🌍 USGS 地震</text>
+  <text x="32" y="194" class="src">📰 各家新聞 RSS</text>
+  <text x="32" y="216" class="src">… 國道 / 停車 / 空品</text>
+
+  <!-- arrow 1 -->
+  <line x1="192" y1="140" x2="232" y2="140" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- MIDDLE: backend -->
+  <rect x="234" y="50" width="200" height="180" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+  <rect x="234" y="50" width="200" height="22" rx="11" fill="#f97316"/>
+  <text x="334" y="65" text-anchor="middle" class="stg">② 後端聚合層 FastAPI</text>
+  <text x="334" y="98" text-anchor="middle" class="t">聚合 · 正規化 · 快取</text>
+  <text x="334" y="120" text-anchor="middle" class="s">統一格式吐給前端</text>
+  <text x="334" y="138" text-anchor="middle" class="s">處理 CORS 與速率限制</text>
+  <rect x="252" y="156" width="164" height="56" rx="9" fill="#ffedd5" stroke="#fdba74"/>
+  <text x="334" y="178" text-anchor="middle" class="s">⏱ 記憶體快取</text>
+  <text x="334" y="196" text-anchor="middle" class="s">（以時間為 key，</text>
+  <text x="334" y="210" text-anchor="middle" class="s">避免每次都打外部 API）</text>
+
+  <!-- arrow 2 (through tunnel) -->
+  <line x1="434" y1="140" x2="474" y2="140" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- TUNNEL -->
+  <rect x="476" y="112" width="120" height="56" rx="10" fill="#ecfeff" stroke="#a5f3fc"/>
+  <rect x="476" y="112" width="120" height="20" rx="10" fill="#06b6d4"/>
+  <text x="536" y="126" text-anchor="middle" class="stg">Cloudflare Tunnel</text>
+  <text x="536" y="150" text-anchor="middle" class="s">安全對外發佈</text>
+  <text x="536" y="164" text-anchor="middle" class="s">（免開防火牆埠）</text>
+
+  <line x1="596" y1="140" x2="636" y2="140" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- RIGHT: frontend -->
+  <rect x="638" y="50" width="248" height="180" rx="12" fill="#eef2ff" stroke="#c7d2fe"/>
+  <rect x="638" y="50" width="248" height="22" rx="11" fill="#6366f1"/>
+  <text x="762" y="65" text-anchor="middle" class="stg">③ 前端 18 個即時面板</text>
+  <text x="762" y="92" text-anchor="middle" class="t">看板式 UI · 每分鐘自動刷新</text>
+
+  <!-- panel grid -->
+  <g fill="#fff" stroke="#c7d2fe">
+    <rect x="654" y="104" width="50" height="30" rx="6"/>
+    <rect x="712" y="104" width="50" height="30" rx="6"/>
+    <rect x="770" y="104" width="50" height="30" rx="6"/>
+    <rect x="828" y="104" width="42" height="30" rx="6"/>
+    <rect x="654" y="142" width="50" height="30" rx="6"/>
+    <rect x="712" y="142" width="50" height="30" rx="6"/>
+    <rect x="770" y="142" width="50" height="30" rx="6"/>
+    <rect x="828" y="142" width="42" height="30" rx="6"/>
+  </g>
+  <g fill="#475569" font-size="9.5" text-anchor="middle">
+    <text x="679" y="123">天氣</text>
+    <text x="737" y="123">地震</text>
+    <text x="795" y="123">消防</text>
+    <text x="849" y="123">頭條</text>
+    <text x="679" y="161">台鐵</text>
+    <text x="737" y="161">高鐵</text>
+    <text x="795" y="161">航機</text>
+    <text x="849" y="161">…</text>
+  </g>
+  <text x="762" y="196" text-anchor="middle" class="s">⏱ setInterval 輪詢　🗺 Leaflet 地圖</text>
+  <text x="762" y="214" text-anchor="middle" class="s">分組：總覽 / 城市 / 交通 / 環境 / 太空</text>
+
+  <text x="450" y="256" text-anchor="middle" class="cap">前端不直接打多個來源 — 由後端統一聚合與快取，再經 Cloudflare Tunnel 對外，避免 CORS、速率限制與重複請求</text>
+</svg>

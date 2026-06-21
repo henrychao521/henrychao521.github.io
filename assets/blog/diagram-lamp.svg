@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" font-family="'Noto Sans TC',system-ui,sans-serif">
+  <defs>
+    <style>
+      .t{font-weight:700;font-size:14px;fill:#0f172a}
+      .s{font-size:11.5px;fill:#475569}
+      .lab{font-size:11px;font-weight:700;fill:#334155}
+      .cap{font-size:11.5px;fill:#64748b}
+      .ray{stroke:#fbbf24;stroke-width:1.6;opacity:0.85}
+      .rayBlock{stroke:#cbd5e1;stroke-width:1.4;stroke-dasharray:4 3;opacity:0.9}
+    </style>
+    <radialGradient id="lit" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="100%" stop-color="#fef9c3" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <text x="450" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">無影燈原理：多角度補光 → 陰影被「稀釋」而非消滅</text>
+
+  <!-- LED array (lamp head) -->
+  <rect x="120" y="48" width="660" height="20" rx="10" fill="#e2e8f0" stroke="#cbd5e1"/>
+  <text x="450" y="44" text-anchor="middle" class="lab">無影燈 LED 陣列（多顆獨立光源，分佈於不同角度）</text>
+
+  <!-- light sources -->
+  <circle cx="180" cy="58" r="6" fill="#f59e0b"/>
+  <circle cx="315" cy="58" r="6" fill="#f59e0b"/>
+  <circle cx="450" cy="58" r="6" fill="#f59e0b"/>
+  <circle cx="585" cy="58" r="6" fill="#f59e0b"/>
+  <circle cx="720" cy="58" r="6" fill="#f59e0b"/>
+
+  <!-- obstacle (surgeon's head / hand) -->
+  <ellipse cx="450" cy="150" rx="42" ry="30" fill="#94a3b8" stroke="#64748b"/>
+  <text x="450" y="154" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">遮擋物</text>
+  <text x="450" y="120" text-anchor="middle" class="s">（醫生的頭／手）</text>
+
+  <!-- target field (lit zone at center) -->
+  <ellipse cx="450" cy="256" rx="150" ry="20" fill="url(#lit)"/>
+  <line x1="300" y1="256" x2="600" y2="256" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="450" cy="256" r="5" fill="#475569"/>
+  <text x="450" y="284" text-anchor="middle" class="lab">術野中心（被遮擋物正下方）</text>
+
+  <!-- Rays that are BLOCKED by the obstacle: the two near-vertical sources -->
+  <!-- source 450 (directly above) blocked -->
+  <line x1="450" y1="64" x2="450" y2="120" class="rayBlock"/>
+  <!-- source 315 partially blocked toward center -->
+  <line x1="315" y1="64" x2="423" y2="130" class="rayBlock"/>
+  <!-- source 585 partially blocked toward center -->
+  <line x1="585" y1="64" x2="477" y2="130" class="rayBlock"/>
+
+  <!-- Rays that GET THROUGH: outer sources curve around the obstacle to reach center -->
+  <!-- left-most source 180 -> reaches center passing left of obstacle -->
+  <line x1="180" y1="64" x2="402" y2="246" class="ray"/>
+  <!-- right-most source 720 -> reaches center passing right of obstacle -->
+  <line x1="720" y1="64" x2="498" y2="246" class="ray"/>
+  <!-- source 315 -> also reaches center skimming left edge -->
+  <line x1="315" y1="64" x2="415" y2="241" class="ray"/>
+  <!-- source 585 -> also reaches center skimming right edge -->
+  <line x1="585" y1="64" x2="485" y2="241" class="ray"/>
+
+  <!-- legend -->
+  <line x1="610" y1="100" x2="640" y2="100" class="ray"/>
+  <text x="648" y="104" class="s">繞過遮擋物、補進中心的有效光線</text>
+  <line x1="610" y1="120" x2="640" y2="120" class="rayBlock"/>
+  <text x="648" y="124" class="s">被遮擋物截斷的光線</text>
+
+  <text x="450" y="300" text-anchor="middle" class="cap" font-style="italic">正上方光源被擋住（本影），但側邊光源仍把光補進中心 → 只剩淡半影，照度仍保留約一半以上</text>
+</svg>
