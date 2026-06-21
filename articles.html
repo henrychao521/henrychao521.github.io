@@ -307,16 +307,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     ];
     const rank = s => { const i = FEATURED_ORDER.indexOf(s); return i === -1 ? 999 : i; };
     posts.sort((a, b) => (rank(a.slug) - rank(b.slug)) || (new Date(b.date) - new Date(a.date)));
-    container.innerHTML = posts.map(p => `
-      <a href="/post.html?slug=${encodeURIComponent(p.slug)}" class="article-card bg-white border border-slate-200 rounded-xl p-5 block">
-        <div class="text-xs text-slate-500 mb-1">${p.date || ''}${p.category ? ' · ' + p.category : ''}</div>
-        <div class="font-semibold text-slate-900 leading-tight mb-2">${p.title || ''}</div>
-        <div class="text-sm text-slate-600 mb-3 line-clamp-3">${p.excerpt || ''}</div>
-        <div class="flex flex-wrap gap-1">
-          ${(p.tags || []).slice(0,4).map(t => `<span class="tag">${t}</span>`).join('')}
+    // 各篇示意圖：點進去前先看到「大概在做什麼」的流程／架構圖
+    const DIAGRAM = {
+      '2026-06-21-x5-roomtour-3d-classroom':      '/assets/blog/diagram-x5-pipeline.svg',
+      '2026-06-21-pc13110-engineering-platform':  '/assets/blog/diagram-pc13110.svg',
+      '2026-06-21-physics-interactive-sims':      '/assets/blog/diagram-physics.svg',
+      '2026-06-21-taiwan-engineering-geo':        '/assets/blog/diagram-geo.svg',
+      '2026-06-21-living-tech-portal':            '/assets/blog/diagram-portal.svg',
+      '2026-06-21-shadowless-lamp-sim':           '/assets/blog/diagram-lamp.svg',
+      '2026-06-21-livingtech-tools-digital-jigs': '/assets/blog/diagram-livingtech-tools.svg',
+      '2026-06-21-taiwan-housing-data':           '/assets/blog/diagram-housing.svg'
+    };
+    container.innerHTML = posts.map(p => {
+      const fig = DIAGRAM[p.slug] || p.cover || '';
+      return `
+      <a href="/post.html?slug=${encodeURIComponent(p.slug)}" class="article-card bg-white border border-slate-200 rounded-xl overflow-hidden block">
+        ${fig ? `<img src="${fig}" alt="" loading="lazy" class="w-full h-28 object-contain bg-slate-50 border-b border-slate-100">` : ''}
+        <div class="p-5">
+          <div class="text-xs text-slate-500 mb-1">${p.date || ''}${p.category ? ' · ' + p.category : ''}</div>
+          <div class="font-semibold text-slate-900 leading-tight mb-2">${p.title || ''}</div>
+          <div class="text-sm text-slate-600 mb-3 line-clamp-3">${p.excerpt || ''}</div>
+          <div class="flex flex-wrap gap-1">
+            ${(p.tags || []).slice(0,4).map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
         </div>
-      </a>
-    `).join('');
+      </a>`;
+    }).join('');
   } catch (e) {
     if (sec) sec.style.display = 'none';
   }
