@@ -88,7 +88,7 @@ collections:
       - { label: "標題", name: "title", widget: "string" }
       - { label: "日期", name: "date", widget: "datetime" }
       - { label: "封面圖", name: "cover", widget: "image", required: false }
-      - { label: "分類", name: "category", widget: "select", required: false, options: ["教學反思", "工具評測", "課堂紀錄", "活動心得"] }
+      - { label: "分類", name: "category", widget: "select", required: false, options: ["專案分享", "教學反思", "工具評測", "課堂紀錄", "活動心得"] }
       - { label: "標籤", name: "tags", widget: "list", required: false }
       - { label: "摘要", name: "excerpt", widget: "text", required: false }
       - { label: "內文", name: "body", widget: "markdown" }

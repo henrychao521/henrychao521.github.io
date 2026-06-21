@@ -56,7 +56,7 @@
 <article id="article" class="hidden">
   <header class="bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900 text-white">
     <div class="max-w-4xl mx-auto px-6 py-12">
-      <a href="/maker.html" class="text-sm opacity-80 hover:opacity-100">← 回 Maker 教案</a>
+      <a id="back-link" href="/maker.html" class="text-sm opacity-80 hover:opacity-100">← 回 Maker 教案</a>
       <h1 id="article-title" class="text-3xl md:text-4xl font-bold mt-3 mb-3 leading-tight"></h1>
       <div class="flex flex-wrap gap-3 text-sm opacity-90 mb-3">
         <span id="article-date">—</span>
@@ -149,6 +149,14 @@ async function loadPost() {
     }
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
+
+    // 返回連結依文章所屬集合切換（blog → 教學文章；maker → Maker 教案）
+    const isBlog = url.includes('/posts/blog/');
+    const backLink = document.getElementById('back-link');
+    if (backLink) {
+      backLink.href = isBlog ? '/articles.html' : '/maker.html';
+      backLink.textContent = isBlog ? '← 回教學文章' : '← 回 Maker 教案';
+    }
 
     // Edit link
     document.getElementById('edit-link').href =

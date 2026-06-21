@@ -39,6 +39,23 @@
 
 <main class="max-w-6xl mx-auto px-6 py-10">
 
+  <!-- 近期專案手記（站內原生，來源 posts/blog） -->
+  <section id="project-notes" class="mb-10">
+    <div class="flex items-baseline justify-between mb-1">
+      <h2 class="text-2xl font-bold text-slate-900">✍️ 近期專案手記</h2>
+      <a href="/maker.html" class="text-sm text-indigo-600 hover:underline">看 Maker 教學文 →</a>
+    </div>
+    <p class="text-sm text-slate-500 mb-4">站內原創短文 — 近期做的線上作品介紹與課堂應用。</p>
+    <div id="local-posts" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="col-span-full text-center py-8 text-slate-400">⏳ 載入中…</div>
+    </div>
+    <div class="flex items-center gap-3 my-10">
+      <div class="flex-1 h-px bg-slate-200"></div>
+      <span class="text-sm text-slate-400">以下為 livingtech.education 鏡像文章</span>
+      <div class="flex-1 h-px bg-slate-200"></div>
+    </div>
+  </section>
+
   <!-- Search + filter -->
   <div class="bg-white border border-slate-200 rounded-xl p-4 mb-6 sticky top-16 z-30 space-y-3">
     <div class="flex gap-2">
@@ -265,6 +282,45 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadCategories();
   loadPosts();
 });
+</script>
+
+<script>
+// ── 近期專案手記（站內原生 posts/blog；失敗則靜默隱藏，不影響上方鏡像）──
+(async function loadProjectNotes() {
+  const sec = document.getElementById('project-notes');
+  const container = document.getElementById('local-posts');
+  try {
+    const res = await fetch('/posts/blog/index.json?_=' + Date.now());
+    if (!res.ok) throw new Error('no index');
+    const posts = await res.json();
+    if (!Array.isArray(posts) || posts.length === 0) { sec.style.display = 'none'; return; }
+    // 精選展示順序（旗艦作品領頭）；不在清單的新文章自動依日期排在後面
+    const FEATURED_ORDER = [
+      '2026-06-21-x5-roomtour-3d-classroom',
+      '2026-06-21-pc13110-engineering-platform',
+      '2026-06-21-physics-interactive-sims',
+      '2026-06-21-taiwan-engineering-geo',
+      '2026-06-21-living-tech-portal',
+      '2026-06-21-shadowless-lamp-sim',
+      '2026-06-21-livingtech-tools-digital-jigs',
+      '2026-06-21-taiwan-housing-data'
+    ];
+    const rank = s => { const i = FEATURED_ORDER.indexOf(s); return i === -1 ? 999 : i; };
+    posts.sort((a, b) => (rank(a.slug) - rank(b.slug)) || (new Date(b.date) - new Date(a.date)));
+    container.innerHTML = posts.map(p => `
+      <a href="/post.html?slug=${encodeURIComponent(p.slug)}" class="article-card bg-white border border-slate-200 rounded-xl p-5 block">
+        <div class="text-xs text-slate-500 mb-1">${p.date || ''}${p.category ? ' · ' + p.category : ''}</div>
+        <div class="font-semibold text-slate-900 leading-tight mb-2">${p.title || ''}</div>
+        <div class="text-sm text-slate-600 mb-3 line-clamp-3">${p.excerpt || ''}</div>
+        <div class="flex flex-wrap gap-1">
+          ${(p.tags || []).slice(0,4).map(t => `<span class="tag">${t}</span>`).join('')}
+        </div>
+      </a>
+    `).join('');
+  } catch (e) {
+    if (sec) sec.style.display = 'none';
+  }
+})();
 </script>
 </body>
 </html>
