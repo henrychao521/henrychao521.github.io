@@ -1,5 +1,25 @@
 [
   {
+    "slug": "2026-06-26-ai-auto-project-video",
+    "title": "[完整教學] 讓 AI 自己生成專案分享影片：盤點、錄製、配音、剪輯全自動",
+    "date": "2026-06-26",
+    "excerpt": "我丟了一句話給 AI：把我近兩個月做的線上專案，自己跑起來、錄畫面、寫腳本、配音、剪成一支介紹影片。結果它真的做到了——而且連這篇文章和製作歷程網頁都是它生成的。這篇完整拆解整條全自動 pipeline：用無頭瀏覽器把網站「真的跑起來」錄製真實互動、edge-tts 台灣口語配音、因為 ffmpeg 沒有字幕濾鏡而改用 PIL 逐格疊字幕，以及中途踩過又一一解掉的五個雷。",
+    "author": "Henry Chao",
+    "cover": "/assets/blog/diagram-ai-video.svg",
+    "tags": [
+      "AI協作",
+      "影片自動化",
+      "CDP無頭瀏覽器",
+      "edge-tts",
+      "ffmpeg",
+      "自動剪輯"
+    ],
+    "repo": "project-lab-film",
+    "level": "⭐⭐⭐ 進階",
+    "hours": "閱讀約 10 分鐘",
+    "category": "專案分享"
+  },
+  {
     "slug": "2026-06-21-living-tech-portal",
     "title": "[完整教學] Living Tech Portal：把全台即時開放資料聚合成一個監控儀表板",
     "date": "2026-06-21",

@@ -155,6 +155,14 @@ const PROJECT_META = {
     demo: 'https://henrylivingtech.com',
     gradient: 'from-violet-600 via-purple-600 to-fuchsia-600',
   },
+  'project-lab-film': {
+    theme: 'film', featured: true, emoji: '🎬',
+    title: 'AI 自動生成專案分享影片',
+    blurb: '一個大膽的實驗：讓 AI 自己盤點專案、寫腳本、用無頭瀏覽器把每個網站「真的跑起來」錄製、配音、剪輯與配樂，全自動產出一支專案成果介紹影片——連這頁製作歷程都是 AI 做的。公開完整製作流程、腳本發展、版本紀錄與踩雷全紀錄，並嵌入 YouTube 成片。',
+    tags: ['AI 全自動企劃/剪輯', 'CDP 無頭錄製', 'edge-tts 配音', 'YouTube 嵌入'],
+    demo: 'https://henrychao521.github.io/project-lab-film/',
+    gradient: 'from-amber-500 via-pink-500 to-violet-600',
+  },
   'henrychao521.github.io': {
     theme: 'misc', featured: false, emoji: '🦦',
     title: '本站原始碼',
@@ -174,6 +182,7 @@ const FEATURED_ORDER = [
   'grip-coach',
   'taiwan-engineering-geo',
   'living-portal',
+  'project-lab-film',
 ];
 
 const THEME_NAMES = {
@@ -182,6 +191,7 @@ const THEME_NAMES = {
   aiworks:  '✦ AI 協作互動作品集',
   sim:      '🔬 模擬器',
   platform: '🌐 即時資訊平台',
+  film:     '🎬 AI 自動影像製作',
   misc:     '📦 其他',
 };
 
@@ -191,6 +201,7 @@ const THEME_COLORS = {
   sim:      'border-sky-200 hover:border-sky-400',
   aiworks:  'border-fuchsia-200 hover:border-fuchsia-400',
   platform: 'border-violet-200 hover:border-violet-400',
+  film:     'border-amber-200 hover:border-amber-400',
   misc:     'border-slate-200 hover:border-slate-300',
 };
 

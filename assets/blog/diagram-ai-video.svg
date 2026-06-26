@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 320" font-family="'Noto Sans TC',system-ui,sans-serif">
+  <rect width="880" height="320" rx="16" fill="#f8fafc"/>
+  <text x="40" y="46" font-size="22" font-weight="800" fill="#0f172a">讓 AI 自己生成專案分享影片</text>
+  <text x="40" y="72" font-size="14" fill="#64748b">盤點 → 真實錄製 → 腳本 → 配音 → 剪輯 → 成片，全程自動</text>
+
+  <!-- steps -->
+  <g>
+    <!-- box helper repeated -->
+    <g transform="translate(28,108)">
+      <rect width="124" height="118" rx="12" fill="#fff" stroke="#e2e8f0"/>
+      <text x="62" y="42" font-size="30" text-anchor="middle">🔎</text>
+      <text x="62" y="74" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">盤點專案</text>
+      <text x="62" y="96" font-size="11" fill="#64748b" text-anchor="middle">WebFetch · git log</text>
+    </g>
+    <g transform="translate(168,108)">
+      <rect width="124" height="118" rx="12" fill="#fff" stroke="#c7d2fe"/>
+      <text x="62" y="42" font-size="30" text-anchor="middle">📹</text>
+      <text x="62" y="74" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">真實錄製</text>
+      <text x="62" y="96" font-size="11" fill="#4f46e5" text-anchor="middle">CDP 無頭瀏覽器</text>
+    </g>
+    <g transform="translate(308,108)">
+      <rect width="124" height="118" rx="12" fill="#fff" stroke="#e2e8f0"/>
+      <text x="62" y="42" font-size="30" text-anchor="middle">📝</text>
+      <text x="62" y="74" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">撰寫腳本</text>
+      <text x="62" y="96" font-size="11" fill="#64748b" text-anchor="middle">三幕 · 分鏡審稿</text>
+    </g>
+    <g transform="translate(448,108)">
+      <rect width="124" height="118" rx="12" fill="#fff" stroke="#e2e8f0"/>
+      <text x="62" y="42" font-size="30" text-anchor="middle">🎙️</text>
+      <text x="62" y="74" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">AI 配音</text>
+      <text x="62" y="96" font-size="11" fill="#64748b" text-anchor="middle">edge-tts 雲哲</text>
+    </g>
+    <g transform="translate(588,108)">
+      <rect width="124" height="118" rx="12" fill="#fff" stroke="#e2e8f0"/>
+      <text x="62" y="42" font-size="30" text-anchor="middle">✂️</text>
+      <text x="62" y="74" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">逐段剪輯</text>
+      <text x="62" y="96" font-size="11" fill="#64748b" text-anchor="middle">PIL 字幕 · ffmpeg</text>
+    </g>
+    <g transform="translate(728,108)">
+      <rect width="124" height="118" rx="12" fill="#0f172a"/>
+      <text x="62" y="42" font-size="30" text-anchor="middle">🎬</text>
+      <text x="62" y="74" font-size="15" font-weight="800" fill="#fff" text-anchor="middle">成片</text>
+      <text x="62" y="96" font-size="11" fill="#fbbf24" text-anchor="middle">YouTube · 短影音</text>
+    </g>
+    <!-- arrows -->
+    <g fill="#cbd5e1">
+      <path d="M154 167 l14 0 M166 162 l8 5 -8 5 z"/>
+      <path d="M294 167 l14 0 M306 162 l8 5 -8 5 z"/>
+      <path d="M434 167 l14 0 M446 162 l8 5 -8 5 z"/>
+      <path d="M574 167 l14 0 M586 162 l8 5 -8 5 z"/>
+      <path d="M714 167 l14 0 M726 162 l8 5 -8 5 z"/>
+    </g>
+  </g>
+
+  <rect x="28" y="252" width="824" height="44" rx="10" fill="#eef2ff"/>
+  <text x="48" y="280" font-size="13.5" fill="#4338ca">🤖 全程 AI 自動 · macOS 本機 · 連這頁製作紀錄與這張圖都是 AI 生成的</text>
+</svg>
