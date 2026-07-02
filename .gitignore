@@ -20,3 +20,5 @@ node_modules/
 # Local dev server logs / pids (dev.sh)
 .dev-*.log
 .dev-*.pid
+
+.claude/
