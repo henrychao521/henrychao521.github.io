@@ -296,6 +296,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!Array.isArray(posts) || posts.length === 0) { sec.style.display = 'none'; return; }
     // 精選展示順序（旗艦作品領頭）；不在清單的新文章自動依日期排在後面
     const FEATURED_ORDER = [
+      '2026-07-08-lattice-hinge-designer',
       '2026-06-26-ai-auto-project-video',
       '2026-06-21-x5-roomtour-3d-classroom',
       '2026-06-21-pc13110-engineering-platform',
@@ -310,6 +311,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     posts.sort((a, b) => (rank(a.slug) - rank(b.slug)) || (new Date(b.date) - new Date(a.date)));
     // 各篇示意圖：點進去前先看到「大概在做什麼」的流程／架構圖
     const DIAGRAM = {
+      '2026-07-08-lattice-hinge-designer':        '/assets/blog/diagram-lattice-hinge.svg',
       '2026-06-21-x5-roomtour-3d-classroom':      '/assets/blog/diagram-x5-pipeline.svg',
       '2026-06-21-pc13110-engineering-platform':  '/assets/blog/diagram-pc13110.svg',
       '2026-06-21-physics-interactive-sims':      '/assets/blog/diagram-physics.svg',
