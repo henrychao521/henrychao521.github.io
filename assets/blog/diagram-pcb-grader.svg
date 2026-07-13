@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 340" font-family="'Noto Sans TC',system-ui,sans-serif">
+  <rect width="880" height="340" rx="16" fill="#f8fafc"/>
+  <text x="40" y="44" font-size="22" font-weight="800" fill="#0f172a">焊接電路板 AI 檢測評分系統</text>
+  <text x="40" y="70" font-size="14" fill="#64748b">學生拍照正反面 → 本機 AI 判讀 → 即時評分、錯誤定位與修正建議</text>
+
+  <!-- 教師後台 → 參考規格 -->
+  <g transform="translate(28,92)">
+    <rect width="200" height="46" rx="10" fill="#ecfdf5" stroke="#6ee7b7"/>
+    <text x="14" y="20" font-size="12.5" font-weight="700" fill="#047857">📋 教師後台：出題</text>
+    <text x="14" y="37" font-size="10.5" fill="#059669">匯入 netlist／AI 讀簡圖 → 參考規格</text>
+  </g>
+  <path d="M128,138 L128,168" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#a)"/>
+  <text x="138" y="160" font-size="10" fill="#94a3b8">參考規格</text>
+
+  <!-- 主流程 4 步 -->
+  <g>
+    <g transform="translate(28,172)">
+      <rect width="176" height="120" rx="12" fill="#fff" stroke="#e2e8f0"/>
+      <text x="88" y="44" font-size="30" text-anchor="middle">📸</text>
+      <text x="88" y="76" font-size="14.5" font-weight="700" fill="#0f172a" text-anchor="middle">學生拍照</text>
+      <text x="88" y="98" font-size="11" fill="#64748b" text-anchor="middle">正面(元件) + 背面(焊接)</text>
+    </g>
+    <g transform="translate(240,172)">
+      <rect width="176" height="120" rx="12" fill="#fff" stroke="#5eead4"/>
+      <text x="88" y="44" font-size="30" text-anchor="middle">🧠</text>
+      <text x="88" y="76" font-size="14.5" font-weight="700" fill="#0f172a" text-anchor="middle">① 本機 VLM 感知</text>
+      <text x="88" y="98" font-size="11" fill="#0d9488" text-anchor="middle">逐項判讀元件/極性/焊點</text>
+    </g>
+    <g transform="translate(452,172)">
+      <rect width="176" height="120" rx="12" fill="#fff" stroke="#5eead4"/>
+      <text x="88" y="44" font-size="30" text-anchor="middle">⚖️</text>
+      <text x="88" y="76" font-size="14.5" font-weight="700" fill="#0f172a" text-anchor="middle">② 規則引擎</text>
+      <text x="88" y="98" font-size="11" fill="#0d9488" text-anchor="middle">正確性/焊接/安全 加權計分</text>
+    </g>
+    <g transform="translate(664,172)">
+      <rect width="188" height="120" rx="12" fill="#fff" stroke="#e2e8f0"/>
+      <text x="94" y="44" font-size="30" text-anchor="middle">🎯</text>
+      <text x="94" y="76" font-size="14.5" font-weight="700" fill="#0f172a" text-anchor="middle">評分 + 錯誤定位</text>
+      <text x="94" y="98" font-size="11" fill="#64748b" text-anchor="middle">紅黃綠 · 修正建議</text>
+    </g>
+    <path d="M204,232 L240,232" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+    <path d="M416,232 L452,232" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+    <path d="M628,232 L664,232" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#a)"/>
+  </g>
+
+  <!-- 底部：蒸餾 + 隱私 -->
+  <g transform="translate(28,306)">
+    <rect width="824" height="24" rx="8" fill="#f1f5f9"/>
+    <text x="14" y="16" font-size="11.5" fill="#475569">🎓 強模型（Gemini）標註 → 蒸餾本機分類器（正/背辨識 91.7%）　　🔒 本機優先，學生照片不外傳</text>
+  </g>
+
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+</svg>
