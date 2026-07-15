@@ -179,6 +179,14 @@ const PROJECT_META = {
     demo: 'https://henrychao521.github.io/project-lab-film/',
     gradient: 'from-amber-500 via-pink-500 to-violet-600',
   },
+  'esp32-camera-display': {
+    theme: 'maker', featured: true, emoji: '📷',
+    title: 'XIAO ESP32-S3 手作迷你相機',
+    blurb: '用 Seeed XIAO ESP32-S3 Sense（內建 OV2640 鏡頭）+ 2.4" ILI9341 顯示器手工接線做成的一台迷你相機：即時取景、拍照、多種濾鏡、相簿瀏覽、MJPEG 錄影，全程用一支類比搖桿操作。附完整開發歷程與互動接線圖，程式碼全開源。',
+    tags: ['XIAO ESP32-S3 Sense', 'OV2640 + ILI9341', 'MJPEG 錄影', '搖桿操作'],
+    demo: 'https://henrychao521.github.io/esp32-camera-display/',
+    gradient: 'from-cyan-600 via-teal-600 to-emerald-700',
+  },
   'henrychao521.github.io': {
     theme: 'misc', featured: false, emoji: '🦦',
     title: '本站原始碼',
@@ -197,6 +205,7 @@ const FEATURED_ORDER = [
   'ai-physics-demos',
   'ai-physics-data',
   'grip-coach',
+  'esp32-camera-display',
   'shadowless-lamp-sim',
   'lattice-hinge-designer',
   'taiwan-engineering-geo',
@@ -211,6 +220,7 @@ const THEME_NAMES = {
   sim:      '🔬 模擬器',
   platform: '🌐 即時資訊平台',
   film:     '🎬 AI 自動影像製作',
+  maker:    '🔧 手作硬體專案',
   misc:     '📦 其他',
 };
 
@@ -221,6 +231,7 @@ const THEME_COLORS = {
   aiworks:  'border-fuchsia-200 hover:border-fuchsia-400',
   platform: 'border-violet-200 hover:border-violet-400',
   film:     'border-amber-200 hover:border-amber-400',
+  maker:    'border-teal-200 hover:border-teal-400',
   misc:     'border-slate-200 hover:border-slate-300',
 };
 
