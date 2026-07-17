@@ -23,7 +23,6 @@ publish_mode: editorial_workflow
 # Site 基本資訊（在編輯器顯示）
 site_url: https://henrychao521.github.io
 display_url: https://henrychao521.github.io
-logo_url: https://henrychao521.github.io/favicon.ico
 
 # ─────────────────────────────────────────────
 # 內容類型（Collections）

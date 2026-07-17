@@ -186,7 +186,7 @@ KEYPOINT_CONFIDENCE_THRESHOLD = 0.5
 - [ ] **形變嚴重度評分**：squat 膝蓋是否內扣、背是否拱起
 - [ ] **改用 ML 分類器** + 收集自家學生資料訓練
 - [ ] **REST API**：FastAPI 接收 base64 frame 回傳分類結果（給 [grip-system](https://github.com/henrychao521/grip-system) 之類的前端用）
-- [ ] **整合 [henry-vision-core](/projects.html?theme=education) SDK**（規劃中）：把 stabilizer、keypoint 處理共用
+- [ ] **整合 henry-vision-core SDK**（規劃中）：把 stabilizer、keypoint 處理共用
 
 ---
 

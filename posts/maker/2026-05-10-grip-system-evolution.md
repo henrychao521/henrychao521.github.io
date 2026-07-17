@@ -122,7 +122,7 @@ grip_system/
 - 同一份 core 可同時支援 **Mac 開發環境**(webcam)與 **Pi 部署環境**(樹莓派 cam)
 - 同一份 core 可被 **FastAPI、Flask、桌面 app、Telegram bot** 等任一介面整合
 
-此設計也是後續規劃中「[抽出 henry-vision-core SDK](/projects.html?theme=education)」的原型基礎。
+此設計也是後續規劃中「抽出 henry-vision-core SDK」的原型基礎。
 
 ### 為何選擇自寫 WebRTC?
 
@@ -196,7 +196,7 @@ async def offer(payload: Offer):
 
 ## 後續延伸方向
 
-1. 將視覺邏輯抽出為 [henry-vision-core](/projects.html?theme=education) 套件
+1. 將視覺邏輯抽出為 henry-vision-core 套件
 2. 整合 [學生學習歷程平台](https://github.com/henrychao521/student-portfolio-v3) 以提供長期練習紀錄
 3. 投稿教學研討會(CHI / IEEE TLT / ICCE)
 

@@ -229,7 +229,7 @@ docker-compose logs -f camera-hub
 - [ ] **VLM 多輪對話**：讓使用者用 Telegram 問「剛剛 3 點那次是什麼？」→ 系統翻錄影回答
 - [ ] **語音告警**：偵測到緊急狀況 → Mac speaker 廣播
 - [ ] **整合 [moltbot](https://github.com/henrychao521/moltbot) 跨機叢集**：Mac 主推論、Pi5 backup
-- [ ] **抽出 [`edge-cam-client`](/projects.html?theme=camera) SDK**：把多版本韌體統一
+- [ ] **抽出 `edge-cam-client` SDK**：把多版本韌體統一
 
 ---
 

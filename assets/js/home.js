@@ -60,22 +60,6 @@ function renderFeaturedProjects() {
   observeReveals(container);
 }
 
-/** 用 GitHub API 補上精選卡片的即時資訊（語言／星數／更新日） */
-async function hydrateFeaturedProjects() {
-  const repos = await fetchGHReposSafe();
-  const byName = Object.fromEntries(repos.map(r => [r.name, r]));
-  document.querySelectorAll('#featured-projects [data-repo]').forEach(card => {
-    const repo = byName[card.dataset.repo];
-    const live = card.querySelector('.repo-live');
-    if (!repo || !live) { if (live) live.remove(); return; }
-    live.innerHTML = `
-      <span class="inline-flex items-center gap-1"><span class="lang-dot lang-${(repo.language || 'Other').replace('+','p')}"></span>${repo.language || '—'}</span>
-      <span>★ ${repo.stargazers_count}</span>
-      <span>更新 ${formatDate(repo.pushed_at)}</span>
-    `;
-  });
-}
-
 /** Update post count stat */
 async function updatePostStat() {
   try {
