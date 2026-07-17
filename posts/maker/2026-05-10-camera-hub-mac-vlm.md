@@ -6,6 +6,7 @@ cover: ""
 categories: [edge-cam, ai, vision]
 tags: [Mac Studio, ESP32-CAM, YOLOv8, VLM, Qwen-VL, LM Studio, Telegram, Flask]
 repo: "camera-hub-mac"
+repo_private: true
 level: "⭐⭐⭐ 進階"
 hours: "8–12 hrs"
 excerpt: "把 AI 推論搬到 Mac、Pi 純當 hub。再進一步加入 VLM 智慧描述，讓系統不只說「有人」，還能說「畫面中有一名穿紅色上衣的男性，正在客廳沙發上看書」。"
@@ -14,7 +15,7 @@ draft: false
 
 ## 為什麼要把 AI 從 Pi 搬到 Mac？
 
-之前做的 [pi-camera-hub](https://github.com/henrychao521/pi-camera-hub) 用 Pi4/5 跑 YOLOv8，已經能即時偵測動作 + 推 Telegram。
+之前做的 `pi-camera-hub`（私有） 用 Pi4/5 跑 YOLOv8，已經能即時偵測動作 + 推 Telegram。
 **但 Pi 的算力是天花板**：
 
 - Pi4 跑 YOLOv8n 約 2–5 FPS，多顆相機就吃緊
@@ -237,8 +238,8 @@ docker-compose logs -f camera-hub
 
 - 主程式：[github.com/henrychao521/camera-hub-mac](https://github.com/henrychao521/camera-hub-mac)
 - 客戶端韌體：[esp32-arduino-sketches](https://github.com/henrychao521/esp32-arduino-sketches)
-- Pi 版（前一代）：[pi-camera-hub](https://github.com/henrychao521/pi-camera-hub)
-- 第一代凍結版：[camera-system-archive](https://github.com/henrychao521/camera-system-archive)
+- Pi 版（前一代）：`pi-camera-hub`（私有）
+- 第一代凍結版：`camera-system-archive`（私有）
 
 ---
 

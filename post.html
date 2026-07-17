@@ -145,7 +145,18 @@ async function loadPost() {
     if (frontmatter.repo) {
       document.getElementById('repo-banner').classList.remove('hidden');
       document.getElementById('repo-name').textContent = frontmatter.repo;
-      document.getElementById('repo-link').href = `https://github.com/henrychao521/${frontmatter.repo}`;
+      const repoLink = document.getElementById('repo-link');
+      if (frontmatter.repo_private) {
+        // 私有 repo：顯示標示,不給會 404 的連結
+        repoLink.replaceWith(Object.assign(document.createElement('span'), {
+          id: 'repo-link',
+          className: 'px-4 py-2 bg-slate-100 text-slate-500 text-sm rounded cursor-default',
+          title: '程式碼未公開，課程使用時提供',
+          textContent: '🔒 私有專案',
+        }));
+      } else {
+        repoLink.href = `https://github.com/henrychao521/${frontmatter.repo}`;
+      }
     }
 
     document.getElementById('article-body').innerHTML = marked.parse(body);

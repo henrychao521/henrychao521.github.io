@@ -6,6 +6,7 @@ cover: ""
 categories: [esp32, electronics]
 tags: [WS2812B, Arduino, 中文字型, ST7735, 雙核心]
 repo: "xiao-esp32s3-led-matrix"
+repo_private: true
 level: "⭐ 入門"
 hours: "2–4 hrs"
 excerpt: "256 顆 RGB LED、4 塊 8×8 面板拼成 16×16，從中文跑馬燈到貪吃蛇遊戲。這篇記錄完整 6 個版本的演進與踩過的坑。"

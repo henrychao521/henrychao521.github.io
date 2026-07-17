@@ -6,6 +6,7 @@ cover: ""
 categories: [llm, pi]
 tags: [Raspberry Pi 5, Ollama, Llama, TAIDE, Telegram, Docker]
 repo: "moltbot"
+repo_private: true
 level: "⭐⭐ 中階"
 hours: "3–4 hrs（不含模型下載）"
 excerpt: "在 Raspberry Pi 5 8GB 上跑繁體中文 LLM，做出「跟你的小機器人對話」的離線實驗。約 2–4 tokens/sec，慢但很值得。"
@@ -181,7 +182,7 @@ journalctl -u moltbot -f         # 看 log
 - [ ] **接 Telegram Bot** — 學生用 LINE/Telegram 提問，Pi 在背景默默回答
 - [ ] **接向量資料庫** — 把所有教材 embed 進去，做 RAG（學生問題→找相關教材→LLM 整合回答）
 - [ ] **多人 session** — 目前單對話，要做多使用者隔離
-- [ ] **跟 [mac-llm-bot](https://github.com/henrychao521/mac-llm-bot) 共用核心邏輯** — 抽出 `local-llm-bot-core`
+- [ ] **跟 `mac-llm-bot`（私有） 共用核心邏輯** — 抽出 `local-llm-bot-core`
 
 ---
 
@@ -189,7 +190,7 @@ journalctl -u moltbot -f         # 看 log
 
 - 完整程式碼：[github.com/henrychao521/moltbot](https://github.com/henrychao521/moltbot)
 - 詳細部署步驟：repo 內 `README_RPi_Setup.md`
-- Mac 版本（有 macOS 系統技能）：[mac-llm-bot](https://github.com/henrychao521/mac-llm-bot)
+- Mac 版本（有 macOS 系統技能）：`mac-llm-bot`（私有）
 
 如果你也想在家跑 AI，**Pi 5 8GB 是甜蜜點**（NT$ 4,000+）。
 小型模型（3B）在 Pi 4 也能跑，但 8B 才有 GPT-3.5 的水準。

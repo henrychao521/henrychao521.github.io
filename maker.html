@@ -31,7 +31,7 @@
   <div class="max-w-6xl mx-auto px-6 py-12">
     <div class="text-sm opacity-80 mb-2">🛠 親手做、邊做邊學</div>
     <h1 class="text-4xl md:text-5xl font-bold mb-2">Maker 教案目錄</h1>
-    <p class="text-lg opacity-90">每個專案都包含：硬體清單 · 難度 · 預估課時 · GitHub repo · 詳細教學</p>
+    <p class="text-lg opacity-90">每個專案都包含：硬體清單 · 難度 · 預估課時 · 詳細教學（程式碼於課程中提供）</p>
   </div>
 </header>
 
@@ -73,6 +73,7 @@ const CATALOG = [
   {
     title: '🌟 16×16 LED 中文跑馬燈',
     repo: 'xiao-esp32s3-led-matrix',
+    private: true,
     level: 1,
     hours: '2–4 hrs',
     hardware: ['Seeed XIAO ESP32S3', 'WS2812B 16×16 (4×8×8)', '5V 10A 變壓器'],
@@ -83,6 +84,7 @@ const CATALOG = [
   {
     title: '🚗 ESP32-CAM 遙控車',
     repo: 'esp32-arduino-sketches',
+    private: true,
     level: 2,
     hours: '4–6 hrs',
     hardware: ['XIAO ESP32S3 Sense', 'L298N 馬達驅動', '齒輪馬達 ×2', '18650 電池'],
@@ -93,6 +95,7 @@ const CATALOG = [
   {
     title: '🎮 全息投影 3D 模型互動',
     repo: 'off-axis-pi',
+    private: true,
     level: 2,
     hours: '3–5 hrs',
     hardware: ['筆電 / Pi + 螢幕', 'Webcam', '透明玻璃（選）'],
@@ -103,6 +106,7 @@ const CATALOG = [
   {
     title: '🏃 運動骨架辨識',
     repo: 'sports-skeleton-analysis',
+    private: true,
     level: 1,
     hours: '1–2 hrs',
     hardware: ['筆電', 'Webcam'],
@@ -113,6 +117,7 @@ const CATALOG = [
   {
     title: '✏️ 握筆姿勢即時分析',
     repo: 'grip-system',
+    private: true,
     level: 3,
     hours: '6–10 hrs',
     hardware: ['筆電 / Mac', 'Webcam', 'NT$10 硬幣（校正用）', '自製筆'],
@@ -123,6 +128,7 @@ const CATALOG = [
   {
     title: '🤖 Pi5 本地 LLM 對話機器人',
     repo: 'moltbot',
+    private: true,
     level: 2,
     hours: '3–4 hrs（不含模型下載）',
     hardware: ['Raspberry Pi 5 8GB', 'NVMe SSD', '主動式散熱器'],
@@ -133,6 +139,7 @@ const CATALOG = [
   {
     title: '📷 Mac 多攝影機 AI 監控',
     repo: 'camera-hub-mac',
+    private: true,
     level: 3,
     hours: '8–12 hrs',
     hardware: ['Mac (M 系列)', 'ESP32-CAM ×N', 'WiFi 路由器'],
@@ -143,6 +150,7 @@ const CATALOG = [
   {
     title: '📊 學生學習歷程平台',
     repo: 'student-portfolio-v3',
+    private: true,
     level: 1,
     hours: '1–2 hrs',
     hardware: ['任意瀏覽器'],
@@ -153,6 +161,7 @@ const CATALOG = [
   {
     title: '🌆 台北即時資訊看板',
     repo: 'taipei-dashboard',
+    private: true,
     level: 1,
     hours: '2–3 hrs',
     hardware: ['Pi 4 + 螢幕', 'Tailscale（選）'],
@@ -185,8 +194,10 @@ function render() {
       <div class="text-xs text-slate-600 mb-2"><b>硬體：</b>${item.hardware.join(' · ')}</div>
       <div class="text-xs text-slate-600 mb-3"><b>技能：</b>${item.skills.map(s => `<span class="tag">${s}</span>`).join('')}</div>
       <div class="mt-auto pt-3 border-t border-slate-100 flex gap-2">
-        <a href="https://github.com/henrychao521/${item.repo}" target="_blank" rel="noopener"
-           class="flex-1 text-center px-3 py-1.5 text-sm border border-slate-300 rounded hover:bg-slate-50">📦 GitHub</a>
+        ${item.private
+          ? `<span class="flex-1 text-center px-3 py-1.5 text-sm border border-slate-200 rounded text-slate-400 cursor-default" title="程式碼未公開，課程使用時提供">🔒 私有專案</span>`
+          : `<a href="https://github.com/henrychao521/${item.repo}" target="_blank" rel="noopener"
+           class="flex-1 text-center px-3 py-1.5 text-sm border border-slate-300 rounded hover:bg-slate-50">📦 GitHub</a>`}
         <a href="/articles.html?q=${encodeURIComponent(item.title.replace(/^[^\s]+\s/, ''))}"
            class="flex-1 text-center px-3 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">📚 找相關文</a>
       </div>

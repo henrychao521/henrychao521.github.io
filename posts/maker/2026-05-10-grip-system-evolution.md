@@ -6,6 +6,7 @@ cover: ""
 categories: [vision, ai, teaching]
 tags: [MediaPipe, YOLOv8, FastAPI, WebRTC, aiortc, React]
 repo: "grip-system"
+repo_private: true
 level: "⭐⭐⭐ 進階"
 hours: "完整版需 6–10 hrs;最小可跑版 1 hr"
 excerpt: "從 cv2.imshow 桌面視窗到 FastAPI + React + 自寫 aiortc 的三代架構演進紀錄,涵蓋硬幣絕對校正、WebRTC 自主實作與 2026/05 新增的教學文件套件。"
@@ -205,8 +206,8 @@ async def offer(payload: Offer):
 ## 開源與相關連結
 
 - 完整程式碼:[github.com/henrychao521/grip-system](https://github.com/henrychao521/grip-system)
-- 早期原型:[grip-system-prototype](https://github.com/henrychao521/grip-system-prototype)
-- 第一代桌面版:[handpose-legacy](https://github.com/henrychao521/handpose-legacy)
+- 早期原型:`grip-system-prototype`（私有）
+- 第一代桌面版:`handpose-legacy`（私有）
 
 本架構設計適用於各類「身體姿態回饋」教學情境(運動動作矯正、樂器演奏練習、外科縫合訓練等),歡迎其他學科教師借鏡或提出 PR / Issue 進行協作。
 

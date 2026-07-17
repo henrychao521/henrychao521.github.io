@@ -6,6 +6,7 @@ cover: ""
 categories: [vision, teaching]
 tags: [MediaPipe, Three.js, 手勢辨識, Off-axis, 全息投影, 純前端]
 repo: "off-axis-pi"
+repo_private: true
 level: "⭐⭐ 中階"
 hours: "3–5 hrs"
 excerpt: "瀏覽器端零後端、雙手手勢控制 3D 模型旋轉縮放平移的實驗紀錄。從臉部追蹤 Off-axis 視差實作出發,最終演進為以雙手手勢為主軸的教學互動工具。"

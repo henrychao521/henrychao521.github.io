@@ -6,6 +6,7 @@ cover: ""
 categories: [vision, ai, teaching]
 tags: [YOLOv8-pose, MediaPipe, 體育教學, 姿態估計, OpenCV]
 repo: "sports-skeleton-analysis"
+repo_private: true
 level: "⭐ 入門"
 hours: "1–2 hrs"
 excerpt: "用 YOLOv8-pose 偵測人體 17 點骨架，依關節角度自動分類「深蹲 / 伏地挺身 / 開合跳 / 站立」。給體育老師當數鏡子用。"
