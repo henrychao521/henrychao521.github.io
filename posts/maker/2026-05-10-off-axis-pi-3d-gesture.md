@@ -181,9 +181,9 @@ cd off-axis-pi
 
 ## 開源與相關專案
 
-- 程式碼:[github.com/henrychao521/off-axis-pi](https://github.com/henrychao521/off-axis-pi)
-- 同樣採用 MediaPipe Hand 的 [grip-system](https://github.com/henrychao521/grip-system)(握筆姿勢分析)
-- 同樣以視覺為核心的 [sports-skeleton-analysis](https://github.com/henrychao521/sports-skeleton-analysis)(運動姿態分類)
+- 程式碼:`off-axis-pi`（私有）
+- 同樣採用 MediaPipe Hand 的 `grip-system`（私有）(握筆姿勢分析)
+- 同樣以視覺為核心的 `sports-skeleton-analysis`（私有）(運動姿態分類)
 
 ---
 

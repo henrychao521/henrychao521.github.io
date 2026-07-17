@@ -186,16 +186,16 @@ KEYPOINT_CONFIDENCE_THRESHOLD = 0.5
 - [ ] **動作計數**：squat 上下完成一次 → 累計次數
 - [ ] **形變嚴重度評分**：squat 膝蓋是否內扣、背是否拱起
 - [ ] **改用 ML 分類器** + 收集自家學生資料訓練
-- [ ] **REST API**：FastAPI 接收 base64 frame 回傳分類結果（給 [grip-system](https://github.com/henrychao521/grip-system) 之類的前端用）
+- [ ] **REST API**：FastAPI 接收 base64 frame 回傳分類結果（給 `grip-system`（私有） 之類的前端用）
 - [ ] **整合 henry-vision-core SDK**（規劃中）：把 stabilizer、keypoint 處理共用
 
 ---
 
 ## 開源 + 相關專案
 
-- 程式碼：[github.com/henrychao521/sports-skeleton-analysis](https://github.com/henrychao521/sports-skeleton-analysis)
-- 同樣用 vision 的 [grip-system](https://github.com/henrychao521/grip-system)（握筆姿勢）
-- 同樣 maker 風的 [off-axis-pi](https://github.com/henrychao521/off-axis-pi)（手勢操作 3D）
+- 程式碼：`sports-skeleton-analysis`（私有）
+- 同樣用 vision 的 `grip-system`（私有）（握筆姿勢）
+- 同樣 maker 風的 `off-axis-pi`（私有）（手勢操作 3D）
 
 ---
 

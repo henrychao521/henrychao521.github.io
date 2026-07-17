@@ -188,7 +188,7 @@ journalctl -u moltbot -f         # 看 log
 
 ## 開源
 
-- 完整程式碼：[github.com/henrychao521/moltbot](https://github.com/henrychao521/moltbot)
+- 完整程式碼：`moltbot`（私有）
 - 詳細部署步驟：repo 內 `README_RPi_Setup.md`
 - Mac 版本（有 macOS 系統技能）：`mac-llm-bot`（私有）
 

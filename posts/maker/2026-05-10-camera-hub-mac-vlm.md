@@ -158,7 +158,7 @@ csrf = CSRFProtect(app)
 
 ## 客戶端：ESP32-CAM 怎麼接？
 
-韌體在 [esp32-arduino-sketches](https://github.com/henrychao521/esp32-arduino-sketches) 的 `camera_hub_v16_release/firmware/` 下。
+韌體在 `esp32-arduino-sketches`（私有） 的 `camera_hub_v16_release/firmware/` 下。
 燒錄前修改：
 
 ```cpp
@@ -175,7 +175,7 @@ const int CAM_ID = 1;                    // 每顆相機編號
 ## 部署流程（一鍵）
 
 ```bash
-git clone https://github.com/henrychao521/camera-hub-mac.git
+git clone https://github.com/henrychao521/camera-hub-mac.git   # 私有 repo,需授權
 cd camera-hub-mac
 
 # 環境
@@ -229,15 +229,15 @@ docker-compose logs -f camera-hub
 
 - [ ] **VLM 多輪對話**：讓使用者用 Telegram 問「剛剛 3 點那次是什麼？」→ 系統翻錄影回答
 - [ ] **語音告警**：偵測到緊急狀況 → Mac speaker 廣播
-- [ ] **整合 [moltbot](https://github.com/henrychao521/moltbot) 跨機叢集**：Mac 主推論、Pi5 backup
+- [ ] **整合 `moltbot`（私有） 跨機叢集**：Mac 主推論、Pi5 backup
 - [ ] **抽出 `edge-cam-client` SDK**：把多版本韌體統一
 
 ---
 
 ## 開源 + 相關專案
 
-- 主程式：[github.com/henrychao521/camera-hub-mac](https://github.com/henrychao521/camera-hub-mac)
-- 客戶端韌體：[esp32-arduino-sketches](https://github.com/henrychao521/esp32-arduino-sketches)
+- 主程式：`camera-hub-mac`（私有）
+- 客戶端韌體：`esp32-arduino-sketches`（私有）
 - Pi 版（前一代）：`pi-camera-hub`（私有）
 - 第一代凍結版：`camera-system-archive`（私有）
 

@@ -198,14 +198,14 @@ async def offer(payload: Offer):
 ## 後續延伸方向
 
 1. 將視覺邏輯抽出為 henry-vision-core 套件
-2. 整合 [學生學習歷程平台](https://github.com/henrychao521/student-portfolio-v3) 以提供長期練習紀錄
+2. 整合 `學生學習歷程平台`（私有） 以提供長期練習紀錄
 3. 投稿教學研討會(CHI / IEEE TLT / ICCE)
 
 ---
 
 ## 開源與相關連結
 
-- 完整程式碼:[github.com/henrychao521/grip-system](https://github.com/henrychao521/grip-system)
+- 完整程式碼:`grip-system`（私有）
 - 早期原型:`grip-system-prototype`（私有）
 - 第一代桌面版:`handpose-legacy`（私有）
 

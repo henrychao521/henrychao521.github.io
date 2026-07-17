@@ -153,14 +153,14 @@ V5 用 Dual SPI 直接把 LED 更新 throughput 拉到接近 60 FPS。
 ## 後續可以延伸的方向
 
 - 加上**麥克風頻譜分析**（XIAO Sense 內建 PDM mic）
-- 教室天氣告示板（接 [taipei-dashboard](https://github.com/henrychao521/taipei-dashboard) API）
+- 教室天氣告示板（接 `taipei-dashboard`（私有） API）
 - 多顆組成更大牆面（同步用 ESP-NOW）
 
 ---
 
 ## 開源 + 文件
 
-- 完整程式碼：[github.com/henrychao521/xiao-esp32s3-led-matrix](https://github.com/henrychao521/xiao-esp32s3-led-matrix)
+- 完整程式碼：`xiao-esp32s3-led-matrix`（私有）
 - 6 個版本資料夾都在 repo 裡，可以對比著看演進
 - 接線圖、字型轉檔工具也都附上
 
