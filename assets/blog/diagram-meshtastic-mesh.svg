@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" font-family="'Noto Sans TC',system-ui,sans-serif">
+  <defs>
+    <style>
+      .lab{font-size:12px;font-weight:700;fill:#334155}
+      .cap{font-size:11px;fill:#64748b}
+      .node{fill:#5fb08a}
+      .link{stroke:#5fb08a;stroke-width:2;stroke-dasharray:4 4;fill:none}
+    </style>
+  </defs>
+
+  <text x="450" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1e293b">Meshtastic：沒有網路，也能和家人報平安</text>
+
+  <!-- ① 斷訊 -->
+  <rect x="40" y="66" width="215" height="176" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="126" y="96" width="44" height="72" rx="7" fill="#fff" stroke="#ef4444" stroke-width="2"/>
+  <text x="148" y="140" text-anchor="middle" font-size="26" fill="#ef4444">✕</text>
+  <text x="148" y="196" text-anchor="middle" class="lab" fill="#b91c1c">手機沒有訊號</text>
+  <text x="148" y="216" text-anchor="middle" class="cap">地震／災害　基地台斷了</text>
+  <text x="148" y="232" text-anchor="middle" class="cap">網路塞爆　聯絡不上家人</text>
+
+  <!-- 箭頭 -->
+  <path d="M262 154 h34" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#a)"/>
+
+  <!-- ② LoRa 網狀接力 -->
+  <rect x="305" y="66" width="290" height="176" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+  <!-- 節點與虛線接力 -->
+  <path class="link" d="M345 175 L410 120 L480 165 L545 110"/>
+  <circle class="node" cx="345" cy="175" r="9"/>
+  <circle class="node" cx="410" cy="120" r="9"/>
+  <circle class="node" cx="480" cy="165" r="9"/>
+  <circle class="node" cx="545" cy="110" r="11" stroke="#2f8560" stroke-width="2"/>
+  <text x="345" y="200" text-anchor="middle" class="cap">你</text>
+  <text x="545" y="98" text-anchor="middle" class="cap">鄰居的機器</text>
+  <text x="450" y="228" text-anchor="middle" class="lab" fill="#2f8560">LoRa 網狀接力・會自動幫你轉送</text>
+  <text x="450" y="245" text-anchor="middle" class="cap">免基地台・免網路・沒有中央機房</text>
+
+  <!-- 箭頭 -->
+  <path d="M602 154 h34" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#a)"/>
+
+  <!-- ③ 家人收到 -->
+  <rect x="645" y="66" width="215" height="176" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="700" y="100" width="105" height="66" rx="6" fill="#fff" stroke="#3b82f6" stroke-width="2"/>
+  <rect x="742" y="166" width="21" height="12" fill="#3b82f6"/>
+  <text x="752" y="140" text-anchor="middle" font-size="22" fill="#16a34a">✓</text>
+  <text x="752" y="196" text-anchor="middle" class="lab" fill="#1d4ed8">家人收到・報平安</text>
+  <text x="752" y="216" text-anchor="middle" class="cap">長輩打開電視就看得到</text>
+  <text x="752" y="232" text-anchor="middle" class="cap">Coral／Pi／Flipper／Pico 節點</text>
+
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+</svg>
