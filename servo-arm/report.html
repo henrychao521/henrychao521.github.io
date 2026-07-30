@@ -103,6 +103,7 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <a href="#failures">失敗紀錄（33 項）</a>
   <a href="#ros">ROS / ROS 2 調查</a>
   <a href="#ecosystem">相鄰領域調查</a>
+  <a href="#build">動手製作前的調查</a>
   <a href="#limits">已知限制</a>
   <a href="#files">檔案與重現方式</a>
   <a href="#refs">引用來源</a>
@@ -118,7 +119,7 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <div><b>5</b><span>SG90 伺服馬達</span></div>
   <div><b>127.9 cm³</b><span>列印體積 / 整機 203 g</span></div>
   <div><b>38%</b><span>最壞姿態的堵轉扭矩佔用</span></div>
-  <div><b>201</b><span>驗證檢查（全過）</span></div>
+  <div><b>204/205</b><span>驗證檢查（1 項如實失敗）</span></div>
   <div><b>33</b><span>過程中抓到並修正的錯誤</span></div>
 </div>
 
@@ -541,7 +542,7 @@ sketch.write(deg)
 
 <div class="card note">
 <h4>還沒做：v2 尚未接進模擬與驗證系統</h4>
-<p>目前 v2 <strong>只到 CAD</strong>。URDF、MuJoCo 模型、沙盒幾何、以及那 201 項驗證套件
+<p>目前 v2 <strong>只到 CAD</strong>。URDF、MuJoCo 模型、沙盒幾何、以及那 205 項驗證套件
 <strong>全部仍跑在 v1 上</strong>。要接上去需要：重算 <code>link_properties.json</code>、
 重匯連桿網格、重生 MJCF、重訂黃金基準，並且更新沙盒與對照頁的示範角度
 ——因為 j3 的 <code>SERVO_SIGN</code> 從 −1 變成 +1，所有 write() 數值都會變。</p>
@@ -1299,7 +1300,7 @@ osx-arm64 上都有現成套件，MoveIt 2 提供完整的運動規劃。本專�
 Robotic Systems</a>（2024）整理出 20 條指引（8 條給開發者、12 條給 QA）。
 它的核心論點正好從外部佐證了本專案一直在標註的那條界線：
 <strong>模擬無法真實再現現實世界的現象，因此必須有實機測試</strong>。
-本專案 201 項全部是 verification，這篇論文說明那不是我偷懶，而是這個領域的共識分界。</p>
+本專案 205 項全部是 verification，這篇論文說明那不是我偷懶，而是這個領域的共識分界。</p>
 <table>
 <tr><th style="width:90px">指引</th><th style="width:110px">本專案</th><th>對照結果</th></tr>
 <tr><td>PE2 建立執行期評估模型（digital twin）</td><td style="color:var(--ok)">已有</td>
@@ -1344,7 +1345,7 @@ MoveIt、也沒有把本專案的 URDF 餵進 <code>ros2_control</code>。
 套件可用性是查 conda channel 的 metadata 確認的（真實查詢，非推測），
 但「查得到套件」與「接起來會動」之間還有距離。</p>
 <p>另外一個要先想清楚的取捨：接上 ROS 2 會讓本專案<strong>失去目前最大的優點</strong>——
-現在整條鏈（CAD → URDF → MJCF → 模擬 → 韌體）是自足的、可用 201 項檢查釘住的。
+現在整條鏈（CAD → URDF → MJCF → 模擬 → 韌體）是自足的、可用 205 項檢查釘住的。
 換成 MoveIt + ros2_control 之後，IK 與控制器變成外部黑箱，
 T1（解析解對照）、T4（差異測試）、T7（黃金回歸）都要重新設計成「驗證我們怎麼<em>用</em>它」
 而不是「驗證我們算得對」。這不見得不值得，但那是另一個專案的規模。</p>
@@ -1434,7 +1435,7 @@ T1（解析解對照）、T4（差異測試）、T7（黃金回歸）都要重�
   <td>電流當力矩代理。SG90 堵轉電流一般引用在 0.7–1 A 級，
   <strong>但這正是本專案會堅持要實測而不是引用的數字</strong></td></tr>
 </table>
-<p class="small">補上這兩樣之後，本專案 201 項 verification 才有機會變成一部分 validation。
+<p class="small">補上這兩樣之後，本專案這些 verification 才有機會變成一部分 validation。
 在那之前，<a href="#vv">驗證章節</a>那句「沒有實體硬體可量測」不是免責聲明，是事實陳述。</p>
 
 <h3>四、text-to-CAD：本專案的起點，以及一個尷尬的巧合</h3>
@@ -1474,7 +1475,7 @@ T1（解析解對照）、T4（差異測試）、T7（黃金回歸）都要重�
 <li>ROS 的執行期驗證做不到——沒有狀態可監視，MTL 性質也就無從判定</li>
 <li>SAGE 的配對比對做不到——實機那側沒有位置／速度／力矩</li>
 <li>LeRobot 的模仿學習做不到——遙操作要靠領導臂的反驅與位置回報</li>
-<li>201 項檢查因此<strong>結構上只能停在 verification</strong></li>
+<li>205 項檢查因此<strong>結構上只能停在 verification</strong></li>
 </ul>
 <p>三條出路，代價各不相同：</p>
 <ol>
@@ -1482,11 +1483,151 @@ T1（解析解對照）、T4（差異測試）、T7（黃金回歸）都要重�
 成本最低，但要自己接線與寫韌體，而且電流換力矩本身是個需要校正的近似</li>
 <li><strong>換匯流排伺服</strong>（STS3215 之類）。一次拿到位置／速度／負載／溫度，
 還打開 LeRobot 整個生態。代價是<strong>整支手臂要重畫</strong>——伺服外形、扭矩、
-安裝介面全都不同，201 項驗證裡與 SG90 常數綁定的部分（例如推導出 1.10 mm 壁厚上限的那條）全部作廢</li>
+安裝介面全都不同，驗證項目裡與 SG90 常數綁定的部分（例如推導出 1.10 mm 壁厚上限的那條）全部作廢</li>
 <li><strong>維持現狀，明確承認邊界</strong>。把本專案定位成「機構設計與模擬管線的驗證示範」，
 不追求閉環。這是目前的狀態，也是我沒有擅自改動的理由</li>
 </ol>
 <p>這是取捨而不是待辦事項，該由你決定。</p>
+</div>
+
+<h2 id="build">動手製作前的調查：兩個 build blocker 與一份先做清單</h2>
+<p class="lead">要真的把它做出來，先查那些<strong>我在 CAD 裡填了具體數字、而填錯就做不出來</strong>的地方。
+查完發現兩個真正的 blocker，其中一個是設計本身的錯，不是製造難度。</p>
+
+<figure>
+  <img src="renders/build_risk.png" alt="左：耳片壁厚預算表；右：舵盤花鍵整齒索引與 j4 行程">
+  <figcaption>左：壁厚的預算表。<strong>標稱 1.10 mm 已是 SG90 的幾何下限</strong>，
+  再扣掉同型異廠的本體浮動就剩 0.80 mm。右：舵盤只能按整齒裝，
+  模型要求的 30° 落在齒與齒之間。</figcaption>
+</figure>
+
+<div class="card fail">
+<h4>Blocker 1：j4 的舵盤索引角在花鍵上裝不出來 <span class="tag silent">靜默</span></h4>
+<p>SG90 的輸出花鍵是 <strong>21 齒 → 17.14°/齒</strong>，舵盤只能離散地按整齒安裝。
+而模型裡 <code>HORN_INDEX_DEG["j4_wrist"] = 30.0</code>，<strong>= 1.75 齒，物理上裝不出來</strong>。</p>
+<p>影響是實質的，不是四捨五入的問題。j4 行程寬度固定 180°，索引角只是平移它，
+而腕部這支手臂需要到 <strong>+118°</strong>：</p>
+<table>
+<tr><th style="width:130px">安裝</th><th style="width:190px">j4 行程</th><th>能否到 +118°</th></tr>
+<tr><td>1 齒（17.14°）</td><td>[−72.9°, +107.1°]</td><td style="color:var(--bad)">✗ 出界 10.9°</td></tr>
+<tr><td><strong>2 齒（34.29°）</strong></td><td>[−55.7°, +124.3°]</td><td style="color:var(--ok)">✓ 還有 6.3° 餘裕</td></tr>
+<tr><td>模型現值（30°）</td><td>[−60.0°, +120.0°]</td><td style="color:var(--warn)">數字可行但裝不出來</td></tr>
+</table>
+<p><strong>修法</strong>：常數改成 <code>34.2857</code>（= 2 × 360/21）。
+但這會動到 T7 黃金基準與 j4 每一個 <code>write()</code> 值，
+所以<strong>我沒有擅自改</strong>——同 v2 接 URDF 那個判斷。</p>
+<p><strong>為什麼原本的測試沒抓到</strong>：測試檢查的是「行程寬度＝180°」與「索引角與極限一致」，
+兩者在 30° 下都成立。<strong>當時沒有任何一項知道花鍵是離散的</strong>。</p>
+<p><strong>已經補上了</strong>：T2 新增「舵盤索引角必須是整齒」，常數 <code>SPLINE_TEETH = 21</code>
+放在 <code>HORN_INDEX_DEG</code> 旁邊。這條檢查<strong>現在是失敗的</strong>——
+套件因此回報 <strong>204/205</strong> 而不是全過。這是刻意的：
+把已知缺陷寫成散文而不寫成測試，正是這個專案存在要避免的事。
+等索引角改成 34.2857（並重新基準化 T7）之後它就會通過。</p>
+</div>
+
+<div class="card fail">
+<h4>Blocker 2：耳片壁厚已在下限，而 SG90 是被大量翻製的零件</h4>
+<p><a href="#ecosystem">T10 那節</a>算出耳片螺孔的壁厚上限是 1.10 mm，是 SG90 的幾何決定的。
+問題是 SG90 <strong>沒有單一製造商</strong>：它由中國數百家小廠翻製，
+「尺寸、速度、扭矩、軸的大小會依來源甚至批次大幅變動」，
+資料表寫 22.5 mm 的寬度<strong>實測有約 0.3 mm 的浮動</strong>，
+而且<strong>一批的舵盤常常裝不上另一批的軸</strong>。</p>
+<p>對這個設計的意義很直接：0.3 mm 的本體浮動會把 1.10 mm 的壁吃到 <strong>0.80 mm</strong>，
+而 0.4 mm 的裝配間隙也幾乎被吃光。<strong>最脆弱的位置正好是 T10 已經標記為「無法再改善」的那一處。</strong></p>
+<p><strong>可行的做法</strong>：</p>
+<ol>
+<li><strong>五顆伺服買同一批</strong>，到手先量：本體長寬、耳片孔距、舵盤花鍵</li>
+<li>量到的值填回 <code>cad/sg90_params.py</code> —— 它是<strong>單一來源</strong>，
+改一個常數整組零件與整套驗證都會跟著重算（包含那條推導出來的壁厚下限）</li>
+<li>材料<strong>用 PETG 不要用 PLA</strong>。理由不是偏好：自攻螺絲在脆性材料上會直接裂，
+PETG 韌性夠；而 0.80–1.10 mm 的壁正是最會裂的地方</li>
+</ol>
+</div>
+
+<h3>尺寸選擇的驗算</h3>
+<table>
+<tr><th style="width:150px">我填的值</th><th style="width:90px">查證結果</th><th>依據</th></tr>
+<tr><td>M2 攻牙孔 <strong>Ø1.7</strong></td><td style="color:var(--ok)">正確</td>
+  <td>自攻螺絲的引孔應為外徑的 85–90%；M2 → 1.7–1.8 mm。1.7 是 85%，偏緊端，
+  對 PETG 合理</td></tr>
+<tr><td>軸承座 <strong>Ø10.1</strong>（裝 Ø10 的 623ZZ）</td><td style="color:var(--warn)">需實印驗證</td>
+  <td>壓配的建議是<strong>負間隙</strong>（PLA 每側 0.05、PETG 可到 0.10）。
+  Ø10.1 是<strong>正</strong>間隙 +0.1 —— 但 FDM 的孔實際會比模型小 0.1–0.3 mm，
+  所以印出來大概落在 9.8–10.0，剛好變成壓配。
+  <strong>這是碰巧不是設計</strong>，而且高度依賴印表機。必須印試片實測</td></tr>
+<tr><td>裝配間隙 <strong>0.4 mm/側</strong></td><td style="color:var(--warn)">偏緊</td>
+  <td>校準良好的 FDM 在 XY 約 ±0.2 mm，加上伺服本體 0.3 mm 浮動就吃光了。
+  建議先印一個伺服座試片試裝</td></tr>
+</table>
+
+<h3>電源：不能從 Arduino 供電</h3>
+<p>五顆 SG90，每顆堵轉電流約 <strong>0.5–0.7 A</strong>，同時動作時合計 <strong>2.5–3.5 A</strong>。
+Arduino 的穩壓器承受不了，會 brownout 或直接燒。需要：</p>
+<ul>
+<li>獨立 <strong>5–6 V、≥3 A</strong> 電源（或 2S 鋰電 + 5V/3A UBEC）</li>
+<li><strong>共地</strong>：電源的 GND 必須另接一條線到 Arduino 的 GND</li>
+<li>粗一點的線 + 電源端加電容，降低電壓跌落</li>
+</ul>
+<p class="small">注意這裡的 0.5–0.7 A 是社群與資料表的引用值。
+依<a href="#ecosystem">前一節</a>的邏輯，這正是本專案會堅持實測的數字 ——
+而量它需要的 INA219 也正好是補 validation 缺口要用的那一顆。</p>
+
+<h3>組裝順序：伺服要先歸中再上機</h3>
+<p>這一條所有教學都強調，而且是<strong>不可逆的</strong>：舵盤裝上去之後角度就固定了。</p>
+<ol>
+<li><strong>先通電把每顆伺服轉到 90°（中位）</strong>，保持通電再裝舵盤 ——
+  否則關節的行程會有一半被機構極限吃掉</li>
+<li>裝舵盤時若卡不進去、或裝進去孔不在正交方向，把它拔起來轉約 45° 再試</li>
+<li><strong>j4 的舵盤裝在 +2 齒（34.29°）</strong>，不是中位（見 Blocker 1）</li>
+<li>依 <a href="#vv">T8</a> 推導出的裝配順序組裝：<strong>先把伺服鎖上托架，再套上一節連桿的叉臂</strong>。
+  T8 就是依這個順序判定起子路徑的，所以順序反了會有 9 根螺絲鎖不到</li>
+</ol>
+
+<h3>建議的「先做什麼」清單</h3>
+<table>
+<tr><th style="width:40px">#</th><th style="width:230px">動作</th><th>為什麼放在這個順序</th></tr>
+<tr><td>1</td><td>買五顆同批 SG90 + 3 顆 623ZZ，到手先量</td>
+  <td>所有下游數字都由 <code>sg90_params.py</code> 推導。量完才知道要不要改</td></tr>
+<tr><td>2</td><td>印公差試片：伺服座 + 軸承座 + 兩個 Ø1.7 孔</td>
+  <td>幾分鐘的事，但決定 Ø10.1 與 0.4 mm 間隙對不對。
+  Printables 上有現成的孔公差量規與軸承校正件</td></tr>
+<tr><td>3</td><td>量到的值填回 <code>sg90_params.py</code>，重跑 <code>tests/run_all.py</code></td>
+  <td>整套檢查會重新推導，包含壁厚下限。這步是整個驗證系統真正兌現價值的地方</td></tr>
+<tr><td>4</td><td>決定 j4 索引角（建議 34.2857），重新基準化 T7</td>
+  <td>Blocker 1。這一改會動到 <code>write()</code> 值，先決定再印</td></tr>
+<tr><td>5</td><td>PETG 印全部 8 件，孔周 100% 填充、多加牆</td>
+  <td>0.80–1.10 mm 的壁需要韌性材料與足夠牆數</td></tr>
+<tr><td>6</td><td>接獨立 5 V/3 A 電源，共地，先單顆歸中</td>
+  <td>組裝前的最後一步；歸中之後才碰舵盤</td></tr>
+<tr><td>7</td><td>依 T8 順序組裝</td>
+  <td>先鎖伺服再套叉臂</td></tr>
+</table>
+
+<h3>可用的開源資源</h3>
+<table>
+<tr><th style="width:220px">資源</th><th>用途</th></tr>
+<tr><td><a href="https://www.printables.com/model/466114-hole-tolerance-gauge-for-designing-3d-prints-with">Hole Tolerance Gauge</a></td>
+  <td>孔徑量規，每欄遞增 0.0–0.3 mm。用來定 Ø1.7 與 Ø10.1 要不要補償</td></tr>
+<tr><td><a href="https://www.printables.com/model/10116-printer-tolerance-test">Printer Tolerance Test</a> ·
+  <a href="https://www.printables.com/model/716940-diameter-tolerance-test">Diameter Tolerance Test</a></td>
+  <td>直接量出自己印表機在 XY 的實際偏差</td></tr>
+<tr><td><a href="https://tools.creative3dp.com/tools/hole-tolerance-calculator/">Hole Tolerance Calculator</a> ·
+  <a href="https://grandpacad.com/en/tools/tolerance-fit-calculator">Tolerance &amp; Fit Calculator</a></td>
+  <td>壓配／滑配／間隙的建議值，含軸承與螺絲</td></tr>
+<tr><td><a href="http://learn.robotgeek.com/robotgeek-101-1/233-robotgeek-101-servo-centering.html">RobotGeek 101: Servo Centering</a></td>
+  <td>伺服歸中的標準流程</td></tr>
+<tr><td><a href="https://loginov-rocks.medium.com/calibrate-4-dof-robot-arm-mearm-for-inverse-kinematics-part-2-16698b674694">MeArm IK 校正</a></td>
+  <td>同樣是 SG90 手臂，記錄了實機角度與模型角度對不上時怎麼校</td></tr>
+<tr><td><a href="https://github.com/AntoBrandi/Arduino-Bot">Arduinobot</a></td>
+  <td>韌體與 ROS 2 介面的參考切法（見<a href="#ros">ROS 節</a>）</td></tr>
+</table>
+
+<div class="card note">
+<h4>一句話總結這節</h4>
+<p>設計本身沒有製造難度上的問題——8 件都放得進標準床、都有貼床面、最差擺法只有 11% 需支撐。
+真正的風險是<strong>兩個尺寸決策</strong>：一個是模型裡填了物理上裝不出來的舵盤角度（可修，但會動到已發表數字），
+另一個是壁厚已在 SG90 的幾何下限、而 SG90 本身是尺寸會浮動的翻製零件（要靠實測與換材料吸收）。
+兩者都不是印出來才會發現的問題，但都是<strong>不查資料就不會發現</strong>的問題。</p>
 </div>
 
 <h2 id="limits">已知限制</h2>
