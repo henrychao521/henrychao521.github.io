@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SG90-Arm · 入口</title>
+<style>
+:root{--bg:#0d1117;--panel:#151b23;--panel2:#1c232d;--line:#2a323d;--fg:#e6edf3;
+  --dim:#8b98a5;--accent:#4f9cf9;--fk:#f0883e;--ok:#3fb950;--bad:#f85149;--warn:#d29922;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);min-height:100vh;
+  font:15px/1.7 -apple-system,"PingFang TC","Noto Sans TC",Helvetica,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:38px 24px 70px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:.3px}
+.sub{color:var(--dim);font-size:14px;margin:0 0 26px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:11px;margin:0 0 30px}
+.kpi div{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:11px 13px}
+.kpi b{display:block;font-size:19px;font-family:var(--mono);color:var(--accent);line-height:1.35}
+.kpi span{font-size:11.5px;color:var(--dim)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:16px;margin-bottom:32px}
+a.card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:20px 22px;text-decoration:none;color:inherit;transition:.13s;position:relative;overflow:hidden}
+a.card:hover{border-color:#3d4855;background:var(--panel2);transform:translateY(-2px)}
+a.card .ic{font-size:24px;line-height:1;margin-bottom:11px;display:block}
+a.card h2{font-size:17px;margin:0 0 6px;color:var(--fg)}
+a.card p{font-size:13px;color:var(--dim);margin:0 0 10px;line-height:1.6}
+a.card .go{font-size:12px;font-family:var(--mono);color:var(--accent)}
+a.card .bar{position:absolute;left:0;top:0;bottom:0;width:3px}
+.b1{background:var(--accent)} .b2{background:var(--ok)} .b3{background:var(--fk)}
+h3{font-size:15px;margin:30px 0 9px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border:1px solid var(--line);padding:7px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel2);width:150px;color:#c9d5e1;font-weight:600}
+code{font-family:var(--mono);font-size:.88em;background:var(--panel2);padding:1px 5px;
+  border-radius:4px;color:#a5d6ff}
+pre{background:#0a0e14;border:1px solid var(--line);border-radius:8px;padding:12px 14px;
+  overflow-x:auto;font-family:var(--mono);font-size:12px;margin:9px 0}
+.pill{display:inline-block;font-size:11px;font-family:var(--mono);padding:2px 9px;
+  border-radius:20px;vertical-align:middle}
+.pill.on{background:rgba(63,185,80,.15);color:var(--ok);border:1px solid rgba(63,185,80,.35)}
+.pill.off{background:rgba(248,81,73,.15);color:var(--bad);border:1px solid rgba(248,81,73,.35)}
+.pill.wait{background:rgba(139,152,165,.14);color:var(--dim);border:1px solid var(--line)}
+.note{font-size:12.5px;color:var(--dim);margin:9px 0}
+.copy{cursor:pointer;border:1px solid var(--line);background:var(--panel2);color:var(--fg);
+  font:inherit;font-size:11.5px;padding:2px 9px;border-radius:5px;margin-left:7px}
+.copy:hover{border-color:#3d4855}
+footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>SG90-Arm</h1>
+<p class="sub">5 軸伺服機械手臂 · text-to-CAD → URDF → 物理模擬 → Arduino 韌體
+&nbsp;<span id="backend" class="pill wait">後端檢查中…</span></p>
+
+<div class="kpi">
+  <div><b>8</b><span>3D 列印零件</span></div>
+  <div><b>5</b><span>SG90 伺服馬達</span></div>
+  <div><b>203 g</b><span>整機質量</span></div>
+  <div><b>38%</b><span>最壞姿態堵轉佔用</span></div>
+  <div><b>201</b><span>驗證檢查（全過）</span></div>
+  <div><b>33</b><span>記錄在案的失敗</span></div>
+</div>
+
+<div class="cards">
+  <a class="card" href="playground.html"><span class="bar b1"></span>
+    <span class="ic">⌨️</span>
+    <h2>Arduino 沙盒</h2>
+    <p>寫 <code>servo.write()</code> 控制手臂。邊打字邊看 3D 運動學預覽，
+       一鍵送去 MuJoCo 跑真實物理，可匯出 <code>.ino</code> 燒錄。</p>
+    <span class="go">開啟 →</span></a>
+
+  <a class="card" href="compare.html"><span class="bar b3"></span>
+    <span class="ic">⇄</span>
+    <h2>正向 vs 逆向運動學</h2>
+    <p>同一支手臂、同一組物理、同一個任務，兩種思考方式並排：
+       左寫關節角度，右寫末端座標，疊在同一個視圖比軌跡。</p>
+    <span class="go">開啟 →</span></a>
+
+  <a class="card" href="report.html#vv"><span class="bar b2" style="background:#d29922"></span>
+    <span class="ic">🔬</span>
+    <h2>驗證系統</h2>
+    <p>12 層測試（幾何／解析解／不變量／蛻變／差異／收斂／性質／回歸／可組裝／可列印／網頁／靜態發布）共 201 項，
+       外加變異測試驗證這套測試本身有效。</p>
+    <span class="go">看報告 →</span></a>
+
+  <a class="card" href="report.html"><span class="bar b2"></span>
+    <span class="ic">📓</span>
+    <h2>專案記錄頁</h2>
+    <p>完整過程：SG90 幾何量測、手臂設計、模擬環境調查、扭矩分析、
+       模擬影片，以及 33 項失敗紀錄與已知限制。</p>
+    <span class="go">開啟 →</span></a>
+</div>
+
+
+<h3>手機 / 平板上的操作</h3>
+<p class="note">兩個互動頁在窄螢幕會自動改成上下堆疊（3D 視圖在上、編輯器在下）。
+3D 視圖單指拖曳可旋轉、雙指縮放。程式碼編輯在手機上可用但不好打字，
+建議手機看模擬、電腦寫程式。</p>
+
+<h3>啟動與停止</h3>
+<pre><code># 啟動（前景）
+cd ~/3d/servo-arm/sim &amp;&amp; ../.venv/bin/python serve_playground.py
+
+# 只綁本機，不對 Tailscale 開放
+../.venv/bin/python serve_playground.py --no-tailscale
+
+# 遠端再加一層密碼
+../.venv/bin/python serve_playground.py --auth
+</code></pre>
+
+
+<div style="max-width:900px;margin:18px auto;padding:14px 16px;border:1px solid #30363d;
+     border-radius:8px;background:#161b22;color:#c9d1d9;font-size:13px;line-height:1.7">
+  <b style="color:#d29922">這是靜態發布版</b>
+  可用：Arduino 程式碼編譯、時間軸、3D 運動學預覽、匯出 .ino、以及完整的專案記錄。<br>
+  需要本機伺服器：「送去 MuJoCo 跑物理」——真實物理是在本機跑 MuJoCo，
+  沒有辦法放在靜態主機上。下方影片是本機實跑錄下來的結果，不是動畫。
+  <div style="margin-top:10px">
+    <video controls muted loop playsinline style="max-width:100%;border-radius:6px"
+           src="renders/mujoco_run.mp4"></video>
+  </div>
+  <div style="margin-top:8px;color:#8b949e">
+    要跑真實物理：<code>cd ~/3d/servo-arm/sim &amp;&amp; ../.venv/bin/python serve_playground.py</code>
+  </div>
+</div>
+<footer>
+本頁與兩個互動系統都由 <code>sim/make_playground.py</code> 從 CAD 幾何生成 ·
+所有數值來自本機實際量測與模擬
+</footer>
+
+</div>
+<script>
+(function () {
+  var b = document.getElementById("backend");
+  if (b) {
+    b.className = "pill off";
+    b.textContent = "靜態版本 · 物理後端需在本機執行";
+  }
+  /* #authmode lives inside the "從哪裡連" table, which this build strips -- so
+     it must be guarded.  Writing to it unconditionally threw
+     "Cannot set properties of null" and T11 caught it on the next run.  The
+     static-build explanation is in STATIC_NOTE, which always exists. */
+})();
+document.querySelectorAll(".copy").forEach(btn => {
+  btn.onclick = async () => {
+    const t = document.getElementById(btn.dataset.t).textContent;
+    try { await navigator.clipboard.writeText(t); btn.textContent = "已複製"; }
+    catch { btn.textContent = "複製失敗"; }
+    setTimeout(() => btn.textContent = "複製", 1400);
+  };
+});
+</script>
+</body>
+</html>

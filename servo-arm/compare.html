@@ -1,0 +1,1247 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SG90-Arm — 正向 vs 逆向運動學對照</title>
+<style>
+:root{
+  --bg:#0d1117;--panel:#151b23;--panel2:#1c232d;--line:#2a323d;--fg:#e6edf3;
+  --dim:#8b98a5;--fk:#f0883e;--ik:#4f9cf9;--ok:#3fb950;--bad:#f85149;--warn:#d29922;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);overflow:hidden;
+  font:14px/1.6 -apple-system,"PingFang TC","Noto Sans TC",Helvetica,sans-serif}
+#app{display:flex;flex-direction:column;height:100vh}
+header{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--panel);
+  border-bottom:1px solid var(--line);flex-wrap:wrap;flex:0 0 auto}
+header h1{font-size:13px;margin:0 6px 0 0;white-space:nowrap}
+header .sp{flex:1}
+button{font:inherit;font-size:12.5px;padding:5px 12px;border-radius:6px;cursor:pointer;
+  border:1px solid var(--line);background:var(--panel2);color:var(--fg)}
+button:hover{border-color:#3d4855;background:#242c37}
+button.primary{background:#1f6feb;border-color:#1f6feb;color:#fff}
+button.go{background:#238636;border-color:#238636;color:#fff}
+button:disabled{opacity:.45;cursor:not-allowed}
+select{font:inherit;font-size:12.5px;padding:4px 8px;border-radius:6px;
+  background:var(--panel2);color:var(--fg);border:1px solid var(--line)}
+a{color:var(--ik)}
+
+#main{display:flex;flex:1;min-height:0}
+#editors{flex:1 1 44%;min-width:300px;display:flex;flex-direction:column;
+  border-right:1px solid var(--line);min-height:0}
+.pane{flex:1;display:flex;flex-direction:column;min-height:0}
+.pane+.pane{border-top:1px solid var(--line)}
+.phead{display:flex;align-items:center;gap:8px;padding:5px 11px;background:var(--panel2);
+  font-size:12px;flex:0 0 auto}
+.phead .dot{width:9px;height:9px;border-radius:9px;flex:0 0 auto}
+.phead b{font-weight:600}
+.phead small{color:var(--dim);font-size:11px}
+.fk .dot{background:var(--fk)} .ik .dot{background:var(--ik)}
+textarea{flex:1;background:#0a0e14;color:#c9d1d9;border:0;outline:0;resize:none;
+  font-family:var(--mono);font-size:11.5px;line-height:1.55;padding:9px 11px;
+  white-space:pre;overflow:auto;tab-size:2;min-height:0}
+.msg{flex:0 0 auto;padding:4px 11px;font-size:11.5px;font-family:var(--mono);
+  min-height:24px;white-space:pre-wrap;border-top:1px solid var(--line)}
+.msg.ok{color:var(--ok)} .msg.err{color:var(--bad)} .msg.warn{color:var(--warn)}
+
+#right{flex:1 1 56%;min-width:320px;display:flex;flex-direction:column;min-height:0}
+#view{flex:1;position:relative;min-height:0;background:#11161d}
+canvas{display:block;width:100%;height:100%;cursor:grab}
+canvas:active{cursor:grabbing}
+#legend{position:absolute;left:10px;top:10px;font-family:var(--mono);font-size:11px;
+  line-height:1.7;pointer-events:none}
+#legend i{display:inline-block;width:16px;height:2.5px;vertical-align:middle;margin-right:6px}
+#transport{display:flex;align-items:center;gap:9px;padding:6px 12px;
+  border-top:1px solid var(--line);background:var(--panel);flex:0 0 auto}
+#scrub{flex:1;accent-color:var(--ik)}
+#tlabel{font-family:var(--mono);font-size:11.5px;color:var(--dim);min-width:110px;text-align:right}
+#cmp{flex:0 0 auto;max-height:52%;overflow-y:auto;border-top:1px solid var(--line);
+  background:var(--panel);padding:10px 12px}
+table{border-collapse:collapse;width:100%;font-size:11.5px;margin-bottom:9px}
+th,td{border:1px solid var(--line);padding:4px 8px;text-align:right}
+th{background:var(--panel2);color:#c9d5e1}
+td:first-child,th:first-child{text-align:left}
+td.fk{color:var(--fk);font-family:var(--mono)} td.ik{color:var(--ik);font-family:var(--mono)}
+h3{margin:0 0 6px;font-size:12.5px;color:#c9d5e1}
+h3+p{margin-top:0}
+.note{font-size:11.5px;color:var(--dim);margin:7px 0}
+.win{color:var(--ok)}
+@media(max-width:900px){#main{flex-direction:column}
+  #editors{flex:1 1 auto;border-right:0;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<header>
+  <h1>正向 vs 逆向運動學 · 對照系統</h1>
+  <button id="btnRun" class="primary">▶ 兩邊都編譯</button>
+  <button id="btnMj" class="go">兩邊都送去 MuJoCo</button>
+  <span class="sp"></span>
+  <select id="task">
+    <option value="pickplace">任務：取放方塊</option>
+    <option value="straight">任務：末端走直線</option>
+    <option value="square">任務：畫一個方框</option>
+  </select>
+  <a href="index.html" style="font-size:12px">← 回 Arduino 沙盒</a>
+</header>
+
+<div id="main">
+  <div id="editors">
+    <div class="pane fk">
+      <div class="phead"><span class="dot"></span><b>正向運動學</b>
+        <small>你寫關節角度 · Arduino Servo.write()</small></div>
+      <textarea id="fkCode" spellcheck="false"></textarea>
+      <div class="msg" id="fkMsg"></div>
+    </div>
+    <div class="pane ik">
+      <div class="phead"><span class="dot"></span><b>逆向運動學</b>
+        <small>你寫末端座標 · moveTo / lineTo / grip（mm）</small></div>
+      <textarea id="ikCode" spellcheck="false"></textarea>
+      <div class="msg" id="ikMsg"></div>
+    </div>
+  </div>
+
+  <div id="right">
+    <div id="view">
+      <canvas id="cv"></canvas>
+      <div id="legend"></div>
+    </div>
+    <div id="transport">
+      <button id="btnPlay">⏸</button>
+      <input id="scrub" type="range" min="0" max="1000" value="0">
+      <span id="tlabel">0.00 s</span>
+    </div>
+    <div id="cmp"></div>
+  </div>
+</div>
+</div>
+
+<script>
+"use strict";
+const ARM = {"links":{"base_link":[{"t":"box","c":[0,0,0.003],"s":[0.1,0.1,0.006],"m":"pla"},{"t":"cyl","c":[0,0,0.016100000000000003],"r":0.03,"h":0.0202,"m":"pla"},{"t":"cyl","c":[0,0,0.032600000000000004],"r":0.027,"h":0.0128,"m":"boss"},{"c":[0.0,-0.00535,0.02165],"s":[0.0118,0.0225,0.0227],"m":"body","t":"box"},{"c":[0.0,0.0,0.02745],"s":[0.0118,0.0324,0.0025],"m":"tab","t":"box"},{"c":[0.0,0.0,0.035],"s":[0.0118,0.0118,0.004],"m":"boss","t":"box"}],"turntable":[{"t":"cyl","c":[0,0,0.0085],"r":0.029,"h":0.005,"m":"pla"},{"t":"box","c":[-0.0088,-0.005,0.025500000000000002],"s":[0.004,0.036000000000000004,0.03],"m":"pla"},{"c":[-0.01135,-0.00535,0.027],"s":[0.0227,0.0225,0.0118],"m":"body","t":"box"},{"c":[-0.00555,0.0,0.027],"s":[0.0025,0.0324,0.0118],"m":"tab","t":"box"},{"c":[0.002,0.0,0.027],"s":[0.004,0.0118,0.0118],"m":"boss","t":"box"}],"upper_arm":[{"t":"box","c":[0.0097,-0.005,0.036],"s":[0.008,0.036,0.098],"m":"pla"},{"c":[0.01135,-0.00535,0.07],"s":[0.0227,0.0225,0.0118],"m":"body","t":"box"},{"c":[0.00555,0.0,0.07],"s":[0.0025,0.0324,0.0118],"m":"tab","t":"box"},{"c":[-0.002,0.0,0.07],"s":[0.004,0.0118,0.0118],"m":"boss","t":"box"}],"forearm":[{"t":"box","c":[-0.0097,-0.005,0.028],"s":[0.008,0.036,0.088],"m":"pla"},{"c":[-0.01135,-0.00535,0.06],"s":[0.0227,0.0225,0.0118],"m":"body","t":"box"},{"c":[-0.00555,0.0,0.06],"s":[0.0025,0.0324,0.0118],"m":"tab","t":"box"},{"c":[0.002,0.0,0.06],"s":[0.004,0.0118,0.0118],"m":"boss","t":"box"}],"wrist":[{"t":"box","c":[-0.0006,-0.007,0.022],"s":[0.023,0.054,0.07],"m":"pla"},{"c":[0.01135,-0.01635,0.042],"s":[0.0227,0.0225,0.0118],"m":"body","t":"box"},{"c":[0.00555,-0.011,0.042],"s":[0.0025,0.0324,0.0118],"m":"tab","t":"box"},{"c":[-0.002,-0.011,0.042],"s":[0.004,0.0118,0.0118],"m":"boss","t":"box"}],"jaw_driven":[{"t":"box","c":[-0.0075,0.003,0.017],"s":[0.003,0.009,0.034],"m":"pla"},{"t":"box","c":[-0.0075,0.00725,0.031],"s":[0.003,0.0055,0.008],"m":"pla"}],"jaw_idler":[{"t":"box","c":[-0.0075,-0.003,0.017],"s":[0.003,0.009,0.034],"m":"pla"},{"t":"box","c":[-0.0075,-0.00725,0.031],"s":[0.003,0.0055,0.008],"m":"pla"}]},"root":"base_link","tree":[{"joint":"j1_base_yaw","parent":"base_link","child":"turntable","origin":[0,0,0.033],"axis":[0,0,1],"lo":-1.570796,"hi":1.570796,"mimic":null},{"joint":"j2_shoulder","parent":"turntable","child":"upper_arm","origin":[0,0,0.027],"axis":[1,0,0],"lo":-1.570796,"hi":1.570796,"mimic":null},{"joint":"j3_elbow","parent":"upper_arm","child":"forearm","origin":[0,0,0.07],"axis":[1,0,0],"lo":-1.570796,"hi":1.570796,"mimic":null},{"joint":"j4_wrist","parent":"forearm","child":"wrist","origin":[0,0,0.06],"axis":[1,0,0],"lo":-1.047198,"hi":2.094395,"mimic":null},{"joint":"j5_gripper","parent":"wrist","child":"jaw_driven","origin":[0,-0.011,0.042],"axis":[1,0,0],"lo":-0.1,"hi":0.7,"mimic":null},{"joint":"j5_gripper_mimic","parent":"wrist","child":"jaw_idler","origin":[0,0.011,0.042],"axis":[1,0,0],"lo":-0.7,"hi":0.1,"mimic":{"of":"j5_gripper","mult":-1.0}}],"servo":{"arduinoMinUs":544,"arduinoMaxUs":2400,"frameS":0.02,"minUs":500.0,"maxUs":2400.0,"travelRad":3.141592653589793,"speedRadS":10.471975511965976,"deadbandUs":5.0,"stallNm":0.1765197,"sign":{"j1_base_yaw":1.0,"j2_shoulder":1.0,"j3_elbow":-1.0,"j4_wrist":1.0,"j5_gripper":1.0},"hornIndexDeg":{"j1_base_yaw":0.0,"j2_shoulder":0.0,"j3_elbow":0.0,"j4_wrist":30.0,"j5_gripper":0.0},"order":["j1_base_yaw","j2_shoulder","j3_elbow","j4_wrist","j5_gripper"]},"payload":{"pos":[0.0,-0.1,0.0075],"half":0.0075}};
+
+/* SG90-Arm 共用核心 — 由 make_pages.py 注入 playground.html 與 compare.html。
+   兩個頁面共用同一份解析器、伺服模型與繪圖，避免出現兩套會各自漂移的實作。
+   `const ARM = ...` 由建置腳本注入本檔之前。 */
+
+/* ============================ Arduino 子集直譯器 ============================
+   支援：setup()/loop()、servo.write()/writeMicroseconds()/attach()、delay()、
+   int 變數、指派、++/--/+=/-=、for、while、if/else、整數運算式。
+   刻意不支援：函式定義、陣列（servos[] 除外）、浮點、字串、Serial。
+   碰到不支援的語法會回報行號，而不是安靜略過。                                */
+
+const SERVO_ALIAS = (() => {
+  const o = ARM.servo.order, m = {};
+  const friendly = ["base", "shoulder", "elbow", "wrist", "gripper"];
+  o.forEach((j, i) => {
+    m[j] = j; m[friendly[i]] = j; m["j" + (i + 1)] = j; m["servo" + i] = j;
+  });
+  return m;
+})();
+
+function tokenize(src) {
+  const T = [], re = /\s+|\/\/[^\n]*|\/\*[\s\S]*?\*\/|#[^\n]*/y;
+  let i = 0, line = 1;
+  const push = (t, v) => T.push({ t, v, line });
+  while (i < src.length) {
+    re.lastIndex = i;
+    const sk = re.exec(src);
+    if (sk && sk[0].length) { line += (sk[0].match(/\n/g) || []).length; i += sk[0].length; continue; }
+    const c = src[i];
+    if (/[A-Za-z_]/.test(c)) {
+      let j = i; while (j < src.length && /[A-Za-z0-9_]/.test(src[j])) j++;
+      push("id", src.slice(i, j)); i = j; continue;
+    }
+    if (/[0-9]/.test(c)) {
+      let j = i; while (j < src.length && /[0-9]/.test(src[j])) j++;
+      if (src[j] === "." ) { j++; while (j < src.length && /[0-9]/.test(src[j])) j++; }
+      push("num", parseFloat(src.slice(i, j))); i = j; continue;
+    }
+    const three = src.substr(i, 3), two = src.substr(i, 2);
+    if (["<<=", ">>="].includes(three)) { push("op", three); i += 3; continue; }
+    if (["==","!=","<=",">=","&&","||","++","--","+=","-=","*=","/="].includes(two)) {
+      push("op", two); i += 2; continue;
+    }
+    if ("+-*/%<>=!&|^(){}[];,.".includes(c)) { push("op", c); i++; continue; }
+    throw { line, msg: `無法辨識的字元 ${JSON.stringify(c)}` };
+  }
+  push("eof", null);
+  return T;
+}
+
+class Parser {
+  constructor(tokens) { this.T = tokens; this.i = 0; }
+  peek(k = 0) { return this.T[this.i + k]; }
+  next() { return this.T[this.i++]; }
+  at(t, v) { const p = this.peek(); return p.t === t && (v === undefined || p.v === v); }
+  eat(t, v) { if (this.at(t, v)) return this.next(); return null; }
+  expect(t, v) {
+    const g = this.eat(t, v);
+    if (!g) throw { line: this.peek().line, msg: `預期 ${v ?? t}，卻看到 ${JSON.stringify(this.peek().v)}` };
+    return g;
+  }
+  // ---- expressions ----
+  parseExpr() { return this.parseBin(0); }
+  parseBin(min) {
+    const PREC = { "||":1,"&&":2,"==":3,"!=":3,"<":4,">":4,"<=":4,">=":4,
+                   "+":5,"-":5,"*":6,"/":6,"%":6 };
+    let lhs = this.parseUnary();
+    for (;;) {
+      const p = this.peek();
+      if (p.t !== "op" || !(p.v in PREC) || PREC[p.v] < min) break;
+      const op = this.next().v;
+      const rhs = this.parseBin(PREC[op] + 1);
+      lhs = { k: "bin", op, a: lhs, b: rhs };
+    }
+    return lhs;
+  }
+  parseUnary() {
+    if (this.at("op", "-")) { this.next(); return { k: "neg", a: this.parseUnary() }; }
+    if (this.at("op", "!")) { this.next(); return { k: "not", a: this.parseUnary() }; }
+    if (this.at("op", "+")) { this.next(); return this.parseUnary(); }
+    return this.parsePrimary();
+  }
+  parsePrimary() {
+    if (this.at("op", "(")) { this.next(); const e = this.parseExpr(); this.expect("op", ")"); return e; }
+    if (this.at("num")) return { k: "num", v: this.next().v };
+    if (this.at("id")) {
+      const name = this.next().v;
+      if (this.at("op", "(")) {                       // 函式呼叫（map/constrain/…）
+        this.next(); const args = [];
+        if (!this.at("op", ")")) { do { args.push(this.parseExpr()); } while (this.eat("op", ",")); }
+        this.expect("op", ")");
+        return { k: "call", name, args };
+      }
+      if (this.at("op", "[")) {                        // servos[i]
+        this.next(); const idx = this.parseExpr(); this.expect("op", "]");
+        return { k: "index", name, idx };
+      }
+      return { k: "var", name };
+    }
+    throw { line: this.peek().line, msg: `運算式裡出現預期外的 ${JSON.stringify(this.peek().v)}` };
+  }
+  // ---- statements ----
+  parseBlock() {
+    this.expect("op", "{");
+    const body = [];
+    while (!this.at("op", "}")) {
+      if (this.at("eof")) throw { line: this.peek().line, msg: "區塊缺少 }" };
+      body.push(this.parseStmt());
+    }
+    this.expect("op", "}");
+    return body;
+  }
+  parseSimple() {           // for(...) 的 init/step，不吃分號
+    if (this.at("id", "int") || this.at("id", "uint8_t") || this.at("id", "long")) {
+      this.next(); const n = this.expect("id").v;
+      let init = { k: "num", v: 0 };
+      if (this.eat("op", "=")) init = this.parseExpr();
+      return { k: "decl", name: n, init };
+    }
+    const save = this.i;
+    if (this.at("id")) {
+      const name = this.next().v;
+      if (this.at("op", "++") || this.at("op", "--")) {
+        const op = this.next().v;
+        return { k: "assign", name, expr: { k: "bin", op: op[0], a: { k: "var", name }, b: { k: "num", v: 1 } } };
+      }
+      if (this.at("op", "+=") || this.at("op", "-=") || this.at("op", "*=") || this.at("op", "/=")) {
+        const op = this.next().v[0];
+        return { k: "assign", name, expr: { k: "bin", op, a: { k: "var", name }, b: this.parseExpr() } };
+      }
+      if (this.at("op", "=")) { this.next(); return { k: "assign", name, expr: this.parseExpr() }; }
+      this.i = save;
+    }
+    return { k: "expr", expr: this.parseExpr() };
+  }
+  parseStmt() {
+    const line = this.peek().line;
+    if (this.at("op", "{")) return { k: "block", body: this.parseBlock(), line };
+    if (this.at("op", ";")) { this.next(); return { k: "nop", line }; }
+    if (this.at("id", "Servo")) {                       // 宣告：登記名字後略過
+      this.next(); const names = [];
+      do { names.push(this.expect("id").v); } while (this.eat("op", ","));
+      this.expect("op", ";");
+      return { k: "servodecl", names, line };
+    }
+    if (this.at("id", "for")) {
+      this.next(); this.expect("op", "(");
+      const init = this.at("op", ";") ? null : this.parseSimple(); this.expect("op", ";");
+      const cond = this.at("op", ";") ? null : this.parseExpr(); this.expect("op", ";");
+      const step = this.at("op", ")") ? null : this.parseSimple(); this.expect("op", ")");
+      const body = this.at("op", "{") ? this.parseBlock() : [this.parseStmt()];
+      return { k: "for", init, cond, step, body, line };
+    }
+    if (this.at("id", "while")) {
+      this.next(); this.expect("op", "("); const cond = this.parseExpr(); this.expect("op", ")");
+      const body = this.at("op", "{") ? this.parseBlock() : [this.parseStmt()];
+      return { k: "while", cond, body, line };
+    }
+    if (this.at("id", "if")) {
+      this.next(); this.expect("op", "("); const cond = this.parseExpr(); this.expect("op", ")");
+      const then = this.at("op", "{") ? this.parseBlock() : [this.parseStmt()];
+      let els = null;
+      if (this.eat("id", "else")) els = this.at("op", "{") ? this.parseBlock() : [this.parseStmt()];
+      return { k: "if", cond, then, els, line };
+    }
+    // servo.write(...) / delay(...) / 指派 / 宣告
+    if (this.at("id") && this.peek(1).t === "op" && this.peek(1).v === ".") {
+      const obj = this.next().v; this.next();
+      const meth = this.expect("id").v;
+      this.expect("op", "("); const args = [];
+      if (!this.at("op", ")")) { do { args.push(this.parseExpr()); } while (this.eat("op", ",")); }
+      this.expect("op", ")"); this.expect("op", ";");
+      return { k: "method", obj: { k: "var", name: obj }, meth, args, line };
+    }
+    if (this.at("id") && this.peek(1).t === "op" && this.peek(1).v === "[") {
+      const name = this.next().v; this.next();
+      const idx = this.parseExpr(); this.expect("op", "]"); this.expect("op", ".");
+      const meth = this.expect("id").v;
+      this.expect("op", "("); const args = [];
+      if (!this.at("op", ")")) { do { args.push(this.parseExpr()); } while (this.eat("op", ",")); }
+      this.expect("op", ")"); this.expect("op", ";");
+      return { k: "method", obj: { k: "index", name, idx }, meth, args, line };
+    }
+    const s = this.parseSimple(); this.expect("op", ";"); s.line = line;
+    return s;
+  }
+  parseProgram() {
+    const fns = {}; const globals = [];
+    while (!this.at("eof")) {
+      if (this.at("id", "void") && this.peek(1).t === "id" &&
+          this.peek(2).t === "op" && this.peek(2).v === "(") {
+        this.next(); const name = this.next().v;
+        this.expect("op", "("); this.expect("op", ")");
+        fns[name] = this.parseBlock();
+        continue;
+      }
+      globals.push(this.parseStmt());
+    }
+    return { fns, globals };
+  }
+}
+
+// 兩個上限意義完全不同，先前把它們混在一起是個真 bug：
+//   BUDGET  — 要模擬多長。loop() 本來就會永遠重複，超過預算是「模擬夠了」，
+//             要乾淨截斷，不是錯誤。
+//   MAX_STEPS — 真正的無窮迴圈防護（例如 while(1) 裡沒有 delay），這才是錯誤。
+const DEFAULT_BUDGET_MS = 16000, MAX_BUDGET_MS = 60000, MAX_STEPS = 400000;
+class TimeUp {}
+
+function compile(src, budgetMs) {
+  const BUDGET = Math.max(1000, Math.min(MAX_BUDGET_MS, budgetMs || DEFAULT_BUDGET_MS));
+  const ast = new Parser(tokenize(src)).parseProgram();
+  const events = [], marks = [];
+  const vars = Object.create(null);
+  const declared = [];
+  const warn = [];
+  let t = 0, steps = 0, truncated = false;
+
+  const resolve = (node, line) => {
+    if (node.k === "index") {
+      const i = Math.round(evalE(node.idx, line));
+      if (!(i >= 0 && i < ARM.servo.order.length))
+        throw { line, msg: `servos[${i}] 超出範圍 0..${ARM.servo.order.length - 1}` };
+      return ARM.servo.order[i];
+    }
+    const n = node.name;
+    if (SERVO_ALIAS[n]) return SERVO_ALIAS[n];
+    const di = declared.indexOf(n);
+    if (di >= 0 && di < ARM.servo.order.length) return ARM.servo.order[di];
+    throw { line, msg: `不認得的伺服 ${JSON.stringify(n)}（可用：base/shoulder/elbow/wrist/gripper、j1..j5、servos[0..4]）` };
+  };
+  const evalE = (e, line) => {
+    switch (e.k) {
+      case "num": return e.v;
+      case "var":
+        if (e.name in vars) return vars[e.name];
+        throw { line, msg: `未定義的變數 ${JSON.stringify(e.name)}` };
+      case "neg": return -evalE(e.a, line);
+      case "not": return evalE(e.a, line) ? 0 : 1;
+      case "index": throw { line, msg: "陣列只能用在伺服呼叫上" };
+      case "call": {
+        const a = e.args.map(x => evalE(x, line));
+        if (e.name === "map" && a.length === 5)
+          return Math.trunc((a[0] - a[1]) * (a[4] - a[3]) / (a[2] - a[1]) + a[3]);
+        if (e.name === "constrain" && a.length === 3) return Math.min(Math.max(a[0], a[1]), a[2]);
+        if (e.name === "min") return Math.min(...a);
+        if (e.name === "max") return Math.max(...a);
+        if (e.name === "abs") return Math.abs(a[0]);
+        if (e.name === "millis") return t;
+        throw { line, msg: `不支援的函式 ${e.name}()` };
+      }
+      case "bin": {
+        const a = evalE(e.a, line), b = evalE(e.b, line);
+        switch (e.op) {
+          case "+": return a + b; case "-": return a - b;
+          case "*": return a * b;
+          case "/": return b === 0 ? 0 : Math.trunc(a / b);
+          case "%": return b === 0 ? 0 : a % b;
+          case "<": return a < b ? 1 : 0; case ">": return a > b ? 1 : 0;
+          case "<=": return a <= b ? 1 : 0; case ">=": return a >= b ? 1 : 0;
+          case "==": return a === b ? 1 : 0; case "!=": return a !== b ? 1 : 0;
+          case "&&": return (a && b) ? 1 : 0; case "||": return (a || b) ? 1 : 0;
+        }
+        throw { line, msg: `不支援的運算子 ${e.op}` };
+      }
+    }
+    throw { line, msg: "無法求值的運算式" };
+  };
+  const exec = (stmts) => {
+    for (const s of stmts) {
+      if (++steps > MAX_STEPS) throw { line: s.line, msg: "程式步數超過上限：迴圈裡沒有 delay() 嗎？" };
+      if (t > BUDGET) throw new TimeUp();
+      switch (s.k) {
+        case "nop": break;
+        case "servodecl": for (const n of s.names) if (!declared.includes(n)) declared.push(n); break;
+        case "block": exec(s.body); break;
+        case "decl": vars[s.name] = evalE(s.init, s.line); break;
+        case "assign":
+          if (!(s.name in vars)) throw { line: s.line, msg: `指派給未宣告的變數 ${JSON.stringify(s.name)}` };
+          vars[s.name] = evalE(s.expr, s.line); break;
+        case "for": {
+          if (s.init) exec([s.init]);
+          let guard = 0;
+          while (s.cond ? evalE(s.cond, s.line) : 1) {
+            if (++guard > 100000) throw { line: s.line, msg: "for 迴圈次數過多" };
+            exec(s.body);
+            if (s.step) exec([s.step]);
+            if (++steps > MAX_STEPS) throw { line: s.line, msg: "程式步數超過上限：迴圈裡沒有 delay() 嗎？" };
+            if (t > BUDGET) throw new TimeUp();
+          }
+          break;
+        }
+        case "while": {
+          let guard = 0;
+          while (evalE(s.cond, s.line)) {
+            if (++guard > 100000) throw { line: s.line, msg: "while 迴圈次數過多" };
+            exec(s.body);
+            if (t > BUDGET) throw new TimeUp();
+          }
+          break;
+        }
+        case "if": if (evalE(s.cond, s.line)) exec(s.then); else if (s.els) exec(s.els); break;
+        case "method": {
+          if (s.meth === "attach" || s.meth === "detach") break;
+          if (s.meth === "write" || s.meth === "writeMicroseconds") {
+            const servo = resolve(s.obj, s.line);
+            let deg;
+            if (s.meth === "write") {
+              deg = Math.round(evalE(s.args[0], s.line));
+              if (deg < 0 || deg > 180)
+                warn.push(`第 ${s.line} 行：write(${deg}) 超出 0..180，硬體會夾住`);
+            } else {
+              const us = evalE(s.args[0], s.line);
+              const span = ARM.servo.arduinoMaxUs - ARM.servo.arduinoMinUs;
+              deg = Math.round((us - ARM.servo.arduinoMinUs) * 180 / span);
+              warn.push(`第 ${s.line} 行：writeMicroseconds(${us}) 已換算為 write(${deg})`);
+            }
+            events.push({ t_ms: t, servo, deg: Math.max(0, Math.min(180, deg)) });
+            break;
+          }
+          if (s.meth === "read") break;
+          throw { line: s.line, msg: `不支援的方法 .${s.meth}()` };
+        }
+        case "expr": {
+          const e = s.expr;
+          if (e.k === "call" && (e.name === "delay" || e.name === "delayMicroseconds")) {
+            const v = evalE(e.args[0], s.line);
+            t += (e.name === "delay") ? v : v / 1000;
+            break;
+          }
+          if (e.k === "call" && ["Serial", "pinMode", "digitalWrite"].includes(e.name)) break;
+          evalE(e, s.line); break;
+        }
+        default: throw { line: s.line, msg: `不支援的語句 ${s.k}` };
+      }
+    }
+  };
+
+  const guarded = (fn) => { try { fn(); } catch (e) { if (e instanceof TimeUp) truncated = true; else throw e; } };
+
+  guarded(() => exec(ast.globals));
+  if (ast.fns.setup && !truncated) {
+    marks.push({ t_ms: 0, label: "setup" });
+    guarded(() => exec(ast.fns.setup));
+  }
+  let loops = 0;
+  if (ast.fns.loop && !truncated) {
+    while (t < BUDGET && loops < 200) {
+      marks.push({ t_ms: t, label: "loop #" + (loops + 1) });
+      const before = t;
+      guarded(() => exec(ast.fns.loop));
+      loops++;
+      if (truncated) break;
+      if (t === before) {                    // 沒有 delay 的 loop 會瞬間重跑
+        warn.push("loop() 內沒有 delay()，只跑一輪（真實硬體會全速重複執行）");
+        break;
+      }
+    }
+  }
+  if (truncated)
+    warn.push(`已跑到 ${(BUDGET / 1000).toFixed(0)} s 的模擬預算，後面的動作沒有模擬（真實硬體會繼續）`);
+  if (loops > 1) warn.push(`loop() 重複了 ${loops} 輪`);
+  if (!ast.fns.setup && !ast.fns.loop)
+    warn.push("找不到 setup() 或 loop()，只執行了全域語句");
+  if (!events.length) throw { line: 1, msg: "程式沒有產生任何 servo.write() 指令" };
+
+  events.sort((a, b) => a.t_ms - b.t_ms);
+  const end = Math.min(BUDGET, Math.max(t, events[events.length - 1].t_ms) + 800);
+  return { events: events.filter(e => e.t_ms <= end), marks, duration: end, warn, loops, truncated };
+}
+
+/* ================================ 伺服模型 ================================
+   與 sim/sg90_servo.py 同一組常數（由 make_playground.py 注入），
+   確保這裡的預覽和 MuJoCo 端吃到的是同一個設定點軌跡。               */
+const S = ARM.servo;
+const arduinoUs = d => S.arduinoMinUs + Math.floor(Math.max(0, Math.min(180, Math.trunc(d))) *
+                        (S.arduinoMaxUs - S.arduinoMinUs) / 180);
+const usToShaft = us => {
+  const c = Math.max(S.minUs, Math.min(S.maxUs, us));
+  return ((c - S.minUs) / (S.maxUs - S.minUs) - 0.5) * S.travelRad;
+};
+const DEG = Math.PI / 180;
+
+function simulateServos(events, duration, dt = 0.01) {
+  const order = S.order;
+  const st = order.map(n => ({
+    name: n, sign: S.sign[n], off: S.hornIndexDeg[n] * DEG,
+    cmd: 1500, latch: 1500, out: usToShaft(1500), acc: 0,
+  }));
+  const idx = Object.fromEntries(order.map((n, i) => [n, i]));
+  const trace = [];
+  let ei = 0;
+  const n = Math.ceil(duration / 1000 / dt);
+  for (let k = 0; k <= n; k++) {
+    const tms = k * dt * 1000;
+    while (ei < events.length && events[ei].t_ms <= tms) {
+      st[idx[events[ei].servo]].cmd = arduinoUs(events[ei].deg); ei++;
+    }
+    const q = [];
+    for (const s of st) {
+      s.acc += dt;
+      if (s.acc >= S.frameS) {
+        s.acc %= S.frameS;
+        if (Math.abs(s.cmd - s.latch) >= S.deadbandUs) s.latch = s.cmd;
+      }
+      const tgt = usToShaft(s.latch);
+      const step = S.speedRadS * dt, err = tgt - s.out;
+      s.out += Math.abs(err) > step ? Math.sign(err) * step : err;
+      q.push(s.sign * s.out + s.off);
+    }
+    trace.push(q);
+  }
+  return { trace, dt };
+}
+
+/* ============================== 3D 繪圖 ============================== */
+const m4 = {
+  id: () => [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1],
+  mul: (a, b) => { const o = new Array(16);
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+      let s = 0; for (let k = 0; k < 4; k++) s += a[r * 4 + k] * b[k * 4 + c];
+      o[r * 4 + c] = s; } return o; },
+  trans: (x, y, z) => [1,0,0,x, 0,1,0,y, 0,0,1,z, 0,0,0,1],
+  rotX: a => { const c = Math.cos(a), s = Math.sin(a);
+    return [1,0,0,0, 0,c,-s,0, 0,s,c,0, 0,0,0,1]; },
+  rotZ: a => { const c = Math.cos(a), s = Math.sin(a);
+    return [c,-s,0,0, s,c,0,0, 0,0,1,0, 0,0,0,1]; },
+  apply: (m, p) => [
+    m[0]*p[0]+m[1]*p[1]+m[2]*p[2]+m[3],
+    m[4]*p[0]+m[5]*p[1]+m[6]*p[2]+m[7],
+    m[8]*p[0]+m[9]*p[1]+m[10]*p[2]+m[11]],
+};
+
+const MAT = { pla:[64,92,190], body:[38,42,50], tab:[70,76,86], boss:[96,104,116],
+              payload:[214,115,50], ghost:[74,86,104] };
+const FACES = [[0,1,3,2],[4,6,7,5],[0,4,5,1],[2,3,7,6],[0,2,6,4],[1,5,7,3]];
+const FNORM = [[0,0,-1],[0,0,1],[0,-1,0],[0,1,0],[-1,0,0],[1,0,0]];
+
+function linkPoses(q) {
+  const M = { [ARM.root]: m4.id() };
+  const qi = Object.fromEntries(S.order.map((n, i) => [n, q[i]]));
+  for (const j of ARM.tree) {
+    let a = j.mimic ? qi[j.mimic.of] * j.mimic.mult : (qi[j.joint] ?? 0);
+    a = Math.max(j.lo, Math.min(j.hi, a));
+    const R = j.axis[2] ? m4.rotZ(a) : m4.rotX(a);
+    M[j.child] = m4.mul(m4.mul(M[j.parent], m4.trans(...j.origin)), R);
+  }
+  return M;
+}
+
+let cam = { az: -0.75, el: 0.42, dist: 0.46, tx: 0, ty: -0.045, tz: 0.11 };
+
+function project(p, W, H) {
+  const ca = Math.cos(cam.az), sa = Math.sin(cam.az);
+  const ce = Math.cos(cam.el), se = Math.sin(cam.el);
+  const d = [p[0] - cam.tx, p[1] - cam.ty, p[2] - cam.tz];
+  const x1 =  d[0] * ca + d[1] * sa;
+  const y1 = -d[0] * sa + d[1] * ca;
+  const y2 =  y1 * ce + d[2] * se;
+  const z2 = -y1 * se + d[2] * ce;
+  const depth = cam.dist - y2;
+  const f = Math.min(W, H) * 1.15;
+  const s = f / Math.max(0.06, depth);
+  return { x: W / 2 + x1 * s, y: H / 2 - z2 * s, d: depth };
+}
+
+
+// 圓柱：碰撞模型用不到，但底座塔身與轉盤畫成方塊會完全走樣。
+const CYL_N = 18;
+function cylQuads(mat, c, r, h, matrix, W, H, out) {
+  const top = [], bot = [];
+  for (let i = 0; i < CYL_N; i++) {
+    const a = i / CYL_N * Math.PI * 2, cx = Math.cos(a) * r, cy = Math.sin(a) * r;
+    top.push(m4.apply(matrix, [c[0] + cx, c[1] + cy, c[2] + h / 2]));
+    bot.push(m4.apply(matrix, [c[0] + cx, c[1] + cy, c[2] - h / 2]));
+  }
+  const L = [0.42, -0.62, 0.66];
+  const emit = (pts, n) => {
+    const wn = [matrix[0]*n[0]+matrix[1]*n[1]+matrix[2]*n[2],
+                matrix[4]*n[0]+matrix[5]*n[1]+matrix[6]*n[2],
+                matrix[8]*n[0]+matrix[9]*n[1]+matrix[10]*n[2]];
+    const sh = 0.36 + 0.64 * Math.max(0, wn[0]*L[0] + wn[1]*L[1] + wn[2]*L[2]);
+    const sp = pts.map(p => project(p, W, H));
+    out.push({ pts, sp, col: MAT[mat].map(v => Math.round(v * sh)),
+               z: sp.reduce((a, p) => a + p.d, 0) / sp.length });
+  };
+  for (let i = 0; i < CYL_N; i++) {
+    const j = (i + 1) % CYL_N, a = (i + 0.5) / CYL_N * Math.PI * 2;
+    emit([bot[i], bot[j], top[j], top[i]], [Math.cos(a), Math.sin(a), 0]);
+  }
+  emit(top, [0, 0, 1]);
+  emit(bot.slice().reverse(), [0, 0, -1]);
+}
+
+function collectQuads(q, W, H) {
+  const M = linkPoses(q), quads = [];
+  const addBox = (mat, centre, size, matrix) => {
+    const [hx, hy, hz] = size.map(v => v / 2);
+    const P = [];
+    for (let i = 0; i < 8; i++) {
+      P.push(m4.apply(matrix, [centre[0] + (i & 4 ? hx : -hx),
+                               centre[1] + (i & 2 ? hy : -hy),
+                               centre[2] + (i & 1 ? hz : -hz)]));
+    }
+    FACES.forEach((f, fi) => {
+      const pts = f.map(i => P[i]), n = FNORM[fi];
+      const wn = [matrix[0]*n[0]+matrix[1]*n[1]+matrix[2]*n[2],
+                  matrix[4]*n[0]+matrix[5]*n[1]+matrix[6]*n[2],
+                  matrix[8]*n[0]+matrix[9]*n[1]+matrix[10]*n[2]];
+      const L = [0.42, -0.62, 0.66];
+      const sh = 0.36 + 0.64 * Math.max(0, wn[0]*L[0] + wn[1]*L[1] + wn[2]*L[2]);
+      const sp = pts.map(p => project(p, W, H));
+      const z = sp.reduce((a, p) => a + p.d, 0) / sp.length;
+      quads.push({ pts, sp, col: MAT[mat].map(c => Math.round(c * sh)), z });
+    });
+  };
+  for (const [name, prims] of Object.entries(ARM.links))
+    for (const b of prims) {
+      if (b.t === "cyl") cylQuads(b.m, b.c, b.r, b.h, M[name], W, H, quads);
+      else addBox(b.m, b.c, b.s, M[name]);
+    }
+  addBox("payload", ARM.payload.pos,
+         [ARM.payload.half*2, ARM.payload.half*2, ARM.payload.half*2], m4.id());
+  quads.sort((a, b) => b.z - a.z);
+  return quads.map(q2 => ({ ...q2, pts: q2.sp.map(p => [p.x, p.y, p.d]) }));
+}
+
+function draw(q, cv, ctx, extra) {
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.clientWidth, H = cv.clientHeight;
+  if (cv.width !== W * dpr || cv.height !== H * dpr) { cv.width = W * dpr; cv.height = H * dpr; }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, "#161c25"); g.addColorStop(1, "#0e1218");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  // ground grid
+  ctx.strokeStyle = "rgba(120,140,170,.13)"; ctx.lineWidth = 1;
+  for (let i = -6; i <= 6; i++) {
+    const a = project([i * 0.03, -0.18, 0], W, H), b = project([i * 0.03, 0.18, 0], W, H);
+    const c = project([-0.18, i * 0.03, 0], W, H), d = project([0.18, i * 0.03, 0], W, H);
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+    ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.stroke();
+  }
+
+  const quads = [];
+  const addBox = (mat, centre, size, matrix) => {
+    const [hx, hy, hz] = size.map(v => v / 2);
+    const P = [];
+    for (let i = 0; i < 8; i++) {
+      const lp = [centre[0] + (i & 4 ? hx : -hx),
+                  centre[1] + (i & 2 ? hy : -hy),
+                  centre[2] + (i & 1 ? hz : -hz)];
+      P.push(m4.apply(matrix, lp));
+    }
+    FACES.forEach((f, fi) => {
+      const pts = f.map(i => P[i]);
+      const n = FNORM[fi];
+      const wn = [matrix[0]*n[0]+matrix[1]*n[1]+matrix[2]*n[2],
+                  matrix[4]*n[0]+matrix[5]*n[1]+matrix[6]*n[2],
+                  matrix[8]*n[0]+matrix[9]*n[1]+matrix[10]*n[2]];
+      const L = [0.42, -0.62, 0.66];
+      const lam = Math.max(0, wn[0]*L[0] + wn[1]*L[1] + wn[2]*L[2]);
+      const sh = 0.36 + 0.64 * lam;
+      // 用實際的相機深度排序。先前用的是投影前的中間量，
+      // 大面積的底座平板會因此被排到手臂前面。
+      const sp = pts.map(p => project(p, W, H));
+      const z = sp.reduce((a, p) => a + p.d, 0) / sp.length;
+      quads.push({ pts, sp, col: MAT[mat].map(c => Math.round(c * sh)), z });
+    });
+  };
+
+  const poses = Array.isArray(q[0]) ? q : [q];
+  poses.forEach((qq, pi) => {
+    const M = linkPoses(qq);
+    const ghost = poses.length > 1 && pi > 0;
+    for (const [name, prims] of Object.entries(ARM.links))
+      for (const b of prims) {
+        const mat = ghost ? "ghost" : b.m;
+        if (b.t === "cyl") cylQuads(mat, b.c, b.r, b.h, M[name], W, H, quads);
+        else addBox(mat, b.c, b.s, M[name]);
+      }
+  });
+  addBox("payload", ARM.payload.pos, [ARM.payload.half*2, ARM.payload.half*2, ARM.payload.half*2], m4.id());
+
+  quads.sort((a, b) => b.z - a.z);
+  for (const qd of quads) {
+    const sp = qd.sp;
+    if (sp.some(p => p.d <= 0.05)) continue;
+    ctx.beginPath(); ctx.moveTo(sp[0].x, sp[0].y);
+    for (let i = 1; i < sp.length; i++) ctx.lineTo(sp[i].x, sp[i].y);
+    ctx.closePath();
+    ctx.fillStyle = `rgb(${qd.col[0]},${qd.col[1]},${qd.col[2]})`;
+    ctx.fill();
+    ctx.strokeStyle = "rgba(0,0,0,.30)"; ctx.lineWidth = .6; ctx.stroke();
+  }
+  if (extra) extra({ ctx, W, H, project: p => project(p, W, H) });
+}
+
+
+/* ======================= 逆向運動學（工作空間路線） =======================
+   對照系統的另一半。正向路線裡人負責解關節角；這裡讓求解器負責，
+   程式只講末端要去哪裡。
+
+   末端點（TCP）= 兩片夾爪墊在 q5=0 時的中點，位於 wrist 連桿座標的
+   (-7.5, 0, 73) mm。這個偏置是實際量出來的：先前假設它落在末端連桿中心線上，
+   結果夾爪高了 20 mm、還差了 7.5 mm 側向偏置，工件完全沒被碰到。
+
+   求解用阻尼最小平方 + 有限差分 Jacobian。刻意不重寫解析解——
+   本專案的解析 FK/IK 曾經互相驗證到 0.000 mm 卻同時是錯的。            */
+
+const TCP_IN_WRIST = [-0.0075, 0, 0.073];
+const IK_JOINTS = ["j1_base_yaw", "j2_shoulder", "j3_elbow", "j4_wrist"];
+
+function tcpOf(q) {
+  const M = linkPoses(q);
+  return m4.apply(M.wrist, TCP_IN_WRIST);
+}
+
+function ikLimits() {
+  const lo = [], hi = [];
+  for (const jn of IK_JOINTS) {
+    const j = ARM.tree.find(t => t.joint === jn);
+    lo.push(j.lo); hi.push(j.hi);
+  }
+  return { lo, hi };
+}
+
+/** 阻尼最小平方 IK。回傳 {q, res, ok}；res 單位公尺。 */
+function solveIK(target, seed) {
+  const { lo, hi } = ikLimits();
+  const full = S.order.map(() => 0);
+  let q = (seed ? seed.slice(0, 4) : [0, 0.6, 0.8, 1.2]).map((v, i) =>
+    Math.max(lo[i], Math.min(hi[i], v)));
+  const grip = seed && seed.length > 4 ? seed[4] : 0;
+  const fk = a => { for (let i = 0; i < 4; i++) full[i] = a[i]; full[4] = grip; return tcpOf(full); };
+  const lam = 1e-3, h = 1e-5;
+  for (let it = 0; it < 220; it++) {
+    const p = fk(q);
+    const e = [target[0] - p[0], target[1] - p[1], target[2] - p[2]];
+    const res = Math.hypot(e[0], e[1], e[2]);
+    if (res < 2e-4) return { q, res, ok: true };
+    // 有限差分 Jacobian（3x4）
+    const J = [[], [], []];
+    for (let j = 0; j < 4; j++) {
+      const qh = q.slice(); qh[j] += h;
+      const ph = fk(qh);
+      J[0][j] = (ph[0] - p[0]) / h; J[1][j] = (ph[1] - p[1]) / h; J[2][j] = (ph[2] - p[2]) / h;
+    }
+    // (J Jᵀ + λI) y = e，再 dq = Jᵀ y
+    const A = [[0,0,0],[0,0,0],[0,0,0]];
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+      let s2 = 0; for (let k = 0; k < 4; k++) s2 += J[r][k] * J[c][k];
+      A[r][c] = s2 + (r === c ? lam : 0);
+    }
+    const y = solve3(A, e);
+    if (!y) return { q, res, ok: false };
+    const dq = [0,0,0,0];
+    for (let j = 0; j < 4; j++) { let s2 = 0; for (let r = 0; r < 3; r++) s2 += J[r][j] * y[r]; dq[j] = s2; }
+    const n = Math.hypot(...dq);
+    const sc = n > 0.25 ? 0.25 / n : 1;
+    for (let j = 0; j < 4; j++) q[j] = Math.max(lo[j], Math.min(hi[j], q[j] + dq[j] * sc));
+  }
+  const p = fk(q);
+  return { q, res: Math.hypot(target[0]-p[0], target[1]-p[1], target[2]-p[2]), ok: false };
+}
+
+function solve3(A, b) {                       // 高斯消去，3x3
+  const M = [[A[0][0],A[0][1],A[0][2],b[0]],
+             [A[1][0],A[1][1],A[1][2],b[1]],
+             [A[2][0],A[2][1],A[2][2],b[2]]];
+  for (let i = 0; i < 3; i++) {
+    let p = i;
+    for (let r = i + 1; r < 3; r++) if (Math.abs(M[r][i]) > Math.abs(M[p][i])) p = r;
+    if (Math.abs(M[p][i]) < 1e-14) return null;
+    [M[i], M[p]] = [M[p], M[i]];
+    for (let r = 0; r < 3; r++) {
+      if (r === i) continue;
+      const f = M[r][i] / M[i][i];
+      for (let c = i; c < 4; c++) M[r][c] -= f * M[i][c];
+    }
+  }
+  return [M[0][3]/M[0][0], M[1][3]/M[1][1], M[2][3]/M[2][2]];
+}
+
+/* 夾爪開度 <-> j5：與 kinematics.py 的 grip_gap_mm 同一組幾何 */
+const JAW_PIVOT_Y_MM = 11.0, GRIP_FACE_Y_MM = 10.0, PAD_Z_MM = 31.0;
+const PAD_R = Math.hypot(GRIP_FACE_Y_MM, PAD_Z_MM);
+const PAD_A = Math.atan2(GRIP_FACE_Y_MM, PAD_Z_MM);
+const gripGapMm = q5 => 2 * (JAW_PIVOT_Y_MM - PAD_R * Math.sin(PAD_A - q5));
+function gapToQ5(mm) {
+  let lo = -0.10, hi = 0.70;
+  for (let i = 0; i < 60; i++) {
+    const mid = (lo + hi) / 2;
+    if (gripGapMm(mid) < mm) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+/* 關節角 -> 最接近的整數 Servo.write() 參數。
+   Arduino 的 map() 是整數運算，只有 181 個軸角真的到得了。 */
+function jointToWrite(joint, rad) {
+  const sign = S.sign[joint], off = S.hornIndexDeg[joint] * DEG;
+  const want = (rad - off) / sign;
+  let best = 90, bestErr = 1e9;
+  for (let d = 0; d <= 180; d++) {
+    const got = usToShaft(arduinoUs(d));
+    const e = Math.abs(got - want);
+    if (e < bestErr) { best = d; bestErr = e; }
+  }
+  return { deg: best, errRad: bestErr };
+}
+
+/* ------------------- 工作空間語言 -> 時間軸 -------------------
+   home() moveTo(x,y,z) lineTo(x,y,z) grip(mm) speed(mm/s) wait(ms)
+   moveTo = 關節內插（PTP，末端走弧線）
+   lineTo = 笛卡兒內插（末端走直線，但每一步都要解 IK）        */
+function compileIK(src, budgetMs) {
+  const BUDGET = Math.max(1000, Math.min(MAX_BUDGET_MS, budgetMs || DEFAULT_BUDGET_MS));
+  const STEP_MS = 20;                       // 一個 PWM 影格一步
+  const events = [], marks = [], warn = [];
+  const path = [];                          // TCP 軌跡，供對照繪製
+  let t = 0, speed = 60, truncated = false;
+  let q = [0, 0.35, 0.75, 1.05], grip = gapToQ5(30);
+  const last = {};
+
+  const emit = (qq, gq) => {
+    const all = [qq[0], qq[1], qq[2], qq[3], gq];
+    S.order.forEach((jn, i) => {
+      const { deg } = jointToWrite(jn, all[i]);
+      if (last[jn] !== deg) { events.push({ t_ms: t, servo: jn, deg }); last[jn] = deg; }
+    });
+    path.push({ t, p: tcpOf(all) });
+  };
+
+  const lines = src.split("\n");
+  const callRe = /^\s*([a-zA-Z_]\w*)\s*\(([^)]*)\)\s*;?\s*(?:\/\/.*)?$/;
+  emit(q, grip);
+
+  for (let ln = 0; ln < lines.length; ln++) {
+    const raw = lines[ln].replace(/\/\/.*$/, "").trim();
+    if (!raw) continue;
+    const m = callRe.exec(raw);
+    if (!m) throw { line: ln + 1, msg: `看不懂這一行：${JSON.stringify(raw)}（只支援 name(args); 形式）` };
+    const name = m[1];
+    const args = m[2].trim() ? m[2].split(",").map(s2 => {
+      const v = parseFloat(s2);
+      if (!isFinite(v)) throw { line: ln + 1, msg: `${name}() 的參數不是數字：${s2.trim()}` };
+      return v;
+    }) : [];
+    if (t > BUDGET) { truncated = true; break; }
+
+    switch (name) {
+      case "speed":
+        if (args.length !== 1) throw { line: ln + 1, msg: "speed(mm_per_s) 需要 1 個參數" };
+        speed = Math.max(5, Math.min(400, args[0])); break;
+      case "wait":
+        if (args.length !== 1) throw { line: ln + 1, msg: "wait(ms) 需要 1 個參數" };
+        for (let s2 = 0; s2 < args[0]; s2 += STEP_MS) { t += STEP_MS; }
+        emit(q, grip); break;
+      case "grip": {
+        if (args.length !== 1) throw { line: ln + 1, msg: "grip(mm) 需要 1 個參數" };
+        const tgt = gapToQ5(args[0]);
+        const dur = Math.max(200, Math.abs(gripGapMm(tgt) - gripGapMm(grip)) * 12);
+        const n = Math.ceil(dur / STEP_MS);
+        const g0 = grip;
+        for (let i = 1; i <= n; i++) { t += STEP_MS; grip = g0 + (tgt - g0) * i / n; emit(q, grip); }
+        marks.push({ t_ms: t, label: `grip ${args[0]}mm` });
+        break;
+      }
+      case "home": {
+        const qh = [0, 0.35, 0.75, 1.05];
+        const dur = 1200, n = Math.ceil(dur / STEP_MS), q0 = q.slice();
+        for (let i = 1; i <= n; i++) { t += STEP_MS; q = q0.map((v, k) => v + (qh[k] - v) * i / n); emit(q, grip); }
+        marks.push({ t_ms: t, label: "home" });
+        break;
+      }
+      case "moveTo": case "lineTo": {
+        if (args.length !== 3) throw { line: ln + 1, msg: `${name}(x, y, z) 需要 3 個參數（mm）` };
+        const tgt = args.map(v => v / 1000);
+        const sol = solveIK(tgt, [...q, grip]);
+        if (!sol.ok) throw { line: ln + 1,
+          msg: `${name}(${args.join(", ")}) 解不出來，最近只到 ${(sol.res * 1000).toFixed(1)} mm — 超出工作空間` };
+        const p0 = tcpOf([...q, grip]);
+        const dist = Math.hypot(tgt[0]-p0[0], tgt[1]-p0[1], tgt[2]-p0[2]) * 1000;
+        const dur = Math.max(240, dist / speed * 1000);
+        const n = Math.ceil(dur / STEP_MS);
+        if (name === "moveTo") {
+          const q0 = q.slice();                       // 關節內插
+          for (let i = 1; i <= n; i++) {
+            t += STEP_MS; q = q0.map((v, k) => v + (sol.q[k] - v) * i / n); emit(q, grip);
+          }
+        } else {
+          for (let i = 1; i <= n; i++) {              // 笛卡兒內插
+            t += STEP_MS;
+            const wp = [0,1,2].map(k => p0[k] + (tgt[k] - p0[k]) * i / n);
+            const st = solveIK(wp, [...q, grip]);
+            if (!st.ok) throw { line: ln + 1,
+              msg: `lineTo 的直線在 ${(100*i/n).toFixed(0)}% 處離開工作空間（差 ${(st.res*1000).toFixed(1)} mm）` };
+            q = st.q; emit(q, grip);
+          }
+        }
+        marks.push({ t_ms: t, label: `${name} ${args.join(",")}` });
+        break;
+      }
+      default:
+        throw { line: ln + 1, msg: `不認得的指令 ${name}()（可用：home moveTo lineTo grip speed wait）` };
+    }
+    if (t > BUDGET) { truncated = true; break; }
+  }
+  if (truncated) warn.push(`已達 ${(BUDGET/1000).toFixed(0)} s 模擬預算，後面的指令沒有執行`);
+  if (!events.length) throw { line: 1, msg: "程式沒有產生任何動作" };
+  events.sort((a, b) => a.t_ms - b.t_ms);
+  return { events, marks, warn, path, duration: Math.min(BUDGET, t + 600), truncated };
+}
+
+
+/* ============================== 對照系統 ============================== */
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+const el = id => document.getElementById(id);
+let FK = null, IK = null, playing = true, tsec = 0, lastFrame = 0, dur = 1;
+
+const COL = { fk: "#f0883e", ik: "#4f9cf9" };
+
+function pathOfTrace(trace, dt) {
+  const out = [];
+  for (let i = 0; i < trace.length; i++) out.push({ t: i * dt * 1000, p: tcpOf(trace[i]) });
+  return out;
+}
+
+/** 折線長度（mm）與相對「起訖直線」的最大偏離（mm）。 */
+function pathStats(path) {
+  if (path.length < 2) return { len: 0, dev: 0 };
+  let len = 0;
+  for (let i = 1; i < path.length; i++)
+    len += Math.hypot(...[0,1,2].map(k => path[i].p[k] - path[i-1].p[k]));
+  const a = path[0].p, b = path[path.length - 1].p;
+  const ab = [0,1,2].map(k => b[k] - a[k]);
+  const L = Math.hypot(...ab);
+  let dev = 0;
+  if (L > 1e-9) {
+    for (const s of path) {
+      const ap = [0,1,2].map(k => s.p[k] - a[k]);
+      const tt = Math.max(0, Math.min(1, (ap[0]*ab[0]+ap[1]*ab[1]+ap[2]*ab[2]) / (L*L)));
+      const d = Math.hypot(...[0,1,2].map(k => ap[k] - tt*ab[k]));
+      if (d > dev) dev = d;
+    }
+  }
+  return { len: len * 1000, dev: dev * 1000, straight: L * 1000 };
+}
+
+function jointTravelDeg(trace) {
+  let s = 0;
+  for (let i = 1; i < trace.length; i++)
+    for (let j = 0; j < trace[i].length; j++) s += Math.abs(trace[i][j] - trace[i-1][j]);
+  return s / DEG;
+}
+
+function compileBoth() {
+  let okAny = false;
+  try {
+    const r = compile(el("fkCode").value);
+    const sim = simulateServos(r.events, r.duration);
+    FK = { ...r, ...sim, path: pathOfTrace(sim.trace, sim.dt) };
+    setMsg("fkMsg", `✓ ${r.events.length} 個 write()，${(r.duration/1000).toFixed(2)} s` +
+      (r.warn.length ? `\n⚠ ${r.warn[0]}` : ""), r.warn.length ? "warn" : "ok");
+    okAny = true;
+  } catch (e) { FK = null; setMsg("fkMsg", `✗ 第 ${e.line} 行：${e.msg || e}`, "err"); }
+
+  try {
+    const r = compileIK(el("ikCode").value);
+    const sim = simulateServos(r.events, r.duration);
+    IK = { ...r, ...sim, path: pathOfTrace(sim.trace, sim.dt), plan: r.path };
+    setMsg("ikMsg", `✓ ${r.events.length} 個 write()（由求解器產生），${(r.duration/1000).toFixed(2)} s` +
+      (r.warn.length ? `\n⚠ ${r.warn[0]}` : ""), r.warn.length ? "warn" : "ok");
+    okAny = true;
+  } catch (e) { IK = null; setMsg("ikMsg", `✗ 第 ${e.line} 行：${e.msg || e}`, "err"); }
+
+  dur = Math.max(FK ? FK.duration : 0, IK ? IK.duration : 0, 1000) / 1000;
+  tsec = 0; playing = true; el("btnPlay").textContent = "⏸";
+  el("btnMj").disabled = !(FK && IK);
+  renderCompare();
+  return okAny;
+}
+function setMsg(id, txt, cls) { const e = el(id); e.textContent = txt; e.className = "msg " + (cls || ""); }
+
+function poseAt(model, t) {
+  if (!model) return null;
+  const i = Math.min(model.trace.length - 1, Math.max(0, Math.round(t / model.dt)));
+  return model.trace[i];
+}
+
+function frame(now) {
+  if (playing && lastFrame) { tsec += Math.min(0.05, (now - lastFrame) / 1000); if (tsec >= dur) tsec = 0; }
+  lastFrame = now;
+  const qf = poseAt(FK, tsec), qi = poseAt(IK, tsec);
+  const poses = [];
+  if (qi) poses.push(qi);
+  if (qf) poses.push(qf);                       // 第二個以後畫成半透明幽靈
+  draw(poses.length ? poses : [S.order.map(() => 0)], cv, ctx, ({ ctx: c, project }) => {
+    const drawPath = (path, col, upto) => {
+      if (!path) return;
+      c.strokeStyle = col; c.lineWidth = 2; c.beginPath();
+      let started = false;
+      for (const s of path) {
+        if (s.t > upto * 1000) break;
+        const p = project(s.p);
+        if (p.d <= 0.05) continue;
+        if (!started) { c.moveTo(p.x, p.y); started = true; } else c.lineTo(p.x, p.y);
+      }
+      c.stroke();
+    };
+    drawPath(FK && FK.path, COL.fk, tsec);
+    drawPath(IK && IK.path, COL.ik, tsec);
+  });
+  el("scrub").value = Math.round(1000 * tsec / dur);
+  el("tlabel").textContent = `${tsec.toFixed(2)} / ${dur.toFixed(2)} s`;
+  el("legend").innerHTML =
+    `<div style="color:${COL.ik}"><i style="background:${COL.ik}"></i>逆向運動學（實體）</div>` +
+    `<div style="color:${COL.fk}"><i style="background:${COL.fk}"></i>正向運動學（灰色幽靈）</div>` +
+    (qf ? `<div style="color:#8b98a5;margin-top:5px">FK 關節 ${qf.slice(0,4).map(v=>(v/DEG).toFixed(0)).join(", ")}°</div>` : "") +
+    (qi ? `<div style="color:#8b98a5">IK 關節 ${qi.slice(0,4).map(v=>(v/DEG).toFixed(0)).join(", ")}°</div>` : "");
+  requestAnimationFrame(frame);
+}
+
+function renderCompare() {
+  const box = el("cmp");
+  const sf = FK ? pathStats(FK.path) : null, si = IK ? pathStats(IK.path) : null;
+  const row = (label, a, b, note) =>
+    `<tr><td>${label}</td><td class="fk">${a}</td><td class="ik">${b}</td><td style="text-align:left;color:var(--dim)">${note || ""}</td></tr>`;
+  box.innerHTML = `
+  <h3>兩條路線產生的東西差在哪</h3>
+  <table>
+    <tr><th>指標</th><th style="color:var(--fk)">正向 FK</th><th style="color:var(--ik)">逆向 IK</th><th style="text-align:left">說明</th></tr>
+    ${row("你寫的東西", "關節角度", "末端座標", "FK 的數字綁在這支手臂上；IK 的數字綁在工作上")}
+    ${row("程式行數", FK ? countLines(el("fkCode").value) : "—", IK ? countLines(el("ikCode").value) : "—", "")}
+    ${row("產生的 write() 數", FK ? FK.events.length : "—", IK ? IK.events.length : "—", "IK 每 20 ms 解一次，指令密得多")}
+    ${row("動作時間", FK ? (FK.duration/1000).toFixed(2)+" s" : "—", IK ? (IK.duration/1000).toFixed(2)+" s" : "—", "")}
+    ${row("末端路徑長度", sf ? sf.len.toFixed(1)+" mm" : "—", si ? si.len.toFixed(1)+" mm" : "—", "")}
+    ${row("偏離起訖直線", sf ? sf.dev.toFixed(1)+" mm" : "—", si ? si.dev.toFixed(1)+" mm" : "—",
+          "關節內插必然走弧線；笛卡兒內插才是直線")}
+    ${row("關節總行程", FK ? jointTravelDeg(FK.trace).toFixed(0)+"°" : "—", IK ? jointTravelDeg(IK.trace).toFixed(0)+"°" : "—", "")}
+    ${row("求解器規劃 vs 伺服實際", "—", IK ? planVsActual(IK).toFixed(2)+" mm" : "—",
+          "IK 規劃出連續路徑，但 Servo.write() 只有 181 個離散角度 — 這段誤差是量化造成的，不是求解器的錯")}
+  </table>
+  <h3>脈絡上的差別</h3>
+  <table>
+    <tr><th>面向</th><th style="color:var(--fk)">正向 FK</th><th style="color:var(--ik)">逆向 IK</th></tr>
+    <tr><td>誰算關節角</td><td class="fk">人（試誤／示教）</td><td class="ik">求解器，每步一次</td></tr>
+    <tr><td>換一支手臂</td><td class="fk">角度全部作廢</td><td class="ik">程式不用改，只換模型</td></tr>
+    <tr><td>可達性</td><td class="fk">恆可執行（角度就是角度）</td><td class="ik">可能無解，要處理失敗</td></tr>
+    <tr><td>走直線</td><td class="fk">做不到</td><td class="ik">lineTo 就是</td></tr>
+    <tr><td>算力</td><td class="fk">零</td><td class="ik">每 20 ms 一次 DLS 疊代</td></tr>
+    <tr><td>失效模式</td><td class="fk">姿態錯了才看得出來</td><td class="ik">解不出來時當場報錯</td></tr>
+    <tr><td>適合</td><td class="fk">固定序列、教學、極省資源的 MCU</td><td class="ik">要對準工件、路徑有要求、常改設計</td></tr>
+  </table>
+  <p class="note">下方的 MuJoCo 結果才有重力與扭矩上限。IK 產生的指令密度高、動作平順，
+  但這不代表伺服跟得上——按「兩邊都送去 MuJoCo」看追蹤誤差誰比較大。</p>
+  <div id="mjout"></div>`;
+}
+const countLines = s => s.split("\n").filter(l => l.trim() && !l.trim().startsWith("//")).length;
+
+/** 求解器規劃的 TCP 路徑，與伺服模型跑完後實際到達的路徑，兩者的 RMS 距離。
+    這一項單獨存在的理由：IK 把末端位置解到 0.1 mm，但 Servo.write() 只能送出
+    181 個整數角度（間距約 1.03°），中間那段損失和求解器品質無關。 */
+function planVsActual(model) {
+  if (!model.plan || !model.plan.length) return 0;
+  let sum = 0, n = 0;
+  for (const s of model.plan) {
+    const i = Math.min(model.trace.length - 1, Math.round(s.t / 1000 / model.dt));
+    const a = tcpOf(model.trace[i]);
+    sum += Math.pow(Math.hypot(a[0]-s.p[0], a[1]-s.p[1], a[2]-s.p[2]) * 1000, 2);
+    n++;
+  }
+  return Math.sqrt(sum / n);
+}
+
+el("btnRun").onclick = compileBoth;
+el("btnPlay").onclick = () => { playing = !playing; el("btnPlay").textContent = playing ? "⏸" : "▶"; };
+el("scrub").oninput = () => { playing = false; el("btnPlay").textContent = "▶"; tsec = el("scrub").value/1000*dur; };
+
+let drag = null;
+cv.addEventListener("pointerdown", e => { drag = { x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); });
+cv.addEventListener("pointermove", e => { if (!drag) return;
+  cam.az -= (e.clientX - drag.x) * 0.008;
+  cam.el = Math.max(-0.2, Math.min(1.35, cam.el + (e.clientY - drag.y) * 0.006));
+  drag = { x: e.clientX, y: e.clientY }; });
+cv.addEventListener("pointerup", () => { drag = null; });
+cv.addEventListener("wheel", e => { e.preventDefault();
+  cam.dist = Math.max(0.18, Math.min(1.2, cam.dist * (1 + e.deltaY * 0.0012))); }, { passive: false });
+
+el("btnMj").onclick = async () => {
+  if (!FK || !IK) return;
+  el("btnMj").disabled = true; el("btnMj").textContent = "模擬中…";
+  const out = el("mjout");
+  out.innerHTML = `<p class="note">兩邊各跑一次 MuJoCo…</p>`;
+  try {
+    const call = m => __staticRun({ method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ timeline: m.events, marks: m.marks, duration_ms: m.duration, video: false }) })
+      .then(async r => { const d = await r.json(); if (!r.ok || d.error) throw new Error(d.error || r.status); return d; });
+    const [a, b] = await Promise.all([call(FK), call(IK)]);
+    const cell = (x, cls) => `<td class="${cls}">${x}</td>`;
+    const rows = a.joints.map((j, i) => {
+      const k = b.joints[i];
+      return `<tr><td>${j.joint}</td>${cell(j.rms_err_deg.toFixed(2)+"°","fk")}${cell(k.rms_err_deg.toFixed(2)+"°","ik")}
+        ${cell(j.pct_of_stall.toFixed(0)+"%","fk")}${cell(k.pct_of_stall.toFixed(0)+"%","ik")}</tr>`;
+    }).join("");
+    const verdict = m => m.payload.success
+      ? `<span class="win">✓ 搬動 ${m.payload.moved_mm.toFixed(0)} mm</span>`
+      : `<span style="color:var(--bad)">✗ 沒搬動（${m.payload.moved_mm.toFixed(0)} mm）</span>`;
+    out.innerHTML = `<h3>MuJoCo 物理結果（同一組物理、同一支手臂）</h3>
+      <table><tr><th rowspan="2">關節</th><th colspan="2">RMS 追蹤誤差</th><th colspan="2">峰值力矩佔堵轉</th></tr>
+      <tr><th style="color:var(--fk)">FK</th><th style="color:var(--ik)">IK</th>
+          <th style="color:var(--fk)">FK</th><th style="color:var(--ik)">IK</th></tr>${rows}</table>
+      <p class="note">任務結果 — <span style="color:var(--fk)">FK</span> ${verdict(a)} ·
+      <span style="color:var(--ik)">IK</span> ${verdict(b)}</p>`;
+  } catch (err) {
+    out.innerHTML = `<p class="note" style="color:var(--bad)">MuJoCo 執行失敗：${err.message || err}<br>
+      需要本機伺服器：<code>cd ~/3d/servo-arm/sim &amp;&amp; ../.venv/bin/python serve_playground.py</code></p>`;
+  } finally { el("btnMj").disabled = false; el("btnMj").textContent = "兩邊都送去 MuJoCo"; }
+};
+
+/* ================================ 任務 ================================ */
+const TASKS = {
+pickplace: {
+fk: `// 取放：關節角度全部要自己算出來。
+// 這些數字是先跑 IK 再量化的 —— 手刻的話得靠試誤或示教。
+// 手臂尺寸一改，整張表就作廢。
+void setup() {
+  base.write(92); shoulder.write(96); elbow.write(36);
+  wrist.write(149); gripper.write(113);
+  delay(1200);
+}
+void loop() {
+  shoulder.write(116); elbow.write(27); wrist.write(146); delay(1600);
+  shoulder.write(140); elbow.write(24); wrist.write(133); delay(1400);
+  gripper.write(97);                                       delay(1200);
+  shoulder.write(115); elbow.write(26); wrist.write(146);  delay(1400);
+  base.write(46);                                          delay(1800);
+  shoulder.write(140); elbow.write(23); wrist.write(133);  delay(1400);
+  gripper.write(113);                                      delay(1000);
+  shoulder.write(115); elbow.write(25); wrist.write(146);  delay(1200);
+}`,
+ik: `// 同一個任務，改用末端座標描述（單位 mm）。
+// 這裡沒有任何一個關節角度 —— 全部由求解器產生。
+speed(70);
+home();
+moveTo(0, -100, 60);
+lineTo(0, -100, 8);
+grip(12);
+lineTo(0, -100, 60);
+moveTo(-70, -70, 60);
+lineTo(-70, -70, 8);
+grip(30);
+lineTo(-70, -70, 60);
+home();`},
+
+straight: {
+fk: `// 讓末端從 A 走到 B。
+// FK 只能對關節內插 —— 末端必然走出一段弧線，
+// 這是關節內插的幾何結果，不是寫得不好。
+void setup() {
+  base.write(90); shoulder.write(120); elbow.write(40); wrist.write(140);
+  gripper.write(110);
+  delay(800);
+}
+void loop() {
+  shoulder.write(140); elbow.write(20); wrist.write(150);
+  delay(2200);
+  shoulder.write(120); elbow.write(40); wrist.write(140);
+  delay(2200);
+}`,
+ik: `// 同樣從 A 到 B，但要求末端走直線。
+// lineTo 每 20 ms 解一次 IK，把末端釘在直線上。
+speed(45);
+moveTo(0, -70, 70);
+lineTo(0, -130, 25);
+lineTo(0, -70, 70);`},
+
+square: {
+fk: `// 用關節角度畫方框 —— 幾乎不可能。
+// 每個角落的關節角都要另外求，而且邊還是彎的。
+void setup() {
+  base.write(90); shoulder.write(125); elbow.write(35); wrist.write(140);
+  gripper.write(110);
+  delay(600);
+}
+void loop() {
+  shoulder.write(125); elbow.write(35); wrist.write(140); delay(1200);
+  shoulder.write(138); elbow.write(30); wrist.write(140); delay(1200);
+  base.write(72);                                         delay(1200);
+  shoulder.write(125); elbow.write(35); wrist.write(140); delay(1200);
+  base.write(90);                                         delay(1200);
+}`,
+ik: `// 工作空間裡的方框，四條邊都是真的直線。
+speed(60);
+moveTo(-25, -95, 40);
+lineTo(25, -95, 40);
+lineTo(25, -95, 90);
+lineTo(-25, -95, 90);
+lineTo(-25, -95, 40);`},
+};
+
+el("task").onchange = e => {
+  const t = TASKS[e.target.value];
+  el("fkCode").value = t.fk; el("ikCode").value = t.ik; compileBoth();
+};
+el("fkCode").value = TASKS.pickplace.fk;
+el("ikCode").value = TASKS.pickplace.ik;
+compileBoth();
+requestAnimationFrame(frame);
+</script>
+
+<script>
+async function __staticRun(_opts) {
+  return { ok: false, status: 501, json: async () => ({
+    error: "這是靜態發布版，沒有物理後端。真實 MuJoCo 需要在本機執行。" }) };
+}
+</script>
+</body>
+</html>
