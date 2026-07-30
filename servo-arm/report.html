@@ -100,7 +100,7 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <a href="#vv">驗證方法論與測試系統</a>
   <a href="#mutation">變異測試</a>
   <div class="grp">紀錄</div>
-  <a href="#failures">失敗紀錄（33 項）</a>
+  <a href="#failures">失敗紀錄（34 項）</a>
   <a href="#ros">ROS / ROS 2 調查</a>
   <a href="#ecosystem">相鄰領域調查</a>
   <a href="#build">動手製作前的調查</a>
@@ -118,15 +118,15 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <div><b>8</b><span>3D 列印零件（全部通過特徵稽核）</span></div>
   <div><b>5</b><span>SG90 伺服馬達</span></div>
   <div><b>127.9 cm³</b><span>列印體積 / 整機 203 g</span></div>
-  <div><b>38%</b><span>最壞姿態的堵轉扭矩佔用</span></div>
+  <div><b>44.7%</b><span>可達範圍最壞姿態的堵轉扭矩佔用</span></div>
   <div><b>204/205</b><span>驗證檢查（1 項如實失敗）</span></div>
-  <div><b>33</b><span>過程中抓到並修正的錯誤</span></div>
+  <div><b>34</b><span>過程中抓到並修正的錯誤</span></div>
 </div>
 
 <div class="card win">
 <h4>核心結論</h4>
 <ol>
-<li><strong>手臂可行。</strong> 最壞姿態只用掉 SG90 堵轉扭矩的 38%，整個肩／肘工作空間 100% 可保持，
+<li><strong>手臂可行。</strong> 可達範圍內最壞姿態用掉 SG90 堵轉扭矩的 44.7%，整個肩／肘工作空間 100% 可保持，
 中位姿態還有約 36 g 的酬載餘裕。</li>
 <li><strong>模擬環境選 MuJoCo。</strong> 它的 <code>position</code> 致動器本身就是伺服模型
 （<code>kp</code> = 比例帶、<code>forcerange</code> = 堵轉扭矩上限），不需要外掛就能重現「馬達出不了力就跟不上」
@@ -418,14 +418,40 @@ sketch.write(deg)
 <figure>
   <img src="renders/torque_map.png" alt="扭矩包絡圖">
   <figcaption>各姿態下的峰值關節力矩佔 SG90 堵轉扭矩的比例。綠線為 50%、紅線為 100%
-  （圖中不存在，因為全域最大只到 38%）。</figcaption>
+  （圖中不存在，因為在這張圖的腕部慣例下最大只到 38.4%）。<strong>注意這張圖不是可達範圍的最壞值</strong>——見下方更正。</figcaption>
 </figure>
 
 <div class="kpi">
-  <div><b>0.0678 N·m</b><span>最壞姿態需求（肩 +90°、肘 0°，即完全水平伸展）</span></div>
-  <div><b>38%</b><span>佔堵轉扭矩</span></div>
+  <div><b>0.0789 N·m</b><span>可達範圍最壞（肩 +90°、肘 0°、腕 −6°）</span></div>
+  <div><b>44.7%</b><span>佔堵轉扭矩</span></div>
   <div><b>100%</b><span>可保持的姿態比例</span></div>
   <div><b>~36 g</b><span>中位姿態下、維持在 50% 堵轉內的額外酬載餘裕</span></div>
+</div>
+
+<div class="card fail">
+<h4>#34 原本發布的「最壞 38%」不是可達範圍的最壞值 <span class="tag silent">靜默</span> <span class="tag fixed">已更正</span></h4>
+<p>做<a href="#build">第二支手臂的扭矩預算</a>時，用 <code>link_properties.json</code> 的實測質量
+手算完全伸直姿態的肩關節力矩，得到 <strong>44.8%</strong>，與本頁原本寫的 38% 差 6.8 個百分點。
+追下去發現不是「兩個定義都對」：</p>
+<pre>torque_map.py 掃 j2×j3 時，把腕部釘在
+    qpos[j4] = clip(π − a2 − a3)        # 讓夾爪保持朝下</pre>
+<p>那是合理的<strong>操作慣例</strong>，但<strong>受限集合的最大值不是可達集合的最大值</strong>。
+用同一個模型、同一個 <code>qfrc_bias</code>，只改腕部慣例：</p>
+<table>
+<tr><th style="width:250px">腕部慣例</th><th class="num">力矩</th><th class="num">佔堵轉</th><th>最壞姿態</th></tr>
+<tr><td>朝下（原本的圖）</td><td class="num">0.0678 N·m</td><td class="num">38.4%</td><td>j2 +90° j3 0° j4 +90°</td></tr>
+<tr><td>打直 j4=0</td><td class="num">0.0788 N·m</td><td class="num">44.7%</td><td>j2 −90° j3 −4°</td></tr>
+<tr><td><strong>腕部也一起掃</strong></td><td class="num">0.0789 N·m</td><td class="num"><strong>44.7%</strong></td><td>j2 +90° j3 0° j4 −6°</td></tr>
+</table>
+<p><strong>手臂做得到那個姿態</strong>（j2、j3、j4 都在行程內），使用者程式隨時可以下。
+所以原本的 38% <strong>低估需求 6.3 個百分點、相對 17%</strong>。</p>
+<p>連帶更正一句錯誤描述：原本寫最壞姿態是「肩 +90°、肘 0°，<em>即完全水平伸展</em>」——
+但那個姿態的腕部被釘在 +90°、是折起來的，並不是完全水平伸展。
+<strong>這句錯誤描述正是掩蓋低估的地方</strong>：它讓人以為已經涵蓋了最極端的姿態。</p>
+<p><strong>為什麼守門有效</strong>：預算腳本一開始就因為這 6.8 點差距而拒絕繼續
+（<code>BUDGET_BLOCKED_PENDING_ANCHOR</code>）。我第一版把容許值寫成 8 點、剛好讓 6.8 通過，
+發現後改成 3 點——挑一個恰好能過的門檻，就是把錯誤藏起來。
+重現：<code>sim/torque_worst_case.py</code>。</p>
 </div>
 
 <p>用 50% 堵轉當設計上限而不是 100%，是因為便宜的伺服長時間貼在堵轉會過熱、嗡叫並漂移——
@@ -925,7 +951,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 <p><strong>結論</strong>：接觸衝量的峰值本來就對時步敏感，把 j5 的峰值力矩報到 4 位數是假精度。
 因此 <code>run_mujoco.py</code> 現在同時輸出 <strong>99 百分位力矩</strong>——它在所有關節上都對時步不敏感，
 是可以照著報的數字。</p>
-<p class="small">注意：<a href="#torque">扭矩包絡分析</a>的「最壞 38% 堵轉」是<strong>靜態</strong>計算
+<p class="small">注意：<a href="#torque">扭矩包絡分析</a>的堵轉佔比是<strong>靜態</strong>計算
 （<code>qfrc_bias</code>），與時步無關，不受這一項影響。</p>
 
 <h2 id="mutation">變異測試：這套測試真的有效嗎？</h2>
@@ -958,7 +984,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 ../.venv/bin/python mutation_check.py     # 驗證套件本身有效</code></pre>
 
 <h2 id="failures">失敗紀錄</h2>
-<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
+<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
 工具鏈照樣產出看起來完全正常的結果，只有量測才抓得到。這類佔了一半以上。</p>
 
 <div class="card fail">
