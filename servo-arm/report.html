@@ -106,6 +106,7 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <a href="#build">動手製作前的調查</a>
   <a href="#nema17">NEMA 17 手臂</a>
   <a href="#actuators">致動器資料查證</a>
+  <a href="#ft5425bl">FT5425BL 手臂</a>
   <a href="#limits">已知限制</a>
   <a href="#files">檔案與重現方式</a>
   <a href="#refs">引用來源</a>
@@ -456,6 +457,10 @@ sketch.write(deg)
 重現：<code>sim/torque_worst_case.py</code>。</p>
 </div>
 
+<p><strong>後續更正（見 <a href="#ft5425bl">#48</a>）</strong>：下面這個「50% 堵轉」的標準，
+在拿到 FT5425BL 同時標示堵轉與額定的資料之後才看得出來——它<strong>本身就在連續工況之外</strong>
+（44.7% 堵轉 ≈ 134% 連續額定）。第一支手臂撐得住是因為動件只有 70 g、酬載 4 g，
+不是因為這個標準保守。第三、四支手臂改以連續額定為基準。</p>
 <p>用 50% 堵轉當設計上限而不是 100%，是因為便宜的伺服長時間貼在堵轉會過熱、嗡叫並漂移——
 100% 不是可用的工作點。以這個標準看，這支手臂的機構尺寸對 SG90 是<strong>合適</strong>的，不是勉強。</p>
 
@@ -986,7 +991,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 ../.venv/bin/python mutation_check.py     # 驗證套件本身有效</code></pre>
 
 <h2 id="failures">失敗紀錄</h2>
-<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#43 是做 NEMA 17 步進模擬與韌體時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節；<strong>#44–#47 是查證致動器資料時挖出的</strong>，記在 <a href="#actuators">致動器資料查證</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
+<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#43 是做 NEMA 17 步進模擬與韌體時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節；<strong>#44–#47 是查證致動器資料時挖出的</strong>，記在 <a href="#actuators">致動器資料查證</a>那節；<strong>#48 是第三支手臂定尺寸時回頭發現的、關於第一支手臂的事</strong>，記在 <a href="#ft5425bl">FT5425BL 手臂</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
 工具鏈照樣產出看起來完全正常的結果，只有量測才抓得到。這類佔了一半以上。</p>
 
 <div class="card fail">
@@ -1980,6 +1985,74 @@ T7 黃金回歸<strong>18/18 全過</strong>。但實際上酬載舉高變了 0.
 <p>修完 4/4。SG90 那條目前是 <strong>SKIPPED</strong>：它的 STEP 裡找不到 Ø2.00 的孔，
 記錄的 2.00 可能是螺絲尺寸而非孔徑。<strong>標成跳過並寫明理由，
 不是讓它假裝通過。</strong></p>
+</div>
+
+<h2 id="ft5425bl">第三支手臂：FT5425BL 標準舵機（B1 尺寸決策）</h2>
+<p class="lead">扭矩預算用「維持與 SG90 相同的扭矩佔比」把伸距外推到 306 mm。
+實際把靜力算一遍——<strong>那個伸距空載就用掉連續額定的 88%</strong>。
+問題不在算術，在於<strong>那個「相同的佔比」本身指的是什麼</strong>。</p>
+
+<div class="card fail">
+<h4>#48 第一支手臂的設計上限其實在連續工況之外 <span class="tag silent">靜默</span></h4>
+<p>本頁一直寫著：「用 50% 堵轉當設計上限而不是 100%……以這個標準看，
+這支手臂的機構尺寸對 SG90 是<strong>合適</strong>的，不是勉強。」</p>
+<p>做第三支手臂時查到 FT5425BL 的資料<strong>同時給了堵轉與額定</strong>
+（28.5 / 9.5 kg·cm，比值 3.0）。把同樣的比值套回 SG90：</p>
+<pre>SG90 堵轉 0.176 N·m　→　連續約 0.059 N·m
+第一支手臂最壞姿態 0.0788 N·m
+                = 44.7% 堵轉
+                = <strong>約 134% 連續額定</strong></pre>
+<p>也就是說，<strong>那個「50% 堵轉」的設計上限，本身就在連續工況之外</strong>。
+第一支手臂撐得住，是因為它只有 70 g 的動件、酬載 4 g，
+而且沒有人要求它保持同一個姿勢一小時。</p>
+<p><strong>這句話沒有算錯，但它把一個相對標準說成了絕對結論。</strong>
+「以這個標準看是合適的」——而那個標準是我自己訂的，
+訂的時候手上沒有任何一顆馬達的連續額定值可以對照。</p>
+<p><strong>影響</strong>：第一支手臂不改（它能動，而且用途是展示與教學）；
+但第三、第四支手臂改以<strong>連續額定</strong>為基準，
+四支手臂的對照報告會把兩種基準並列，不會混在同一欄。</p>
+</div>
+
+<h3>B1 決策：直接驅動，伸距 190 mm</h3>
+<p>先驗證「標準舵機該不該像 NEMA 17 那樣做成遠端驅動」。
+A1 之所以把步進馬達移到底座，是因為它 280 g、是 SG90 的 31 倍。
+FT5425BL 只有 67.6 g：</p>
+<table>
+<tr><th style="width:130px">酬載</th><th class="num">直接驅動</th><th class="num">遠端驅動</th><th class="num">買到多少</th></tr>
+<tr><td>100 g</td><td class="num">190 mm</td><td class="num">252 mm</td><td class="num">+33%</td></tr>
+<tr><td>200 g</td><td class="num">143 mm</td><td class="num">182 mm</td><td class="num">+28%</td></tr>
+<tr><td>500 g</td><td class="num" style="color:var(--bad)">不可行</td><td class="num">80 mm</td><td class="num">—</td></tr>
+</table>
+<p>兩顆舵機只佔靜態力矩的一小部分（306 mm 時 0.31 N·m 中的 0.11 N·m），
+遠端驅動只買到 28–33% 伸距，卻要付出兩組同步帶、張緊機構與背隙。
+<strong>標準舵機留在關節上是對的</strong>——這是算出來的，不是照慣例假設的。</p>
+
+<table>
+<tr><th style="width:190px">B1 定案</th><th>值</th></tr>
+<tr><td>傳動</td><td>直接驅動，每個關節一顆</td></tr>
+<tr><td>伸距</td><td>190 mm（上臂 105 / 前臂 85）</td></tr>
+<tr><td>設計酬載</td><td>100 g</td></tr>
+<tr><td>肩關節力矩</td><td>0.651 N·m ＝ <strong>69.9% 連續額定</strong>、23.3% 堵轉</td></tr>
+<tr><td>舵盤索引</td><td>25T → 14.4°/齒（整齒約束，同 SG90 的 21T）</td></tr>
+</table>
+<p><strong>與第一支手臂對照，這才是有意義的比較</strong>：</p>
+<table>
+<tr><th style="width:150px">手臂</th><th class="num">伸距</th><th class="num">酬載</th><th>扭矩依據</th></tr>
+<tr><td>SG90</td><td class="num">202 mm</td><td class="num">4 g</td><td>44.7% 堵轉（≈134% 連續）</td></tr>
+<tr><td><strong>FT5425BL</strong></td><td class="num">190 mm</td><td class="num"><strong>100 g</strong></td><td style="color:var(--ok)">69.9% 連續額定</td></tr>
+</table>
+<p>不是「標準舵機做出更短的手臂」——是<strong>伸距相當、酬載 25 倍，
+而且待在連續工況內</strong>。</p>
+
+<div class="card">
+<h4>這支手臂的尺寸是暫定的，而且程式會一直這樣說</h4>
+<p>上面每一個數字都建立在「額定 9.5 kg·cm」上，
+而那個值<strong>只有單一經銷商來源，且剛好是堵轉的 1/3</strong>。
+<code>sizing_ft5425bl.py</code> 每次執行都會印出
+<code>BUDGET_UNVERIFIED_BASIS</code> 並說明：真值若是堵轉的 1/4，
+伸距要再縮約 10%。</p>
+<p>不擋住工作，但也不讓「沒驗證」這件事悄悄消失——
+這跟 <a href="#actuators">#44</a> 那個裝飾了一整段時間的旗標是同一個教訓。</p>
 </div>
 
 <h2 id="limits">已知限制</h2>
