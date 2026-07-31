@@ -105,6 +105,7 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <a href="#ecosystem">相鄰領域調查</a>
   <a href="#build">動手製作前的調查</a>
   <a href="#nema17">NEMA 17 手臂</a>
+  <a href="#actuators">致動器資料查證</a>
   <a href="#limits">已知限制</a>
   <a href="#files">檔案與重現方式</a>
   <a href="#refs">引用來源</a>
@@ -985,7 +986,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 ../.venv/bin/python mutation_check.py     # 驗證套件本身有效</code></pre>
 
 <h2 id="failures">失敗紀錄</h2>
-<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#43 是做 NEMA 17 步進模擬與韌體時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
+<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#43 是做 NEMA 17 步進模擬與韌體時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節；<strong>#44–#47 是查證致動器資料時挖出的</strong>，記在 <a href="#actuators">致動器資料查證</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
 工具鏈照樣產出看起來完全正常的結果，只有量測才抓得到。這類佔了一半以上。</p>
 
 <div class="card fail">
@@ -1897,6 +1898,88 @@ T7 黃金回歸<strong>18/18 全過</strong>。但實際上酬載舉高變了 0.
 所以補了一個慣性真的會主導的情境，順便回答一個實際的設計問題：
 <strong>斜坡開到 4×10⁵ 步/s²，零酬載也會失步</strong>——那時馬達撐不住的是慣性，不是重力。
 補上之後 <strong>9/9</strong>，全部由真實檢查失敗抓到。</p>
+</div>
+
+<h2 id="actuators">四支手臂的致動器資料：查證與三個被推翻的數字</h2>
+<p class="lead">四支手臂全都從 <code>cad/actuators.py</code> 讀馬達的數字。
+那裡的一個錯誤不會在任何地方報錯——它會產出<strong>另一台機器</strong>，
+而那台機器會通過它自己所有的測試。開始做第二支舵機手臂時，
+第一件事就是把資料查一遍，結果三個數字被推翻。</p>
+
+<div class="card fail">
+<h4>#44 <code>torque_is_peak</code> 旗標裝飾了一整段時間 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>我在做 DM-J4310 的資料時就發現「7 N·m 是峰值不是連續」，於是加了
+<code>torque_is_peak</code> 旗標並寫進註解。<strong>然後沒有任何東西強制它。</strong>
+扭矩預算照樣拿峰值算伸距：</p>
+<table>
+<tr><th style="width:220px">致動器</th><th class="num">預算原本用的</th><th class="num">伸距</th><th class="num">應該用的</th><th class="num">修正後伸距</th></tr>
+<tr><td>NEMA 17 L40</td><td class="num">0.45 N·m 保持</td><td class="num">255 mm</td><td class="num">同左（連續）</td><td class="num">255 mm</td></tr>
+<tr><td>Feetech FT5425BL</td><td class="num" style="color:var(--bad)">2.79 N·m 堵轉</td><td class="num">403 mm</td><td class="num">0.93 N·m 額定</td><td class="num"><strong>306 mm</strong></td></tr>
+<tr><td>DAMIAO DM-J4310</td><td class="num" style="color:var(--bad)">7.00 N·m 峰值</td><td class="num">507 mm</td><td class="num">3.00 N·m 額定</td><td class="num"><strong>410 mm</strong></td></tr>
+</table>
+<p><strong>重力保持是連續工況</strong>。峰值是馬達在過熱前能短暫做到的事，
+拿它算出來的手臂會在<strong>停下來的那一刻下垂</strong>，而試算表上一切正常。
+兩支手臂分別被高估 32% 與 24%。</p>
+<p><strong>修法</strong>：預算改成強制檢查——峰值標記的致動器必須有連續值才算得下去，
+沒有就印 <code>擋住</code>；連續值若只有單一來源就印
+<code>BUDGET_UNVERIFIED_BASIS</code>。</p>
+</div>
+
+<div class="card fail">
+<h4>#45 FT5425BL 的 245 N·cm 追不到任何出處 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>記錄裡寫 <code>torque_ncm=245.0</code>（25 kg·cm）。查下去發現：</p>
+<ul>
+<li>原廠 feetechrc.com 的 FT54 系列頁：<strong>堵轉 28.5 kg·cm@8.4V</strong></li>
+<li>經銷商 aifitlab：堵轉 28.5、<strong>額定 9.5 kg·cm</strong>、質量 67.6±1 g</li>
+</ul>
+<p><strong>245 N·cm 兩者皆非</strong>，也找不到任何來源。它大概是從產品標題的
+「25kg」直接抄下來的，而那是型號代稱不是規格。</p>
+<p>額定 9.5 kg·cm 也不能照單全收：它<strong>剛好是堵轉的 1/3</strong>，
+比例整齊得像經驗法則而不是量測，而且只有經銷商一個來源。
+所以記錄成 <code>torque_rated_verified=False</code>，
+預算會把這支手臂標為「依據未驗證」——不是擋住，是不讓「沒驗證」這件事消失。</p>
+</div>
+
+<div class="card fail">
+<h4>#46 把 STEP 的整體包絡當成馬達本體 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>記錄寫 <code>body=(62.60, 34.90, 20.00)</code>，標為實測。確實是實測——
+但量的是<strong>整個 STEP 的包絡</strong>。拆成實體逐一看：</p>
+<table>
+<tr><th style="width:190px">STEP 實體</th><th class="num">尺寸</th><th>是什麼</th></tr>
+<tr><td>#1 / #2</td><td class="num">40.60 × 20.00</td><td>外殼，= 資料表 A×B</td></tr>
+<tr><td>#0</td><td class="num">54.40</td><td>耳片全長（標準尺寸慣例）</td></tr>
+<tr><td>#3</td><td class="num">15.87</td><td>輸出舵盤座</td></tr>
+<tr><td>#4</td><td class="num">18.30 × 4.50</td><td><strong>線材出口</strong>，多出 8.2 mm</td></tr>
+<tr><td>#5–#8</td><td class="num">3.50 見方 × 4</td><td>外殼緊固柱，不是安裝孔</td></tr>
+</table>
+<p>拆開之後 STEP 與資料表<strong>完全吻合</strong>：40.6 / 20 / 30.9 對上 A=40.6、B=20、C=30。
+用包絡當本體，會讓手臂裡每一個間隙悄悄放大最多 22 mm——
+反過來（用本體當包絡）則會讓干涉檢查漏掉。所以兩個欄位分開存。</p>
+<p>同時查出安裝孔的真實位置：Ø4.50、四孔、X 間距 49.50、Z 間距 10.00，
+但<strong>相對輸出軸是 −36.25 / +13.25，不對稱</strong>——
+輸出軸偏在一端，跟 SG90 一模一樣的陷阱。</p>
+</div>
+
+<div class="card fail">
+<h4>#47 新測試層自己有兩個循環／看不見的檢查 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>為上面三件事寫了 D0 致動器資料層，13/13 一次全過。
+<strong>照例先做變異測試</strong>，結果只有 2/4：</p>
+<p><strong>(a) 峰值檢查是循環的。</strong>我寫成
+<code>if a.torque_is_peak: 檢查沒被當成保持扭矩</code>——
+把旗標拿掉，檢查就整條關掉了。等於「只在已經宣告的時候才檢查宣告」。
+<br><strong>修法</strong>：改成不看宣告、只看兩個數字的關係——
+<em>若記了一個較低的額定值，主數字依定義就不是連續值</em>。
+這條拿掉旗標也不會閉嘴。</p>
+<p><strong>(b) 孔位檢查只比跨距。</strong>把 SG90 的
+−18.95/+8.25 改成對稱的 ±13.6，跨距一樣是 27.2，檢查照過——
+而<strong>那個不對稱正是這個欄位存在的全部理由</strong>。
+<br><strong>修法</strong>：回去<strong>量 STEP 幾何</strong>。
+用「最多圓柱面共用的軸心＝輸出軸」定位，再比對孔對軸的偏移。
+（第一版比對又寫錯：用 <code>round(...,1)</code> 撞到 36.25 的進位邊界，
+把一筆準到 0.05 mm 的資料判成不符——改用容差。）</p>
+<p>修完 4/4。SG90 那條目前是 <strong>SKIPPED</strong>：它的 STEP 裡找不到 Ø2.00 的孔，
+記錄的 2.00 可能是螺絲尺寸而非孔徑。<strong>標成跳過並寫明理由，
+不是讓它假裝通過。</strong></p>
 </div>
 
 <h2 id="limits">已知限制</h2>
