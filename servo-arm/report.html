@@ -985,7 +985,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 ../.venv/bin/python mutation_check.py     # 驗證套件本身有效</code></pre>
 
 <h2 id="failures">失敗紀錄</h2>
-<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#40 是做 NEMA 17 步進模擬時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
+<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#43 是做 NEMA 17 步進模擬與韌體時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
 工具鏈照樣產出看起來完全正常的結果，只有量測才抓得到。這類佔了一半以上。</p>
 
 <div class="card fail">
@@ -1660,7 +1660,7 @@ Arduino 的穩壓器承受不了，會 brownout 或直接燒。需要：</p>
 兩者都不是印出來才會發現的問題，但都是<strong>不查資料就不會發現</strong>的問題。</p>
 </div>
 
-<h2 id="nema17">第二支手臂：NEMA 17 步進（A1–A4）</h2>
+<h2 id="nema17">第二支手臂：NEMA 17 步進（A1–A5）</h2>
 <p class="lead">第一支手臂用 SG90（廉價伺服）。第二支換成 42 型步進馬達，
 不是為了做「更好的一支」，而是因為<strong>步進與伺服的失效方式根本不同</strong>——
 而那個差別正好是驗證系統最容易漏掉的東西。</p>
@@ -1718,6 +1718,96 @@ j1 ±150°、j2 ±95°、j3 ±85°。A1 的驗證層直接比對 MJCF 的 <code>
 拿 datasheet 轉速當規格，會做出一支<strong>韌體開不動的手臂</strong>。
 所以步進模型裡的速度上限取「MCU 發得出來的」與「馬達轉得動的」<strong>較小者</strong>，
 實際關節上限是 150°/s。要跑到 300 rpm 需要 16000 步/s，得換硬體計時器或降細分。</p>
+</div>
+
+<h3 style="margin-top:2.4rem">A5 韌體與差異測試：兩邊是不是同一台機器</h3>
+<p>SG90 那支的差異測試很容易：兩邊都寫角度，逐位元組比對位姿表就結束了。
+步進手臂難在<strong>兩邊做的是不同的算術</strong>：</p>
+<ul>
+<li><code>sim/stepper.py</code> 在 MuJoCo 的固定 dt 下用連續時間積分速度</li>
+<li>AccelStepper 為<strong>每一步</strong>算一個間隔，MCU 睡到下一步，
+而且把捨入誤差透過 <code>_cn</code> 一路帶下去</li>
+</ul>
+<p>所以「韌體與模擬相符」是一句必須<strong>量出來</strong>的宣稱。
+<code>sim/accelstepper.py</code> 是 <code>computeNewSpeed()</code> 的逐行移植，
+刻意<strong>不整理</strong>——那些彆扭的地方（0.676、<code>_n</code> 的正負號遊戲）在原始碼裡就是彆扭的，
+差異測試的價值全在於第二個實作是<strong>獨立</strong>的，不是我們版本的改寫。</p>
+
+<table>
+<tr><th style="width:210px">檢查</th><th>結果</th></tr>
+<tr><td>以 avr-gcc 實際編譯</td><td>Uno：flash 8448 B（26%）、RAM 465 B（22%）</td></tr>
+<tr><td>位姿表步數 = 模擬下達的步數</td><td style="color:var(--ok)">4 個位姿逐一相符</td></tr>
+<tr><td>行程極限 = CAD 掃描值</td><td style="color:var(--ok)">三軸上下限全等</td></tr>
+<tr><td>與理想梯形的偏差</td><td>短程 −8.0%、梯形轉折 +3.9%、長程收斂 +1.5%</td></tr>
+<tr><td>首步加速度倍率</td><td><strong>1.823×</strong>（模型與移植實測相符）</td></tr>
+<tr><td>變異測試</td><td style="color:var(--ok)">11/11</td></tr>
+</table>
+
+<div class="card">
+<h4>發現：AccelStepper 的第一步不遵守 <code>setAcceleration()</code></h4>
+<p>量測顯示每次移動的<strong>第一步</strong>等效加速度是設定值的 <strong>1.82 倍</strong>，
+而且<strong>與設定值無關</strong>（2000 / 4000 / 8000 / 20000 / 50000 步/s² 全部量到 1.82×）。</p>
+<p>這不是 bug，是 David Austin 的起步修正：<code>c0 = 0.676·√(2/a)·1e6</code>
+比精確值短 32.4%，而第二個間隔是 <code>0.6·c0</code>，所以</p>
+<pre>a_eff = 1 / (0.6 × 0.676² × 2) = 1.823</pre>
+<p>推導值與量測值完全相符。<strong>（我第一次口算成 2.188，漏了第二個間隔的 0.6 因子——
+量測沒對上就是推導錯了，不是量測錯了。）</strong></p>
+<p><strong>對結論的影響</strong>：原本模型把加速度<strong>夾在設定值</strong>，
+等於每次移動都少算一次尖峰。補進模型後重算：</p>
+<table>
+<tr><th style="width:230px">結論</th><th class="num">夾在設定值</th><th class="num">含 1.82× 首步</th></tr>
+<tr><td>酬載失步門檻</td><td class="num">598 g</td><td class="num">598 g（不變）</td></tr>
+<tr><td>零酬載可用斜坡上限</td><td class="num">~400k 步/s²</td><td class="num"><strong>~250k 步/s²</strong></td></tr>
+</table>
+<p>酬載門檻不變，因為首步衝量落在<strong>起始姿態</strong>，而峰值重力出現在移動中段——
+兩個尖峰不同時。但可用斜坡上限掉了 37%，那是實質的設計限制。</p>
+</div>
+
+<div class="card fail">
+<h4>#41 產生器把逗號接在 <code>//</code> 註解後面，整個分隔符被註解掉 <span class="tag fixed">已修正</span></h4>
+<p>陣列初始化長這樣：</p>
+<pre>AccelStepper(AccelStepper::DRIVER, 2, 5)   // j1_base_yaw,
+AccelStepper(AccelStepper::DRIVER, 3, 6)   // j2_shoulder,</pre>
+<p>逗號在註解裡，C++ 看到的是三個相鄰的建構子沒有分隔符。
+<strong>讀起來完全正常</strong>——我用 <code>",\n".join(...)</code>，
+每個元素結尾剛好是註解。</p>
+<p><strong>只有真的跑 arduino-cli 才會知道</strong>。所以 A5 的第一條檢查不是比對字串，
+是實際呼叫 avr-gcc 編譯，並把 flash / RAM 用量報出來而不是「希望夠用」。
+RAM 那條額外檢查存在的理由：POSE 表放 PROGMEM，
+哪天忘了加，堆疊會在執行期靜默撞上全域變數，而編譯照樣過。</p>
+</div>
+
+<div class="card fail">
+<h4>#42 把 <code>run()</code> 的回傳值當成「有沒有踏一步」<span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>量 AccelStepper 的加速度時，得到 <strong>3118617 步/s²</strong>（設定值 8000），
+而且四種不同行程量到<strong>完全相同</strong>的數字。相同的數字就是量測假象的指紋。</p>
+<p>根因：AccelStepper 的 <code>run()</code> 回傳的是「<strong>還在動嗎</strong>」，不是「踏了一步」。
+我的量測迴圈把每個 20 µs 取樣 tick 都當成一步收進去，44489 筆裡位置根本沒動，
+兩個相隔 20 µs 的 tick 之間算出的「加速度」自然是垃圾。</p>
+<p><strong>修法</strong>：只在 <code>currentPosition()</code> 真的改變時才記錄。
+修完中位數 7800、p99 8000（設定 8000），最大 24288 —— 那個最大值才是真的，
+就是上面那個 1.82× 的首步。</p>
+</div>
+
+<div class="card fail">
+<h4>#43 我又差點挑了一個「恰好能過」的門檻 <span class="tag fixed">已修正</span></h4>
+<p>A5 原本寫「AccelStepper 與連續模型的移動時間差 ≤ 3%」，三個行程量下來
+1600 步 +2.0%、800 步 +0.1%、2400 步 <strong>+3.9%</strong>——失敗。</p>
+<p>把門檻改成 4% 就會過。<strong>那正是 #34 記錄過的錯誤</strong>：挑一個恰好能過的門檻，
+就是把問題藏起來。</p>
+<p><strong>正確做法是去刻畫它</strong>。掃 12 個行程長度後，偏差不是一個常數而是一個<strong>形狀</strong>：</p>
+<table>
+<tr><th style="width:120px">行程</th><th class="num">偏差</th><th>成因</th></tr>
+<tr><td>100 步</td><td class="num" style="color:var(--warn)">−8.0%</td><td>0.676 起步修正讓短程偏快</td></tr>
+<tr><td>800 步</td><td class="num">−0.1%</td><td>過零點</td></tr>
+<tr><td>2400 步</td><td class="num" style="color:var(--warn)">+3.9%</td><td>三角/梯形轉折處</td></tr>
+<tr><td>9600 步</td><td class="num">+1.5%</td><td>長程收斂</td></tr>
+</table>
+<p>所以檢查改成兩條：<strong>偏差有界（≤10%，實測最壞 8.0%）</strong>，
+以及<strong>偏差不隨行程增長</strong>。第二條是關鍵——有界不夠，
+若偏差隨行程單調增大，長行程遲早會失準。
+另外補上一條最強的差異檢查：模型裡那個 1.823 常數，
+<strong>直接從移植的演算法量回來對照</strong>。</p>
 </div>
 
 <h3 style="margin-top:2.4rem">A4 的代價：連續四個「會跑、會印數字」的錯模型</h3>
