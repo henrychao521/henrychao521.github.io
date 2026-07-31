@@ -1987,7 +1987,7 @@ T7 黃金回歸<strong>18/18 全過</strong>。但實際上酬載舉高變了 0.
 不是讓它假裝通過。</strong></p>
 </div>
 
-<h2 id="ft5425bl">第三支手臂：FT5425BL 標準舵機（B1 尺寸決策）</h2>
+<h2 id="ft5425bl">第三支手臂：FT5425BL 標準舵機（B1 尺寸決策、B2 CAD）</h2>
 <p class="lead">扭矩預算用「維持與 SG90 相同的扭矩佔比」把伸距外推到 306 mm。
 實際把靜力算一遍——<strong>那個伸距空載就用掉連續額定的 88%</strong>。
 問題不在算術，在於<strong>那個「相同的佔比」本身指的是什麼</strong>。</p>
@@ -2043,6 +2043,73 @@ FT5425BL 只有 67.6 g：</p>
 </table>
 <p>不是「標準舵機做出更短的手臂」——是<strong>伸距相當、酬載 25 倍，
 而且待在連續工況內</strong>。</p>
+
+<h3>B2 CAD：直驅關節的三件事佔同一塊空間</h3>
+<p>直驅關節有三個東西在同一個位置：<strong>舵機</strong>、
+<strong>夾住它的叉臂</strong>（屬於下連桿）、
+<strong>被舵盤帶動的輪轂</strong>（屬於上連桿）。
+第一版把上連桿畫成從關節軸開始的實心樑，於是三者重疊——
+算圖出來是一根融成一體的柱子，<strong>完全看不到關節</strong>。</p>
+<table>
+<tr><th style="width:230px">問題</th><th>症狀</th><th>根因</th></tr>
+<tr><td>拓樸重疊</td><td>算圖是一根柱子</td><td>三個實體佔同一空間</td></tr>
+<tr><td>前臂裂成 3 個實體</td><td>T0 會擋</td><td>耳片沒包過關節軸就合攏，跨接槽從端面切穿</td></tr>
+<tr><td>包絡 66.6 而非 40.0</td><td>沒有斷面有這個寬度</td><td><strong>loft 預設是樣條</strong>，斷面突降時外凸</td></tr>
+<tr><td>八個螺栓孔僅 79% 材料</td><td>T10 擋下</td><td><strong><code>Cylinder</code> 第一個參數是半徑</strong>，Ø9 寫成了 Ø18</td></tr>
+</table>
+
+<div class="card">
+<h4>參數掃描：耳片再厚也沒用</h4>
+<p>T10 報「八個舵盤螺栓孔只有 2 mm 要求的 79%」。
+直覺是耳片太薄，於是把耳片厚度從 3.90 加到 6.0、再加到 10.0——
+<strong>三次都是 79%</strong>。</p>
+<table>
+<tr><th style="width:200px">改動</th><th>結果</th></tr>
+<tr><td>耳片 3.90（基準）</td><td style="color:var(--bad)">最低 79%（8 孔）</td></tr>
+<tr><td>耳片 6.0</td><td style="color:var(--bad)">最低 79%（8 孔）</td></tr>
+<tr><td>耳片 10.0</td><td style="color:var(--bad)">最低 79%（8 孔）</td></tr>
+<tr><td>螺栓圓移到 R=13</td><td style="color:var(--ok)">通過</td></tr>
+<tr><td>孔徑縮到 Ø2.2</td><td style="color:var(--ok)">通過</td></tr>
+</table>
+<p>後兩列才指出<strong>約束是徑向的、不是壁厚</strong>。
+追進去發現 <code>Cylinder(9.0, 200.0)</code> 的第一個參數是<strong>半徑</strong>：
+我要的是 Ø9 的舵盤讓位孔，實際做出 Ø18，
+螺栓孔緣離孔壁只剩 <strong>0.61 mm</strong>。</p>
+<p><strong>不掃參數的話，我會一路加厚耳片而永遠修不好。</strong>
+「猜一個原因去修」和「量哪個變數真的驅動這個數字」是兩件事。</p>
+</div>
+
+<h4>三個拍出來的數字改為由約束推導</h4>
+<table>
+<tr><th style="width:150px">常數</th><th>原本</th><th>改為</th></tr>
+<tr><td><code>HUB_H</code></td><td><code>SB_L*0.85</code> = 34.51</td><td>跨接槽 + 2×(螺栓半徑 + R7 邊距) = 35.80</td></tr>
+<tr><td><code>END_SOLID</code></td><td>20.0（硬寫）</td><td>輪轂伸出 + 螺栓位置 + 邊距 = 40.0</td></tr>
+<tr><td><code>HORN_BOLT_R</code></td><td>8.0（硬寫）</td><td>由舵盤孔直徑推導 = 7.85/軸</td></tr>
+</table>
+
+<h4>驗證結果</h4>
+<table>
+<tr><th style="width:230px">層</th><th>結果</th></tr>
+<tr><td>T0 幾何完整性</td><td style="color:var(--ok)">8/8（2 項跳過：尚未產出網格與連桿屬性）</td></tr>
+<tr><td>T8 可組裝性</td><td style="color:var(--ok)">5/5（螺絲起子伸得到、無干涉）</td></tr>
+<tr><td>T10 可列印性</td><td style="color:var(--ok)">5/5</td></tr>
+</table>
+<p>接上 <code>ArmBundle</code> 只花了三行——這正是當初做那層抽象的目的。</p>
+
+<h4>實測質量回推，B1 的尺寸站得住</h4>
+<table>
+<tr><th style="width:170px">項目</th><th class="num">質量 g</th><th class="num">力臂 mm</th><th class="num">力矩 N·m</th></tr>
+<tr><td>upper_arm</td><td class="num">79.0</td><td class="num">42.6</td><td class="num">0.033</td></tr>
+<tr><td>forearm</td><td class="num">65.3</td><td class="num">133.9</td><td class="num">0.086</td></tr>
+<tr><td>j3 舵機</td><td class="num">67.6</td><td class="num">105.0</td><td class="num">0.070</td></tr>
+<tr><td>j4 腕舵機</td><td class="num">67.6</td><td class="num">190.0</td><td class="num">0.126</td></tr>
+<tr><td>夾爪</td><td class="num">50.0</td><td class="num">190.0</td><td class="num">0.093</td></tr>
+<tr><td>酬載</td><td class="num">100.0</td><td class="num">230.0</td><td class="num">0.226</td></tr>
+<tr><td colspan="3"><strong>肩關節合計</strong></td><td class="num"><strong>0.633</strong></td></tr>
+</table>
+<p><strong>67.9% 連續額定</strong>（B1 用估計質量算的是 69.9%）。
+實測連桿比估計重 10%，但質心比「連桿中點」的假設更靠內
+（上臂 42.6 mm 而非 52.5），兩者相抵之後比原估計還好一點。空載 43.7%。</p>
 
 <div class="card">
 <h4>這支手臂的尺寸是暫定的，而且程式會一直這樣說</h4>
