@@ -104,6 +104,7 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <a href="#ros">ROS / ROS 2 調查</a>
   <a href="#ecosystem">相鄰領域調查</a>
   <a href="#build">動手製作前的調查</a>
+  <a href="#nema17">NEMA 17 手臂</a>
   <a href="#limits">已知限制</a>
   <a href="#files">檔案與重現方式</a>
   <a href="#refs">引用來源</a>
@@ -984,7 +985,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 ../.venv/bin/python mutation_check.py     # 驗證套件本身有效</code></pre>
 
 <h2 id="failures">失敗紀錄</h2>
-<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
+<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#40 是做 NEMA 17 步進模擬時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
 工具鏈照樣產出看起來完全正常的結果，只有量測才抓得到。這類佔了一半以上。</p>
 
 <div class="card fail">
@@ -1104,7 +1105,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 <h4>#13 腕關節需要 +118°，但 SG90 只有 ±90° <span class="tag limit">真實限制</span> <span class="tag fixed">已修</span></h4>
 <p>IK 要求手指在折疊姿態下垂直向下時，腕關節需 +118°，超出行程 28°。</p>
 <p><strong>修法</strong>：SG90 舵盤壓在 21 齒花鍵上，組裝時可以每 ~17° 換一齒重新索引。
-把 j4 的舵盤偏移 30°（約兩齒），可用窗口從 ±90° 移到 −60°…+120°。這是實機上的標準做法，
+把 j4 的舵盤偏移<strong>整整兩齒（34.29°）</strong>，可用窗口從 ±90° 移到 −55.7°…+124.3°。這是實機上的標準做法，
 所以做成正式參數 <code>HORN_INDEX_DEG</code>，並讓 URDF/MJCF 的關節極限跟著它一起算，避免兩邊不同步。</p>
 </div>
 
@@ -1524,11 +1525,11 @@ T1（解析解對照）、T4（差異測試）、T7（黃金回歸）都要重�
   <img src="renders/build_risk.png" alt="左：耳片壁厚預算表；右：舵盤花鍵整齒索引與 j4 行程">
   <figcaption>左：壁厚的預算表。<strong>標稱 1.10 mm 已是 SG90 的幾何下限</strong>，
   再扣掉同型異廠的本體浮動就剩 0.80 mm。右：舵盤只能按整齒裝，
-  模型要求的 30° 落在齒與齒之間。</figcaption>
+  模型原本要求的 30° 落在齒與齒之間（已改為 2 齒 = 34.29°）。</figcaption>
 </figure>
 
 <div class="card fail">
-<h4>Blocker 1：j4 的舵盤索引角在花鍵上裝不出來 <span class="tag silent">靜默</span></h4>
+<h4>Blocker 1：j4 的舵盤索引角在花鍵上裝不出來 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
 <p>SG90 的輸出花鍵是 <strong>21 齒 → 17.14°/齒</strong>，舵盤只能離散地按整齒安裝。
 而模型裡 <code>HORN_INDEX_DEG["j4_wrist"] = 30.0</code>，<strong>= 1.75 齒，物理上裝不出來</strong>。</p>
 <p>影響是實質的，不是四捨五入的問題。j4 行程寬度固定 180°，索引角只是平移它，
@@ -1537,18 +1538,21 @@ T1（解析解對照）、T4（差異測試）、T7（黃金回歸）都要重�
 <tr><th style="width:130px">安裝</th><th style="width:190px">j4 行程</th><th>能否到 +118°</th></tr>
 <tr><td>1 齒（17.14°）</td><td>[−72.9°, +107.1°]</td><td style="color:var(--bad)">✗ 出界 10.9°</td></tr>
 <tr><td><strong>2 齒（34.29°）</strong></td><td>[−55.7°, +124.3°]</td><td style="color:var(--ok)">✓ 還有 6.3° 餘裕</td></tr>
-<tr><td>模型現值（30°）</td><td>[−60.0°, +120.0°]</td><td style="color:var(--warn)">數字可行但裝不出來</td></tr>
+<tr><td>原模型值（30°）</td><td>[−60.0°, +120.0°]</td><td style="color:var(--warn)">數字可行但裝不出來</td></tr>
 </table>
-<p><strong>修法</strong>：常數改成 <code>34.2857</code>（= 2 × 360/21）。
-但這會動到 T7 黃金基準與 j4 每一個 <code>write()</code> 值，
-所以<strong>我沒有擅自改</strong>——同 v2 接 URDF 那個判斷。</p>
+<p><strong>已修正</strong>：索引角不再是可以手寫的實數，改成<strong>由齒數推導</strong>——
+<code>HORN_TEETH = {"j4_wrist": 2}</code>，<code>HORN_INDEX_DEG</code> 由它乘上 <code>360/21</code> 算出。
+這樣它<strong>再也不可能落在齒與齒之間</strong>，而不是靠一條檢查事後抓。
+原始碼註解裡那句「~34 deg, rounded to 30 for the model」就是錯誤來源：
+那次四捨五入沒留下任何痕跡，因為 30° 仍涵蓋 IK 要的 +118°，
+於是模擬與韌體<strong>一致地</strong>跑在一個沒人裝得出來的組態上。
+連帶重新基準化 T7，並因此發現黃金基準本身也有問題（見 <a href="#nema17">#40</a>）。</p>
 <p><strong>為什麼原本的測試沒抓到</strong>：測試檢查的是「行程寬度＝180°」與「索引角與極限一致」，
 兩者在 30° 下都成立。<strong>當時沒有任何一項知道花鍵是離散的</strong>。</p>
 <p><strong>已經補上了</strong>：T2 新增「舵盤索引角必須是整齒」，常數 <code>SPLINE_TEETH = 21</code>
-放在 <code>HORN_INDEX_DEG</code> 旁邊。這條檢查<strong>現在是失敗的</strong>——
-套件因此回報 <strong>204/205</strong> 而不是全過。這是刻意的：
-把已知缺陷寫成散文而不寫成測試，正是這個專案存在要避免的事。
-等索引角改成 34.2857（並重新基準化 T7）之後它就會通過。</p>
+放在 <code>HORN_INDEX_DEG</code> 旁邊。這條檢查曾<strong>刻意留成失敗</strong>，
+讓套件回報 204/205 而不是全過——把已知缺陷寫成散文而不寫成測試，
+正是這個專案要避免的事。現在索引角改成 2 齒、T7 重新基準化，它通過了。</p>
 </div>
 
 <div class="card fail">
@@ -1620,7 +1624,7 @@ Arduino 的穩壓器承受不了，會 brownout 或直接燒。需要：</p>
 <tr><td>3</td><td>量到的值填回 <code>sg90_params.py</code>，重跑 <code>tests/run_all.py</code></td>
   <td>整套檢查會重新推導，包含壁厚下限。這步是整個驗證系統真正兌現價值的地方</td></tr>
 <tr><td>4</td><td>決定 j4 索引角（建議 34.2857），重新基準化 T7</td>
-  <td>Blocker 1。這一改會動到 <code>write()</code> 值，先決定再印</td></tr>
+  <td>Blocker 1，已修正為 2 齒（34.29°）</td></tr>
 <tr><td>5</td><td>PETG 印全部 8 件，孔周 100% 填充、多加牆</td>
   <td>0.80–1.10 mm 的壁需要韌性材料與足夠牆數</td></tr>
 <tr><td>6</td><td>接獨立 5 V/3 A 電源，共地，先單顆歸中</td>
@@ -1654,6 +1658,155 @@ Arduino 的穩壓器承受不了，會 brownout 或直接燒。需要：</p>
 真正的風險是<strong>兩個尺寸決策</strong>：一個是模型裡填了物理上裝不出來的舵盤角度（可修，但會動到已發表數字），
 另一個是壁厚已在 SG90 的幾何下限、而 SG90 本身是尺寸會浮動的翻製零件（要靠實測與換材料吸收）。
 兩者都不是印出來才會發現的問題，但都是<strong>不查資料就不會發現</strong>的問題。</p>
+</div>
+
+<h2 id="nema17">第二支手臂：NEMA 17 步進（A1–A4）</h2>
+<p class="lead">第一支手臂用 SG90（廉價伺服）。第二支換成 42 型步進馬達，
+不是為了做「更好的一支」，而是因為<strong>步進與伺服的失效方式根本不同</strong>——
+而那個差別正好是驗證系統最容易漏掉的東西。</p>
+
+<h3>A1 傳動方案：為什麼是遠端驅動 3:1 同步帶</h3>
+<p>NEMA 17（42×42×40 mm，280 g）比 SG90（9 g）重 31 倍。
+直接把馬達裝在關節上，肩關節就得扛著肘關節的馬達揮動——所以馬達全部留在底座，
+用 GT2 同步帶把扭矩送出去。</p>
+<table>
+<tr><th style="width:180px">項目</th><th class="num">數值</th><th>來源</th></tr>
+<tr><td>馬達保持扭矩</td><td class="num">0.45 N·m</td><td>17HS4401 規格</td></tr>
+<tr><td>減速比</td><td class="num">3.0</td><td>20T → 60T GT2 帶輪</td></tr>
+<tr><td>關節可用扭矩</td><td class="num">1.35 N·m</td><td>0.45 × 3</td></tr>
+<tr><td>關節步距</td><td class="num">0.0375°</td><td>1.8° ÷ 16 細分 ÷ 3</td></tr>
+<tr><td>每關節轉一圈</td><td class="num">9600 步</td><td>同上</td></tr>
+<tr><td>肩帶 / 肘帶</td><td class="num">GT2-188 / GT2-400</td><td>94T / 200T，標準閉環尺寸</td></tr>
+</table>
+<p>皮帶長度是<strong>標準品</strong>，不是算出來想訂就訂的——所以流程反過來：
+先挑得到的閉環皮帶長度，再由它<strong>反推馬達的安裝座標</strong>（<code>MOT_X = 50.5 mm</code>）。
+中心距與皮帶長是可逆的一組式子，選了一邊另一邊就不自由。</p>
+
+<h3>A2 CAD 與 A3 URDF／MJCF</h3>
+<table>
+<tr><th style="width:180px">連桿</th><th class="num">質量</th><th>備註</th></tr>
+<tr><td>base_link</td><td class="num">540.4 g</td><td>含 165×165 底板、轉盤軌道</td></tr>
+<tr><td>turntable</td><td class="num">737.6 g</td><td>含塔柱、兩顆馬達座</td></tr>
+<tr><td>upper_arm</td><td class="num">96.3 g</td><td>抽殼樑，J2→J3 140 mm</td></tr>
+<tr><td>forearm</td><td class="num">93.5 g</td><td>J3→尖端 115 mm</td></tr>
+<tr><td colspan="2" class="num"><strong>合計 1467.8 g</strong></td><td>不含馬達與五金</td></tr>
+</table>
+<p>關節極限<strong>不是手寫的</strong>。步進馬達自己沒有行程上限——極限完全由機構決定，
+所以是把實體旋轉到干涉為止<strong>掃描</strong>出來的：
+j1 ±150°、j2 ±95°、j3 ±85°。A1 的驗證層直接比對 MJCF 的 <code>jnt_range</code>
+與這份掃描結果，不允許任何一邊手動填。</p>
+
+<h3>A4 模擬：步進真正的失效模式</h3>
+<p>MJCF 裡<strong>刻意沒有</strong>建模失步——XML 的註解就這樣寫。原因是：
+位置致動器飽和之後會<em>追回來</em>，那是伺服的行為；步進沒有回授，掉的步<strong>永遠回不來</strong>，
+只有歸原點能清掉。那個不對稱是這兩台機器最本質的差別，它屬於模擬迴圈，不屬於 XML。</p>
+<table>
+<tr><th style="width:150px">酬載</th><th class="num">肩峰值扭矩</th><th class="num">佔容量</th><th class="num">追蹤誤差</th><th>結果</th></tr>
+<tr><td>0 g</td><td class="num">0.210 N·m</td><td class="num">16%</td><td class="num">1.63°</td><td style="color:var(--ok)">✓ 零失步</td></tr>
+<tr><td>500 g</td><td class="num">1.044 N·m</td><td class="num">77%</td><td class="num">1.77°</td><td style="color:var(--ok)">✓ 零失步</td></tr>
+<tr><td><strong>598 g</strong></td><td class="num">—</td><td class="num">~100%</td><td class="num">—</td><td style="color:var(--warn)">失步門檻</td></tr>
+<tr><td>700 g</td><td class="num">1.584 N·m</td><td class="num">117%</td><td class="num">—</td><td style="color:var(--bad)">✗ 塌到關節極限</td></tr>
+</table>
+<p><strong>過門檻之後是單向失控</strong>：一失步手臂就往下垂，力臂變長，需求扭矩再升，
+失更多步。線性外推 600 g 應該是 1.21 N·m，實測 1.396——多出來的就是這個正回饋。
+700 g 以上終角直接停在 95.0°，也就是關節極限，整支塌到底。</p>
+
+<div class="card">
+<h4>順帶查出來的一件事：datasheet 轉速根本開不出來</h4>
+<p>16 細分 = 3200 步/馬達轉。AccelStepper 在 AVR 上大約 <strong>4000 步/s</strong>，
+換算<strong>馬達 75 rpm</strong>——而 datasheet 寫 300 rpm。
+拿 datasheet 轉速當規格，會做出一支<strong>韌體開不動的手臂</strong>。
+所以步進模型裡的速度上限取「MCU 發得出來的」與「馬達轉得動的」<strong>較小者</strong>，
+實際關節上限是 150°/s。要跑到 300 rpm 需要 16000 步/s，得換硬體計時器或降細分。</p>
+</div>
+
+<h3 style="margin-top:2.4rem">A4 的代價：連續四個「會跑、會印數字」的錯模型</h3>
+<p>模擬是這整個專案裡<strong>最容易產出自信廢話</strong>的一層——沒有任何外部東西會反駁它。
+下面每一個都通過了「程式跑得動而且印出合理的表」，而且是<strong>依序</strong>被發現的，
+每修好一個才看得見下一個。</p>
+
+<div class="card fail">
+<h4>#35 「信念誤差」量到的是迴轉暫態 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>第一次跑出來的表：失步 <strong>0</strong>，信念誤差 <strong>89.40° / 59.40° / 59.40°</strong>。
+零失步的開環步進，韌體的信念<em>必然</em>等於現實——59° 的信念誤差是不可能的。</p>
+<p>原因：我把韌體的信念寫成「最終目標」，所以指令一下、軸還在轉的時候就被記成誤差。
+那三個數字剛好是各軸的<strong>整段行程</strong>（89.4°≈90°、59.4°≈60°），就是初始步階響應。</p>
+<p><strong>修法</strong>：信念改成「驅動器<strong>已發出</strong>的步數」。真實韌體知道自己發了多少步，
+不是知道終點。這樣 <code>信念 − 現實 ≡ 失步</code>，而驗證層新增的檢查就是直接驗這個恆等式。</p>
+</div>
+
+<div class="card fail">
+<h4>#36 用致動器飽和當失步判準 → 3% 負載報 42752 步失步 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>修好 #35 後改用「致動器是否貼在力上限」判斷失步。結果肘部在
+<strong>3% 扭矩容量</strong>下報出 33456 步失步。3% 負載不可能失步。</p>
+<p>根因：位置致動器在<strong>每一次</strong>階躍指令的第一個 tick 都會飽和
+（kp=43，誤差 1 rad → 43 N·m，遠超 0.45）。那是<strong>控制器</strong>撞到自己的限制，
+不是<strong>馬達</strong>掉磁極。兩件事在報表上長得一模一樣。</p>
+<p><strong>修法</strong>：判準改回物理量——需求扭矩（重力 ＋ 慣性×加速度）對比保持扭矩。
+同時補上真正缺的東西：<strong>梯形加減速</strong>。對步進下階躍指令等於要求無限加速度，
+真實韌體（AccelStepper）不會這樣做，所以那個「停轉」是我自己的軌跡造成的，不是手臂的問題。</p>
+</div>
+
+<div class="card fail">
+<h4>#37 加速度用「未截斷的速度誤差」算，第一個 tick 就 2600 rad/s² <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>加上斜坡之後，1% 負載還是失步。追進去發現我把「還沒達成的速度差 ÷ dt」當成加速度，
+而不是「實際施加的那一份」。第一個 tick 算出 <strong>2600 rad/s²</strong>，
+乘上慣量就超過保持扭矩。<strong>修法</strong>：用截斷後的 <code>dv_applied / dt</code>。
+一行之差，而兩個版本印出的表都「看起來合理」。</p>
+</div>
+
+<div class="card fail">
+<h4>#38 MuJoCo 的 <code>gear</code> 是馬達端單位，我一直餵關節角 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>這個最隱蔽。MuJoCo 的傳動是 <code>length = gear × qpos</code>，
+所以 <code>ctrl</code> 和 <code>kp</code> 都在<strong>馬達端</strong>。
+我把關節角度直接寫進 <code>ctrl</code>，每個關節就停在指令的<strong>三分之一</strong>。</p>
+<p>證據一直印在表上，只是我沒讀出來：<strong>肘部命令 −60°，終角剛好 −20.0°</strong>。
+那個「剛好」是整除關係，不是巧合。</p>
+<p><strong>修法</strong>：<code>kp</code> 與 <code>ctrlrange</code> 全改馬達端
+（<code>kp = 保持扭矩 ÷ 一個馬達整步</code>，關節剛度 <code>gear²·kp</code> = 128.9 N·m/rad），
+迴圈寫入時乘上 gear。修完終角是 90.0° / 0.0° / −60.0°，
+而且肩部空載 0.21 N·m 與手算的 0.20 N·m 對上了。</p>
+</div>
+
+<div class="card fail">
+<h4>#39 <code>kv</code> 的量綱是混的，害步進落後 11° <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>原式 <code>KV = 2√(KP × 0.02)</code>，那個 <code>0.02</code> 是我當初隨手當「關節慣量」塞的，
+卻被套在<strong>馬達端</strong>增益上。結果迴路過阻尼約 6 倍，每次斜坡都落後 <strong>11°</strong>。</p>
+<p>步進的轉子是被磁場鎖住的：滿扭矩時負載角只有一個整步（關節端 0.60°），不可能落後 11°。</p>
+<p><strong>修法</strong>：阻尼改由<strong>模型實測的慣量</strong>推導——建置時先產生一次 MJCF、載入、
+掃過各關節行程取質量矩陣對角線最大值，再算臨界阻尼。追蹤誤差降到 0.56–2.30°。</p>
+</div>
+
+<div class="card fail">
+<h4>#40 兩個「假通過」：蛻變檢查跟自己比，黃金基準看不見真實變更 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p><strong>(a) dataclass 預設值陷阱。</strong>我寫了一條蛻變檢查「斜坡放緩 → 失步不增」，
+做法是 <code>Stepper.max_accel_steps = 原值 ÷ 4</code>。
+但 dataclass 的預設值在<strong>類別建立時就被烘進 <code>__init__</code> 簽章</strong>，
+事後改類別屬性對新實例毫無作用——那條檢查是<strong>拿同一組參數跑兩次然後比較</strong>，
+永遠通過，什麼都沒測。修法：參數改用傳參，並在檢查裡順便斷言兩次參數<em>確實不同</em>。</p>
+<p><strong>(b) 黃金容差寬到失去意義。</strong>把 j4 索引角從 30° 改成 34.29° 之後，
+T7 黃金回歸<strong>18/18 全過</strong>。但實際上酬載舉高變了 0.62 mm、搬運距離變了 1.23 mm——
+真的變了，只是容差（3 mm / 4 mm）吸收得掉。</p>
+<p>於是去量「同組態重跑的離散度」：MuJoCo 對同一輸入是<strong>位元級決定性</strong>的，
+5 次重跑離散度全是 <strong>0.000000</strong>。也就是說那些容差<strong>不是在吸收雜訊</strong>，
+它只是讓真實幾何變更溜過去。</p>
+<p><strong>修法</strong>：容差改成儲存時捨入量級的 10 倍（0.001°／1e-5 N·m／0.01 mm）。
+驗證方式是把索引角退回 1.75 齒——T7 現在<strong>失敗 15 項</strong>，而不是之前的全過。
+一個看不見 4.29° 幾何變更的黃金回歸，等於沒有釘住任何東西。</p>
+</div>
+
+<div class="card">
+<h4>變異測試：這些檢查真的抓得到嗎</h4>
+<p>A4 的驗證層一次就 21/21 全過。<strong>在連續錯四個模型之後，我不信任這個結果</strong>，
+所以把上面每一個錯模型都<strong>重新植回去</strong>，看套件會不會失敗。</p>
+<p>第一次跑出 9/9「全部抓到」——但九個全是 <code>AttributeError</code>。
+那不是套件抓到變異，是<strong>我的變異腳本自己壞了</strong>（<code>Check</code> 是 dataclass 不是 dict）。
+修掉之後真實結果是 <strong>8/9</strong>。</p>
+<p>唯一漏掉的是「需求扭矩忽略慣性項」——因為在標稱斜坡（8000 步/s²）下慣性項只佔容量
+<strong>2.9%</strong>，套件裡沒有任何情境能分辨兩者。這不該用放寬容差搪塞，
+所以補了一個慣性真的會主導的情境，順便回答一個實際的設計問題：
+<strong>斜坡開到 4×10⁵ 步/s²，零酬載也會失步</strong>——那時馬達撐不住的是慣性，不是重力。
+補上之後 <strong>9/9</strong>，全部由真實檢查失敗抓到。</p>
 </div>
 
 <h2 id="limits">已知限制</h2>
