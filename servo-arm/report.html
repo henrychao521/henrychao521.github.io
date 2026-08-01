@@ -991,7 +991,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 ../.venv/bin/python mutation_check.py     # 驗證套件本身有效</code></pre>
 
 <h2 id="failures">失敗紀錄</h2>
-<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#43 是做 NEMA 17 步進模擬與韌體時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節；<strong>#44–#47 是查證致動器資料時挖出的</strong>，記在 <a href="#actuators">致動器資料查證</a>那節；<strong>#48 是第三支手臂定尺寸時回頭發現的、關於第一支手臂的事</strong>，記在 <a href="#ft5425bl">FT5425BL 手臂</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
+<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#43 是做 NEMA 17 步進模擬與韌體時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節；<strong>#44–#47 是查證致動器資料時挖出的</strong>，記在 <a href="#actuators">致動器資料查證</a>那節；<strong>#48–#50 是第三支手臂上挖出的</strong>（#48 還是回頭關於第一支手臂的），記在 <a href="#ft5425bl">FT5425BL 手臂</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
 工具鏈照樣產出看起來完全正常的結果，只有量測才抓得到。這類佔了一半以上。</p>
 
 <div class="card fail">
@@ -1987,7 +1987,7 @@ T7 黃金回歸<strong>18/18 全過</strong>。但實際上酬載舉高變了 0.
 不是讓它假裝通過。</strong></p>
 </div>
 
-<h2 id="ft5425bl">第三支手臂：FT5425BL 標準舵機（B1 尺寸決策、B2 CAD）</h2>
+<h2 id="ft5425bl">第三支手臂：FT5425BL 標準舵機（B1 尺寸、B2 CAD、B3 URDF／MJCF）</h2>
 <p class="lead">扭矩預算用「維持與 SG90 相同的扭矩佔比」把伸距外推到 306 mm。
 實際把靜力算一遍——<strong>那個伸距空載就用掉連續額定的 88%</strong>。
 問題不在算術，在於<strong>那個「相同的佔比」本身指的是什麼</strong>。</p>
@@ -2110,6 +2110,71 @@ FT5425BL 只有 67.6 g：</p>
 <p><strong>67.9% 連續額定</strong>（B1 用估計質量算的是 69.9%）。
 實測連桿比估計重 10%，但質心比「連桿中點」的假設更靠內
 （上臂 42.6 mm 而非 52.5），兩者相抵之後比原估計還好一點。空載 43.7%。</p>
+
+<h3>B3 URDF／MJCF：極限有兩個作者</h3>
+<p>NEMA 17 那支的關節極限只有一個來源——步進沒有自身行程，機構就是極限。
+這支相反：<strong>舵機有硬性的 180°</strong>，怎麼樣都過不去。
+所以每個關節的極限是兩個獨立約束的<strong>交集</strong>：</p>
+<table>
+<tr><th style="width:130px">關節</th><th class="num">機構掃描</th><th class="num">舵機行程</th><th class="num">生效</th><th>綁住的是</th></tr>
+<tr><td>j1 迴轉</td><td class="num">±150°</td><td class="num">±90°</td><td class="num">±90°</td><td><strong>舵機</strong></td></tr>
+<tr><td>j2 肩</td><td class="num">±75°</td><td class="num">±90°</td><td class="num">±75°</td><td><strong>機構</strong></td></tr>
+<tr><td>j3 肘</td><td class="num">±95°</td><td class="num">±90°</td><td class="num">±90°</td><td><strong>舵機</strong></td></tr>
+</table>
+<p>取交集不是重點，<strong>記錄「哪一邊綁住」才是</strong>——兩者的意思相反：
+機構綁住代表<strong>改幾何可以放寬</strong>；舵機綁住代表<strong>幾何幫不上忙</strong>，
+只能重新索引舵盤，而那是拿一端換另一端。
+只報一個數字而不說是誰造成的，就會有人去加厚一面牆，
+想買一段舵機本來就不會給的行程。</p>
+
+<div class="card fail">
+<h4>#49 掃出來的肩關節行程是 0°——連續三次，三個不同原因 <span class="tag fixed">已修正</span></h4>
+<p>掃描把實體轉到干涉為止。前三次跑出來的肩關節範圍是
+<strong>[+5, −5]</strong>（負寬度）、然後 <strong>[0, 0]</strong>、再一次 <strong>[0, 0]</strong>。
+每一次都是不同的原因，而且每修好一個才看得見下一個：</p>
+<table>
+<tr><th style="width:210px">第幾次</th><th>根因</th></tr>
+<tr><td>一：[+5, −5]</td><td>跨接槽用叉臂的<strong>半邊長</strong>（23.9）挖，
+  註解卻寫「half-diagonal」——真值是 <strong>29.7</strong>，叉臂角落卡在輪轂實心區</td></tr>
+<tr><td>二：[0, 0]</td><td>零位就相交 <strong>4667 mm³</strong>：
+  舵機截面的 <strong>X/Y 寫反了</strong>（舵機 40.6 在 X、20.0 在 Y，
+  我寫成 X=26.8 裝不下、Y=46.6 撞耳片）</td></tr>
+<tr><td>三：[0, 0]</td><td>耳片往下伸 34.3，旋轉時最低點掃到軸下 <strong>41.5</strong>，
+  而肩軸只在轉盤面上 36——耳片掃到圓盤</td></tr>
+</table>
+<p>共通點：<strong>這三個數字全是我拍的</strong>，不是從它們要配合的東西推導出來的。
+改成推導之後：</p>
+<pre>YOKE_R      = √((SB_L/2+WALL)² + (SB_H/2+WALL)²)   叉臂在輪轂座標系掃出的圓盤
+HUB_REACH   = YOKE_R + 間隙 + 4                     耳片必須包過那個圓盤
+HUB_SWEPT_R = √((SB_L/2+WALL)² + HUB_REACH²)        耳片自己掃出的半徑
+Z_J2        = 轉盤面 + HUB_SWEPT_R + 1.5            肩軸高度</pre>
+<p>還有一個結構認知的錯誤：我把耳片在關節<strong>下方</strong>也接起來，
+於是叉臂沒有路徑往下接回轉盤——轉盤因此變成 3 個分離的實體。
+真實的伺服 U 型接頭是<strong>在舵機上方合攏、下方留兩片自由板</strong>，
+把跨接槽加上向下的開口才對。</p>
+</div>
+
+<div class="card fail">
+<h4>#50 docstring 宣稱了 MuJoCo 做不到的事 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>MJCF 產生器的說明寫著速度上限「以關節速度限制放進去」。
+<strong>MuJoCo 沒有關節速度上限這種東西</strong>，而程式也確實沒寫進 XML——
+那句話是一個只存在於散文裡的限制。</p>
+<p>0.08 s/60° = 13.1 rad/s，在 190 mm 的手臂上是尖端 2.5 m/s。
+忽略它，模擬就會允許手臂做出舵機做不到的動作。</p>
+<p><strong>修法</strong>：說清楚 MuJoCo 放不下，改由 B4 的模擬迴圈執行——
+和步進的發步率上限放在同一個地方。並在 B3 加一條檢查驗
+<code>MAX_RADPS</code> 有被匯出，因為<strong>只寫在註解裡的限制等於不存在</strong>。</p>
+</div>
+
+<h4>B3 驗證層（27 項，變異測試 5/5）</h4>
+<p>刻意把幾條拆成兩句話，因為「數字對」和「關係對」不是同一件事：</p>
+<ul>
+<li>極限 = 交集　<strong>以及</strong>　極限不超出任一來源
+——後者在「兩邊用同樣的錯誤算法」時仍會擋下</li>
+<li>forcerange = 連續額定　<strong>以及</strong>　forcerange ≠ 堵轉值
+——若哪天有人把 0.932 改標成堵轉，只驗前者不會發現</li>
+<li>「綁住的是誰」必須與它宣稱總結的兩個範圍相符——<strong>過期的欄位比沒有更糟</strong></li>
+</ul>
 
 <div class="card">
 <h4>這支手臂的尺寸是暫定的，而且程式會一直這樣說</h4>
