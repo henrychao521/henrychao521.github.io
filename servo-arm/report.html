@@ -991,7 +991,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 ../.venv/bin/python mutation_check.py     # 驗證套件本身有效</code></pre>
 
 <h2 id="failures">失敗紀錄</h2>
-<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#43 是做 NEMA 17 步進模擬與韌體時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節；<strong>#44–#47 是查證致動器資料時挖出的</strong>，記在 <a href="#actuators">致動器資料查證</a>那節；<strong>#48–#50 是第三支手臂上挖出的</strong>（#48 還是回頭關於第一支手臂的），記在 <a href="#ft5425bl">FT5425BL 手臂</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
+<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#43 是做 NEMA 17 步進模擬與韌體時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節；<strong>#44–#47 是查證致動器資料時挖出的</strong>，記在 <a href="#actuators">致動器資料查證</a>那節；<strong>#48–#52 是第三支手臂上挖出的</strong>（#48 還是回頭關於第一支手臂的），記在 <a href="#ft5425bl">FT5425BL 手臂</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
 工具鏈照樣產出看起來完全正常的結果，只有量測才抓得到。這類佔了一半以上。</p>
 
 <div class="card fail">
@@ -1987,7 +1987,7 @@ T7 黃金回歸<strong>18/18 全過</strong>。但實際上酬載舉高變了 0.
 不是讓它假裝通過。</strong></p>
 </div>
 
-<h2 id="ft5425bl">第三支手臂：FT5425BL 標準舵機（B1 尺寸、B2 CAD、B3 URDF／MJCF）</h2>
+<h2 id="ft5425bl">第三支手臂：FT5425BL 標準舵機（B1 尺寸、B2 CAD、B3 URDF／MJCF、B4 模擬）</h2>
 <p class="lead">扭矩預算用「維持與 SG90 相同的扭矩佔比」把伸距外推到 306 mm。
 實際把靜力算一遍——<strong>那個伸距空載就用掉連續額定的 88%</strong>。
 問題不在算術，在於<strong>那個「相同的佔比」本身指的是什麼</strong>。</p>
@@ -2175,6 +2175,66 @@ Z_J2        = 轉盤面 + HUB_SWEPT_R + 1.5            肩軸高度</pre>
 ——若哪天有人把 0.932 改標成堵轉，只驗前者不會發現</li>
 <li>「綁住的是誰」必須與它宣稱總結的兩個範圍相符——<strong>過期的欄位比沒有更糟</strong></li>
 </ul>
+
+<h3>B4 模擬：伺服的失效不是漂移，是「一直撐著然後燒掉」</h3>
+<p>步進手臂問的是「有沒有失步」。伺服問不出這個問題——它永遠知道自己在哪。
+它的失效安靜得多：<strong>撐住、繼續撐、過熱</strong>。
+所以這一層報的是<strong>工作時率</strong>，不是漂移。</p>
+
+<div class="card fail">
+<h4>#51 我把關節速度夾在額定值，藏掉了最該報告的事件 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p><a href="#ft5425bl">#50</a> 說速度上限要在模擬迴圈裡執行。第一版夾在**設定點的迴轉速率**，
+關節本身仍衝到 14.21 rad/s（資料表的 109%）。於是我改夾關節速度——
+先夾在 <code>mj_step</code> 之後（沒用，位置已經走完了），
+再移到之前。<strong>三次都沒對。</strong></p>
+<p>追進去看那一刻發生什麼，才發現方向根本錯了：</p>
+<pre>k=744  肩 -75.13°   nefc 0
+k=745  肩 -75.36°   nefc 1   ← 越過機構極限 -75°，約束啟動
+       肘速度單步 -9.86 rad/s（≈9863 rad/s²，是致動器上限 913 的十倍）</pre>
+<p>（<code>ncon</code> 是<strong>接觸</strong>數；關節極限在 MuJoCo 裡是<strong>約束</strong>，
+不出現在那裡。查錯欄位讓我多繞了一圈。）</p>
+<p><strong>那不是舵機在驅動，是手臂撐不住、被重力反驅動、然後撞進極限，
+衝擊把前臂甩到 21.7 rad/s。</strong></p>
+<p><strong>0.08 s/60° 限制的是舵機能<em>驅動</em>多快，不是別人能對它做多快。</strong>
+夾住關節速度會把整件事抹掉——而那正是這次模擬最該講的事。
+改成分開報「自由運動速度」與「含撞擊速度」，並在撞到極限時明講。</p>
+</div>
+
+<div class="card fail">
+<h4>#52 資料表的速度在這支手臂上不能用 <span class="tag fixed">已納入設計</span></h4>
+<p>照資料表 13.09 rad/s 下指令，酬載 100 g 時：</p>
+<table>
+<tr><th style="width:150px">指令速率</th><th class="num">佔資料表</th><th class="num">肩峰值</th><th class="num">佔額定</th><th>撞極限</th><th class="num">追蹤誤差</th></tr>
+<tr><td>13.09 rad/s</td><td class="num">100%</td><td class="num">0.951</td><td class="num" style="color:var(--bad)">102%</td><td style="color:var(--bad)">是</td><td class="num">48.7°</td></tr>
+<tr><td><strong>6.54 rad/s</strong></td><td class="num">50%</td><td class="num">0.553</td><td class="num" style="color:var(--ok)">59%</td><td style="color:var(--ok)">否</td><td class="num">20.0°</td></tr>
+<tr><td>3.27 rad/s</td><td class="num">25%</td><td class="num">0.515</td><td class="num">55%</td><td>否</td><td class="num">8.4°</td></tr>
+<tr><td>1.31 rad/s</td><td class="num">10%</td><td class="num">0.514</td><td class="num">55%</td><td>否</td><td class="num">4.1°</td></tr>
+</table>
+<p>60° 的肩部動作以滿速下達，會<strong>過衝 15° 撞進 −75° 的機構極限</strong>，
+而且拉到連續額定的 102%。<strong>減半就完全不撞，扭矩掉到 59%</strong>；
+再減到 1/4 幾乎沒有額外好處——<strong>50% 就是那個轉折點，是量出來的不是挑的</strong>。</p>
+<p>這是伺服版的「datasheet 300 rpm 韌體開不出來」：
+<strong>0.08 s/60° 是空載值</strong>，帶著 190 mm 手臂根本跑不到。
+B5 的韌體必須限速到這裡。</p>
+</div>
+
+<h4>靜態保持 vs 動態運行：兩個不同的酬載上限</h4>
+<table>
+<tr><th style="width:230px">問題</th><th class="num">答案</th></tr>
+<tr><td>空載靜態最壞姿態</td><td class="num">0.401 N·m ＝ 43% 額定（肩 −75°、肘 −10°）</td></tr>
+<tr><td>能<strong>保持</strong>的酬載上限</td><td class="num">≈ 235 g</td></tr>
+<tr><td>能<strong>運行</strong>的酬載（滿速）</td><td class="num" style="color:var(--bad)">&lt; 50 g（過衝就撞極限）</td></tr>
+<tr><td>能<strong>運行</strong>的酬載（限速 50%）</td><td class="num" style="color:var(--ok)">100 g 用 59% 額定</td></tr>
+</table>
+<p>「撐得住」和「動得了」是兩個數字，而且差 4 倍以上。
+B1 的靜態預算算的是前者——同 <a href="#torque">#34</a> 那一類：
+<strong>受限集合的最大值不是可達集合的最大值</strong>。</p>
+
+<h4>B4 驗證層（10 項）</h4>
+<p>刻意把「限速有效」拆成三條：會撞極限、限速後不撞、以及扭矩顯著下降。
+只驗最後一條的話，一個把限速寫成無效的模型仍會通過。
+另外驗「<code>read()</code> 回報的是指令不是軸位置」——
+四支手臂裡只有 DM-J4310 報得出真實位置，模型不可以假裝別的做得到。</p>
 
 <div class="card">
 <h4>這支手臂的尺寸是暫定的，而且程式會一直這樣說</h4>
