@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>可行性報告 — 外部方案調查與待確認決策</title>
+<style>
+<style>
+:root{
+  --bg:#0d1117; --panel:#151b23; --panel2:#1c232d; --line:#2a323d;
+  --fg:#e6edf3; --dim:#8b98a5; --accent:#4f9cf9; --ok:#3fb950; --bad:#f85149;
+  --warn:#d29922; --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:15px/1.75 -apple-system,"PingFang TC","Noto Sans TC",Helvetica,sans-serif;}
+#wrap{display:flex;min-height:100vh}
+nav{width:250px;flex:0 0 250px;background:var(--panel);border-right:1px solid var(--line);
+  position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 0}
+nav h1{font-size:15px;margin:0 20px 4px;letter-spacing:.4px}
+nav .sub{font-size:11.5px;color:var(--dim);margin:0 20px 18px;line-height:1.5}
+nav a{display:block;padding:7px 20px;color:var(--dim);text-decoration:none;font-size:13px;
+  border-left:2px solid transparent}
+nav a:hover{color:var(--fg);background:var(--panel2)}
+nav a.on{color:var(--accent);border-left-color:var(--accent);background:var(--panel2)}
+nav .grp{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:#5b6673;
+  margin:16px 20px 4px}
+main{flex:1;min-width:0;padding:38px 46px 90px;max-width:1080px}
+h2{font-size:23px;margin:44px 0 6px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+h2:first-child{margin-top:0}
+h3{font-size:17px;margin:26px 0 8px;color:#c9d5e1}
+h4{font-size:14.5px;margin:18px 0 6px;color:var(--dim)}
+p{margin:10px 0}
+code{font-family:var(--mono);font-size:.88em;background:var(--panel2);padding:1px 5px;
+  border-radius:4px;color:#a5d6ff}
+pre{background:#0a0e14;border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+  overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6}
+pre code{background:none;padding:0;color:#c9d1d9}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:7px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel2);font-weight:600;color:#c9d5e1}
+td.num{text-align:right;font-family:var(--mono)}
+.lead{color:var(--dim);font-size:14px;margin-bottom:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:16px 20px;margin:16px 0}
+.card.fail{border-left:3px solid var(--bad)}
+.card.win{border-left:3px solid var(--ok)}
+.card.note{border-left:3px solid var(--warn)}
+.card h4{margin-top:0;color:var(--fg);font-size:15px}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;
+  font-family:var(--mono);margin-left:8px;vertical-align:middle}
+.tag.fixed{background:rgba(63,185,80,.14);color:var(--ok);border:1px solid rgba(63,185,80,.35)}
+.tag.silent{background:rgba(248,81,73,.14);color:var(--bad);border:1px solid rgba(248,81,73,.35)}
+.tag.limit{background:rgba(210,153,34,.14);color:var(--warn);border:1px solid rgba(210,153,34,.35)}
+figure{margin:20px 0}
+figure img{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
+figure img.dark{background:var(--panel)}
+figcaption{font-size:12.5px;color:var(--dim);margin-top:7px}
+video{width:100%;border:1px solid var(--line);border-radius:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+.kpi div{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px 15px}
+.kpi b{display:block;font-size:21px;font-family:var(--mono);color:var(--accent);line-height:1.3}
+.kpi span{font-size:11.5px;color:var(--dim)}
+.chain{font-family:var(--mono);font-size:12.5px;background:#0a0e14;border:1px solid var(--line);
+  border-radius:8px;padding:16px;line-height:2.1;overflow-x:auto}
+.chain b{color:var(--accent);font-weight:600}
+ul,ol{padding-left:22px}
+li{margin:5px 0}
+a{color:var(--accent)}
+.small{font-size:12.5px;color:var(--dim)}
+hr{border:0;border-top:1px solid var(--line);margin:30px 0}
+@media(max-width:900px){#wrap{flex-direction:column}nav{width:100%;height:auto;position:static;flex:none}main{padding:24px 18px 60px}.grid2{grid-template-columns:1fr}}
+</style>
+main{max-width:900px;margin:0 auto;padding:28px 20px 80px}
+#wrap{display:block}
+.q{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
+   border-radius:8px;padding:16px 18px;margin:18px 0}
+.q h4{margin:0 0 8px;font-size:15px}
+.verdict{display:inline-block;font-size:12px;padding:2px 9px;border-radius:20px;
+   font-weight:600;margin-left:6px;vertical-align:middle}
+.v-go{background:rgba(63,185,80,.15);color:var(--ok);border:1px solid rgba(63,185,80,.4)}
+.v-ask{background:rgba(210,153,34,.15);color:var(--warn);border:1px solid rgba(210,153,34,.4)}
+.v-no{background:rgba(248,81,73,.13);color:var(--bad);border:1px solid rgba(248,81,73,.4)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:var(--panel2);font-weight:600}
+td.num,th.num{text-align:right;font-family:var(--mono)}
+.src{font-size:12px;color:var(--dim);margin-top:8px}
+.src a{color:var(--accent)}
+h2{margin-top:2.2rem;padding-top:1.2rem;border-top:1px solid var(--line)}
+@media(max-width:900px){main{padding:20px 14px 60px}table{font-size:12.5px}
+  th,td{padding:6px 7px}}
+</style>
+</head>
+<body>
+<main>
+<h1>可行性報告：外部方案調查</h1>
+<p class="lead" style="color:var(--dim)">2026-08-02　針對目前手上四個未解問題，
+查外部是否已有現成解法。<strong>每一項都標了我的建議與需要你決定的地方。</strong></p>
+
+<div class="q">
+<h4>先講結論：四個問題，三個有現成的解，一個要你決定要不要換零件</h4>
+<table>
+<tr><th style="width:34%">問題</th><th>外部方案</th><th style="width:16%">我的判斷</th></tr>
+<tr><td>步進 4000 步/s 天花板，datasheet 轉速開不出來</td>
+    <td><strong>FastAccelStepper</strong>（硬體計時器產脈衝）</td>
+    <td><span class="verdict v-go">直接採用</span></td></tr>
+<tr><td>舵機滿速會過衝撞進機構極限</td>
+    <td><strong>Derivs_Limiter / MotionGenerator</strong>（梯形速度規劃）</td>
+    <td><span class="verdict v-go">直接採用</span></td></tr>
+<tr><td>FT5425BL 額定扭矩無原廠來源</td>
+    <td>同廠 STS3215 原廠<strong>同時公布</strong>堵轉 30／額定 10，比值正好 3.0</td>
+    <td><span class="verdict v-go">佐證成立</span></td></tr>
+<tr><td>PWM 舵機沒有回授，做不了閉環驗證</td>
+    <td>換 <strong>STS3215 匯流排舵機</strong>（有位置/負載/溫度回授）<br>或外掛 AS5600 磁編碼器</td>
+    <td><span class="verdict v-ask">要你決定</span></td></tr>
+</table>
+</div>
+
+<h2>1　步進：4000 步/s 的天花板可以直接拿掉</h2>
+<p>A5 查出的問題：16 細分下 AccelStepper 在 AVR 上約 4000 步/s，
+換算馬達只有 75 rpm，而 datasheet 寫 300 rpm（需 16000 步/s）。
+我當時的結論是「得換硬體計時器或降細分」。<strong>那個東西已經有人做好了。</strong></p>
+<table>
+<tr><th style="width:34%">平台</th><th class="num">AccelStepper</th><th class="num">FastAccelStepper</th><th class="num">倍數</th></tr>
+<tr><td>ATmega328p（Uno）單軸</td><td class="num">~4,000</td><td class="num">50,000</td><td class="num">12.5×</td></tr>
+<tr><td>ATmega328p 雙軸</td><td class="num">—</td><td class="num">37,000</td><td class="num">—</td></tr>
+<tr><td>ESP32 / RP2040</td><td class="num">—</td><td class="num">200,000</td><td class="num">—</td></tr>
+</table>
+<p><strong>我們需要 16,000 步/s，Uno 上就給得起。</strong>
+差別在 AccelStepper 用主處理器 bit-bang 脈衝，FastAccelStepper 用硬體計時器的
+compare 單元切換 STEP 腳位。</p>
+<p><strong>還有一個附帶好處</strong>：A5 量到 AccelStepper 的第一步等效加速度是設定值的
+<strong>1.823 倍</strong>（來自 David Austin 的 0.676 起步修正）。
+FastAccelStepper 用的是<strong>精確運動學</strong> <code>v = √(2as)</code> 而非 Austin 近似，
+所以那個衝量在它身上<strong>不存在</strong>——我為了它把可用斜坡上限從 400k 降到 250k 步/s²，
+換掉之後可以拿回來。</p>
+<p><strong>建議</strong>：A5 的韌體改用 FastAccelStepper，並在差異測試裡把兩套演算法都跑一遍
+（我已經有 AccelStepper 的逐行移植，再加一套精確運動學的對照即可）。
+<span class="verdict v-go">建議直接做，不需要你決定</span></p>
+<p class="src">來源：<a href="https://github.com/gin66/FastAccelStepper">gin66/FastAccelStepper</a>
+（README 的平台上限數字）</p>
+
+<h2>2　舵機：過衝撞極限有三個現成的軌跡規劃函式庫</h2>
+<p>B4 量到的問題：照 datasheet 的 13.09 rad/s 下指令，60° 的肩部動作會
+過衝 15° 撞進 −75° 機構極限，拉到連續額定的 102%。我的處置是把指令限速到 50%。
+<strong>限速是對的，但「階躍指令 + 限速」不如「梯形軌跡」。</strong></p>
+<table>
+<tr><th style="width:26%">函式庫</th><th>做法</th><th style="width:30%">對我們的意義</th></tr>
+<tr><td><strong>Derivs_Limiter</strong></td><td>等加速度 + 限速的梯形曲線</td>
+    <td>與 A5 步進端用的是同一種軌跡，兩支手臂的韌體結構會一致</td></tr>
+<tr><td><strong>MotionGenerator</strong></td><td>解析式梯形，<strong>與取樣率無關</strong></td>
+    <td>作者明講：取樣率相依的做法「會導致震盪與不穩定」</td></tr>
+<tr><td>ServoSmooth</td><td>加減速梯形</td><td>功能相近</td></tr>
+<tr><td>ServoEasing</td><td>Cubic／Sine／Bounce 等緩動曲線</td>
+    <td>視覺取向，非為機構保護設計</td></tr>
+</table>
+<p><strong>MotionGenerator 那句批評直接打到我的模型。</strong>
+我的 <code>ft_servo.py</code> 就是逐 tick 積分、取樣率相依的做法，
+而我確實觀察到過衝與震盪。這不代表我的模型錯（它模擬的是真實韌體的行為），
+但代表<strong>韌體端應該用解析式軌跡</strong>，而模型要跟著改成模擬那個。</p>
+<p><strong>建議</strong>：B5 韌體用 Derivs_Limiter 或 MotionGenerator 產生梯形軌跡，
+並保留 50% 限速當第二道保險。
+<span class="verdict v-go">建議直接做，不需要你決定</span></p>
+<p class="src">來源：<a href="https://github.com/joshua-8/Derivs_Limiter">Derivs_Limiter</a>、
+<a href="https://github.com/AerDronix/MotionGenerator">MotionGenerator</a>、
+<a href="https://github.com/arminjo/ServoEasing">ServoEasing</a></p>
+
+<h2>3　FT5425BL 的額定扭矩：找到了同廠的佐證</h2>
+<p>先前的狀況：原廠只公布堵轉 28.5 kg·cm，額定 9.5 kg·cm 只有單一經銷商來源，
+而且剛好是堵轉的 1/3，比例整齊得可疑，所以我標成「未驗證」並讓預算一直印警告。</p>
+<p><strong>查到兩件事：</strong></p>
+<table>
+<tr><th style="width:40%">證據</th><th>內容</th></tr>
+<tr><td>業界慣例</td><td>廉價舵機的連續扭矩<strong>約為堵轉的 30–50%</strong>；
+  超過 5 秒會熱保護或傷齒輪</td></tr>
+<tr><td><strong>同廠 STS3215</strong></td><td>飛特<strong>自己同時公布</strong>
+  堵轉 30 kg·cm、<strong>額定 10 kg·cm</strong> —— 比值正好 <strong>3.0</strong></td></tr>
+</table>
+<p><strong>同一家廠商在另一顆產品上用 1/3 的比例公布額定值</strong>，
+這比經銷商的單一來源強得多。我取 9.5（33%）落在 30–50% 區間的保守端。</p>
+<p><strong>建議</strong>：把 <code>torque_rated_verified</code> 改為 True，
+但在註解記明依據是「同廠慣例 + 業界區間」而非本型號的原廠規格書，
+並保留 30–50% 的區間當敏感度分析。
+<span class="verdict v-go">建議直接做</span></p>
+<p class="src">來源：<a href="https://www.robotis.us/robotis-blog/torque-ratings/">ROBOTIS 扭矩規格說明</a>、
+<a href="https://www.seeedstudio.com/STS3215-30KG-Serial-Servo-p-6340.html">Seeed STS3215 規格</a>、
+<a href="https://www.feetechrc.com/en/ft54%20series%20servo_91969.html">飛特 FT54 系列</a></p>
+
+<h2>4　回授：這一項需要你決定</h2>
+<p>目前的限制：四支手臂裡只有 DM-J4310 有回授，所以<strong>閉環驗證只有 C 那支做得到</strong>。
+SG90 與 FT5425BL 都是 3 線 PWM，<code>Servo::read()</code> 回報的只是指令的回音。</p>
+<p>查到三條路：</p>
+<table>
+<tr><th style="width:22%">方案</th><th>內容</th><th style="width:32%">代價</th></tr>
+<tr><td><strong>A. 換 STS3215</strong></td>
+    <td>匯流排舵機，12-bit 磁編碼器，回報<strong>位置／負載／速度／電流／溫度</strong>；
+        堵轉 30 kg·cm、額定 10（與 FT5425BL 幾乎同級）；
+        <strong>LeRobot SO-101 的標準件</strong></td>
+    <td>B 那支要重畫舵機座。本機已有 STS3250 的 STEP，實測
+        <strong>45.2×37.4×24.7</strong>，比 FT5425BL 的 62.6×34.9×20.0 <strong>更緊湊</strong>，
+        而且同樣是 Ø5.9 的 25T 花鍵</td></tr>
+<tr><td>B. 外掛 AS5600</td>
+    <td>關節軸上加磁編碼器，與舵機型號無關；12-bit</td>
+    <td>每軸多一顆感測器與走線；但<strong>可以套用到現有的 SG90 手臂</strong></td></tr>
+<tr><td>C. 拆機拉電位器</td>
+    <td>標準舵機內部有 5 kΩ 電位器可拉第四條線</td>
+    <td><strong>FT5425BL 是無刷舵機，內部不一定是電位器</strong>，
+        且無此型號的拆解資料。風險最高</td></tr>
+</table>
+<p><strong>我的建議是 A</strong>，理由不是「比較好」而是三件具體的事：</p>
+<ol>
+<li><strong>它同時解掉第 3 項</strong>——原廠公布額定扭矩，不必再靠推論</li>
+<li><strong>閉環驗證從一支變兩支</strong>，而閉環是這個專案唯一還沒碰到的驗證層</li>
+<li><strong>幾何更小</strong>，B 那支手臂重畫之後會比現在緊湊，而不是變大</li>
+</ol>
+<p>但這會讓 B1–B4 已經做完的東西<strong>大部分要重跑</strong>
+（尺寸決策、CAD、URDF、模擬），估計是 B 系列一半的工作量。</p>
+
+<div class="q" style="border-left-color:var(--warn)">
+<h4>需要你確認的三件事</h4>
+<ol>
+<li><strong>B 那支手臂要不要改用 STS3215？</strong>
+  換＝多一支能做閉環驗證、資料來源變硬、體積變小，但 B1–B4 要重做一半。
+  不換＝B 系列照原路走完，閉環仍只有 C 那支。</li>
+<li><strong>要不要順便把 SG90 那支加上 AS5600？</strong>
+  那支已經完成並發布，加編碼器只影響驗證層不影響機構。
+  好處是第一支手臂也能做閉環對照。</li>
+<li><strong>FastAccelStepper 與軌跡函式庫我打算直接換</strong>，
+  因為它們不改變任何機構、只改韌體與模擬。若你有不同想法再說。</li>
+</ol>
+</div>
+
+<h2>附帶發現：C 系列有很紮實的先例</h2>
+<p>查 DM-J4310 時發現兩個開源專案直接用這顆馬達，
+對 C 系列是<strong>外部參照</strong>——我可以拿自己的扭矩預算去對照真實出貨的機器：</p>
+<table>
+<tr><th style="width:26%">專案</th><th>內容</th></tr>
+<tr><td><strong>OpenARM</strong></td><td>7 DOF 人形手臂，DM 馬達版本含 CAD、驅動、PCB、佈線教學</td></tr>
+<tr><td><strong>reBot Arm B601-DM</strong>（Seeed）</td>
+    <td>6+1 DoF，<strong>4× DM-J4310 + 3× DM-J4340P</strong>，
+    伸距 767 mm、酬載 1.5 kg、重複性 0.2 mm；
+    含 Python SDK、ROS1/2、Isaac Sim、LeRobot</td></tr>
+</table>
+<p>我的預算算出 DM-J4310 單顆對應 410 mm 伸距。
+reBot 用 7 顆（含更大扭矩的 4340P）做到 767 mm、1.5 kg——
+數量級一致，而且<strong>給了我一個可以驗證的外部數字</strong>，
+這是前三支手臂都沒有的。</p>
+
+<h2>附帶發現：驗證方法論有學術背書</h2>
+<p>我一直在做的「蛻變關係 + 用變異測試驗證那些關係」不是自創的，
+是有名字的既有技術，這讓我比較有把握它涵蓋得夠：</p>
+<ul>
+<li>ACM TOSEM 2022《Testing, Validation, and Verification of Robotic and Autonomous Systems》系統性綜述</li>
+<li>IEEE：模擬模型缺乏 oracle 時用蛻變測試建立 pseudo-oracle</li>
+<li>用<strong>變異測試檢驗蛻變關係抓不抓得到植入的錯誤</strong>——正是我每一層都在做的事</li>
+</ul>
+<p>下一步我會把那份 ACM 綜述的檢查表拿來對照，看還缺哪幾類。</p>
+
+<p style="margin-top:2.5rem;color:var(--dim);font-size:13px">
+回<a href="report.html" style="color:var(--accent)">完整專案紀錄</a>　·　
+<a href="index.html" style="color:var(--accent)">入口頁</a></p>
+</main>
+</body>
+</html>
