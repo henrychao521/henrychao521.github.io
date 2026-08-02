@@ -89,8 +89,22 @@ td.num,th.num{text-align:right;font-family:var(--mono)}
 .src{font-size:12px;color:var(--dim);margin-top:8px}
 .src a{color:var(--accent)}
 h2{margin-top:2.2rem;padding-top:1.2rem;border-top:1px solid var(--line)}
-@media(max-width:900px){main{padding:20px 14px 60px}table{font-size:12.5px}
-  th,td{padding:6px 7px}}
+/* Tables are the only wide thing here.  At 390 px the document was 422 px
+   wide, i.e. the whole page scrolled sideways -- on a phone, which is where
+   this report is meant to be read.  Each table scrolls inside its own box
+   instead, and the fixed column widths that caused it are dropped. */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0}
+.tw table{margin:0;min-width:100%}
+@media(max-width:900px){
+  main{padding:20px 14px 60px}
+  table{font-size:12.5px}
+  th,td{padding:6px 7px}
+  th[style*="width"]{width:auto !important}
+  .q{padding:14px 13px}
+  pre{font-size:12px;overflow-x:auto}
+  h1{font-size:22px;line-height:1.35}
+  h2{font-size:18px}
+}
 </style>
 </head>
 <body>
@@ -101,7 +115,7 @@ h2{margin-top:2.2rem;padding-top:1.2rem;border-top:1px solid var(--line)}
 
 <div class="q">
 <h4>先講結論：四個問題，三個有現成的解，一個要你決定要不要換零件</h4>
-<table>
+<div class="tw"><table>
 <tr><th style="width:34%">問題</th><th>外部方案</th><th style="width:16%">我的判斷</th></tr>
 <tr><td>步進 4000 步/s 天花板，datasheet 轉速開不出來</td>
     <td><strong>FastAccelStepper</strong>（硬體計時器產脈衝）</td>
@@ -115,19 +129,19 @@ h2{margin-top:2.2rem;padding-top:1.2rem;border-top:1px solid var(--line)}
 <tr><td>PWM 舵機沒有回授，做不了閉環驗證</td>
     <td>換 <strong>STS3215 匯流排舵機</strong>（有位置/負載/溫度回授）<br>或外掛 AS5600 磁編碼器</td>
     <td><span class="verdict v-ask">要你決定</span></td></tr>
-</table>
+</table></div>
 </div>
 
 <h2>1　步進：4000 步/s 的天花板可以直接拿掉</h2>
 <p>A5 查出的問題：16 細分下 AccelStepper 在 AVR 上約 4000 步/s，
 換算馬達只有 75 rpm，而 datasheet 寫 300 rpm（需 16000 步/s）。
 我當時的結論是「得換硬體計時器或降細分」。<strong>那個東西已經有人做好了。</strong></p>
-<table>
+<div class="tw"><table>
 <tr><th style="width:34%">平台</th><th class="num">AccelStepper</th><th class="num">FastAccelStepper</th><th class="num">倍數</th></tr>
 <tr><td>ATmega328p（Uno）單軸</td><td class="num">~4,000</td><td class="num">50,000</td><td class="num">12.5×</td></tr>
 <tr><td>ATmega328p 雙軸</td><td class="num">—</td><td class="num">37,000</td><td class="num">—</td></tr>
 <tr><td>ESP32 / RP2040</td><td class="num">—</td><td class="num">200,000</td><td class="num">—</td></tr>
-</table>
+</table></div>
 <p><strong>我們需要 16,000 步/s，Uno 上就給得起。</strong>
 差別在 AccelStepper 用主處理器 bit-bang 脈衝，FastAccelStepper 用硬體計時器的
 compare 單元切換 STEP 腳位。</p>
@@ -146,7 +160,7 @@ FastAccelStepper 用的是<strong>精確運動學</strong> <code>v = √(2as)</c
 <p>B4 量到的問題：照 datasheet 的 13.09 rad/s 下指令，60° 的肩部動作會
 過衝 15° 撞進 −75° 機構極限，拉到連續額定的 102%。我的處置是把指令限速到 50%。
 <strong>限速是對的，但「階躍指令 + 限速」不如「梯形軌跡」。</strong></p>
-<table>
+<div class="tw"><table>
 <tr><th style="width:26%">函式庫</th><th>做法</th><th style="width:30%">對我們的意義</th></tr>
 <tr><td><strong>Derivs_Limiter</strong></td><td>等加速度 + 限速的梯形曲線</td>
     <td>與 A5 步進端用的是同一種軌跡，兩支手臂的韌體結構會一致</td></tr>
@@ -155,7 +169,7 @@ FastAccelStepper 用的是<strong>精確運動學</strong> <code>v = √(2as)</c
 <tr><td>ServoSmooth</td><td>加減速梯形</td><td>功能相近</td></tr>
 <tr><td>ServoEasing</td><td>Cubic／Sine／Bounce 等緩動曲線</td>
     <td>視覺取向，非為機構保護設計</td></tr>
-</table>
+</table></div>
 <p><strong>MotionGenerator 那句批評直接打到我的模型。</strong>
 我的 <code>ft_servo.py</code> 就是逐 tick 積分、取樣率相依的做法，
 而我確實觀察到過衝與震盪。這不代表我的模型錯（它模擬的是真實韌體的行為），
@@ -171,13 +185,13 @@ FastAccelStepper 用的是<strong>精確運動學</strong> <code>v = √(2as)</c
 <p>先前的狀況：原廠只公布堵轉 28.5 kg·cm，額定 9.5 kg·cm 只有單一經銷商來源，
 而且剛好是堵轉的 1/3，比例整齊得可疑，所以我標成「未驗證」並讓預算一直印警告。</p>
 <p><strong>查到兩件事：</strong></p>
-<table>
+<div class="tw"><table>
 <tr><th style="width:40%">證據</th><th>內容</th></tr>
 <tr><td>業界慣例</td><td>廉價舵機的連續扭矩<strong>約為堵轉的 30–50%</strong>；
   超過 5 秒會熱保護或傷齒輪</td></tr>
 <tr><td><strong>同廠 STS3215</strong></td><td>飛特<strong>自己同時公布</strong>
   堵轉 30 kg·cm、<strong>額定 10 kg·cm</strong> —— 比值正好 <strong>3.0</strong></td></tr>
-</table>
+</table></div>
 <p><strong>同一家廠商在另一顆產品上用 1/3 的比例公布額定值</strong>，
 這比經銷商的單一來源強得多。我取 9.5（33%）落在 30–50% 區間的保守端。</p>
 <p><strong>建議</strong>：把 <code>torque_rated_verified</code> 改為 True，
@@ -192,7 +206,7 @@ FastAccelStepper 用的是<strong>精確運動學</strong> <code>v = √(2as)</c
 <p>目前的限制：四支手臂裡只有 DM-J4310 有回授，所以<strong>閉環驗證只有 C 那支做得到</strong>。
 SG90 與 FT5425BL 都是 3 線 PWM，<code>Servo::read()</code> 回報的只是指令的回音。</p>
 <p>查到三條路：</p>
-<table>
+<div class="tw"><table>
 <tr><th style="width:22%">方案</th><th>內容</th><th style="width:32%">代價</th></tr>
 <tr><td><strong>A. 換 STS3215</strong></td>
     <td>匯流排舵機，12-bit 磁編碼器，回報<strong>位置／負載／速度／電流／溫度</strong>；
@@ -208,7 +222,7 @@ SG90 與 FT5425BL 都是 3 線 PWM，<code>Servo::read()</code> 回報的只是�
     <td>標準舵機內部有 5 kΩ 電位器可拉第四條線</td>
     <td><strong>FT5425BL 是無刷舵機，內部不一定是電位器</strong>，
         且無此型號的拆解資料。風險最高</td></tr>
-</table>
+</table></div>
 <p><strong>我的建議是 A</strong>，理由不是「比較好」而是三件具體的事：</p>
 <ol>
 <li><strong>它同時解掉第 3 項</strong>——原廠公布額定扭矩，不必再靠推論</li>
@@ -235,14 +249,14 @@ SG90 與 FT5425BL 都是 3 線 PWM，<code>Servo::read()</code> 回報的只是�
 <h2>附帶發現：C 系列有很紮實的先例</h2>
 <p>查 DM-J4310 時發現兩個開源專案直接用這顆馬達，
 對 C 系列是<strong>外部參照</strong>——我可以拿自己的扭矩預算去對照真實出貨的機器：</p>
-<table>
+<div class="tw"><table>
 <tr><th style="width:26%">專案</th><th>內容</th></tr>
 <tr><td><strong>OpenARM</strong></td><td>7 DOF 人形手臂，DM 馬達版本含 CAD、驅動、PCB、佈線教學</td></tr>
 <tr><td><strong>reBot Arm B601-DM</strong>（Seeed）</td>
     <td>6+1 DoF，<strong>4× DM-J4310 + 3× DM-J4340P</strong>，
     伸距 767 mm、酬載 1.5 kg、重複性 0.2 mm；
     含 Python SDK、ROS1/2、Isaac Sim、LeRobot</td></tr>
-</table>
+</table></div>
 <p>我的預算算出 DM-J4310 單顆對應 410 mm 伸距。
 reBot 用 7 顆（含更大扭矩的 4340P）做到 767 mm、1.5 kg——
 數量級一致，而且<strong>給了我一個可以驗證的外部數字</strong>，
