@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SG90-Arm — text-to-CAD 機械手臂 × 伺服模擬環境</title>
+<title>SG90-Arm 專案 — 專案總覽與驗證系統</title>
 <style>
 :root{
   --bg:#0d1117; --panel:#151b23; --panel2:#1c232d; --line:#2a323d;
@@ -75,45 +75,37 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
 <body>
 <div id="wrap">
 <nav>
-  <h1>SG90-Arm</h1>
-  <p class="sub">5 軸伺服機械手臂<br>text-to-CAD → URDF → 物理模擬<br><span style="color:#5b6673">2026-07-29</span></p>
-  <div class="grp">總覽</div>
+  <h1>SG90-Arm · 專案總覽</h1>
+  <p class="sub">四支手臂 × 驗證系統</p>
+  <div class="grp">頁面</div>
+  <span class="cur" style="display:block;padding:5px 20px;color:var(--accent);font-weight:600;font-size:13px">▸ 專案總覽與驗證系統</span>
+  <a href="arm-sg90.html">SG90-Arm</a>
+  <a href="arm-nema17.html">NEMA17-Arm</a>
+  <a href="arm-ft5425bl.html">FT5425BL-Arm</a>
+  <div class="grp">本頁章節</div>
   <a href="#intro">專案目標與結論</a>
   <a href="#timeline">進度時間軸</a>
-  <div class="grp">機構設計</div>
-  <a href="#sg90">SG90 幾何量測</a>
-  <a href="#design">手臂設計</a>
-  <a href="#parts">零件清單與驗證</a>
-  <div class="grp">模擬</div>
   <a href="#research">模擬環境調查</a>
-  <a href="#servomodel">伺服模型（訊號鏈）</a>
-  <a href="#results">模擬結果</a>
-  <a href="#torque">扭矩包絡分析</a>
-  <a href="#firmware">對應的 Arduino 韌體</a>
-  <div class="grp">重繪</div>
-  <a href="#v2">v2 機構重繪</a>
-  <div class="grp">互動系統</div>
   <a href="#access">入口與遠端存取</a>
-  <a href="#playground">Arduino 沙盒</a>
-  <a href="#compare">正向 vs 逆向對照</a>
-  <div class="grp">驗證</div>
+  <a href="#playground">Arduino 沙盒（側邊面板）</a>
+  <a href="#compare">正向 vs 逆向運動學對照系統</a>
   <a href="#vv">驗證方法論與測試系統</a>
-  <a href="#mutation">變異測試</a>
-  <div class="grp">紀錄</div>
-  <a href="#failures">失敗紀錄（34 項）</a>
-  <a href="#ros">ROS / ROS 2 調查</a>
-  <a href="#ecosystem">相鄰領域調查</a>
-  <a href="#build">動手製作前的調查</a>
-  <a href="#nema17">NEMA 17 手臂</a>
-  <a href="#actuators">致動器資料查證</a>
-  <a href="#ft5425bl">FT5425BL 手臂</a>
+  <a href="#mutation">變異測試：這套測試真的有效嗎？</a>
+  <a href="#failures">失敗紀錄</a>
+  <a href="#ros">ROS / ROS 2 調查：這個專案跟它的關係</a>
+  <a href="#ecosystem">相鄰領域調查：CAD→URDF、模仿學習、sim-to-real、text-to-CAD</a>
+  <a href="#actuators">四支手臂的致動器資料：查證與三個被推翻的數字</a>
+  <a href="#external">外部 AI 報告的評估：哪些成立、哪些不適用</a>
   <a href="#limits">已知限制</a>
   <a href="#files">檔案與重現方式</a>
   <a href="#refs">引用來源</a>
-</nav>
-<main>
+</nav><main>
 
-<h2 id="intro">專案目標與結論</h2>
+<div class="grid2" style="margin:1.4rem 0">
+<a class="card" href="arm-sg90.html" style="text-decoration:none;display:block"><h4 style="margin:0 0 6px">SG90-Arm →</h4><p style="margin:0;color:var(--dim);font-size:13px">5 軸微型伺服 · 202 mm · 酬載 4 g<br>9 個章節</p></a>
+<a class="card" href="arm-nema17.html" style="text-decoration:none;display:block"><h4 style="margin:0 0 6px">NEMA17-Arm →</h4><p style="margin:0;color:var(--dim);font-size:13px">42 型步進 · 遠端 GT2 3:1 · 255 mm<br>1 個章節</p></a>
+<a class="card" href="arm-ft5425bl.html" style="text-decoration:none;display:block"><h4 style="margin:0 0 6px">FT5425BL-Arm →</h4><p style="margin:0;color:var(--dim);font-size:13px">標準舵機 · 直接驅動 · 190 mm · 酬載 100 g<br>1 個章節</p></a>
+</div><h2 id="intro">專案目標與結論</h2>
 <p class="lead">在這台機器上重建 text-to-CAD 流程，畫出一組搭載 SG90 伺服馬達的精細機械手臂，
 並建立「馬達程式 ↔ 物理模擬」的對應環境。本頁完整記錄過程，<strong>包含所有失敗</strong>。</p>
 
@@ -167,129 +159,6 @@ pybullet 需自行修補原始碼才編得過</td></tr>
 <tr><td>韌體</td><td>由同一位姿表產生 <code>sketch.ino</code></td><td>10 個位姿 × 5 顆伺服</td></tr>
 </table>
 
-<h2 id="sg90">SG90 幾何量測</h2>
-<p>沒有照 datasheet 抄數字。<a href="https://www.step.parts/parts/sg90_micro_servo">step.parts</a>
-的 <code>sg90_micro_servo.step</code>（sha256 已驗證）下載後，用 OCC 的 <code>BRepAdaptor_Surface</code>
-把每個圓柱面的<strong>真實軸線</strong>抽出來——因為 build123d 的 <code>Face.center()</code> 回傳的是面的
-形心，對半圓柱面會給出偏移的位置，直接拿來當孔位會錯。</p>
-
-<pre><code>r= 1.00 axis_pt=(  0.00, -2.35, 11.00) dir=(+0,+0,+1)   ← 鎖孔 1
-r= 1.00 axis_pt=(  0.00, 24.85, 11.00) dir=(+0,+0,+1)   ← 鎖孔 2  → 間距 27.2
-r= 2.30 axis_pt=(  0.00, 16.60, 26.70) dir=(+0,+0,+1)   ← 輸出花鍵軸
-r= 5.90 axis_pt=(  0.00, 16.60, 22.70) dir=(+0,+0,+1)   ← 齒輪箱圓凸台</code></pre>
-
-<table>
-<tr><th>量測項</th><th class="num">量測值</th><th class="num">datasheet 標稱</th><th>備註</th></tr>
-<tr><td>本體 寬×長×高</td><td class="num">11.8 × 22.5 × 22.7</td><td class="num">12.2 × 22.8 × 22.5</td><td>相符</td></tr>
-<tr><td>含耳片全長</td><td class="num">32.4</td><td class="num">32.2</td><td>相符</td></tr>
-<tr><td>耳片厚度</td><td class="num">2.5</td><td class="num">2.5</td><td>相符</td></tr>
-<tr><td>鎖孔直徑</td><td class="num">2.0</td><td class="num">2.0 (M2)</td><td>相符</td></tr>
-<tr><td><strong>鎖孔間距</strong></td><td class="num">27.2</td><td class="num">27.8</td>
-<td><span class="tag limit">差 0.6mm</span> 本專案的座槽依<strong>模型實測值</strong>開孔；
-若用實體 SG90 要重新量或把孔改成長孔</td></tr>
-<tr><td>輸出軸離本體中心</td><td class="num">+5.35</td><td class="num">—</td><td>datasheet 通常不標</td></tr>
-<tr><td>軸面高於耳片頂</td><td class="num">4.3</td><td class="num">—</td><td>決定連桿與座板的落差</td></tr>
-</table>
-
-<div class="card note">
-<h4>定義：安裝座標系（全專案共用）</h4>
-<p>原點 = 輸出軸軸線 ∩ 本體頂面；+Z = 輸出軸指出方向。在此座標系下伺服佔 Z ∈ [−22.7, 0]，
-耳片在 Z ∈ [−6.8, −4.3]，兩個 M2 孔在 Y = −18.95 與 +8.25。<strong>所有零件的座槽都由這組常數推導</strong>，
-不重複輸入尺寸。</p>
-</div>
-
-<h2 id="design">手臂設計</h2>
-
-<h3>骨架</h3>
-<pre><code>J1  底座偏航   軸 +Z   (0,   0.0,  33.0)   s=+1
-J2  肩         軸 +X   (0,   0.0,  60.0)   s=+1     ← 上臂 70 mm
-J3  肘         軸 +X   (0,   0.0, 130.0)   s=−1     ← 前臂 60 mm
-J4  腕         軸 +X   (0,   0.0, 190.0)   s=+1
-J5  夾爪       軸 +X   (0, −11.0, 232.0)   s=−1</code></pre>
-<p>J2–J4 三軸全部落在世界 X 軸上，所以運動學是<strong>嚴格平面</strong>的，沒有側向偏置要記帳。
-底座繞 Z 偏航，手臂在 Y–Z 平面內伸展。</p>
-
-<div class="card">
-<h4>本專案最重要的一條結構規則：關節手性必須交替</h4>
-<p>對一顆軸線沿世界 X、軸面在 <code>x = xs</code> 的伺服：</p>
-<pre><code>s = +1 : 本體朝 −X，舵盤面在 xs + 6.0（連桿材料在 X &gt; 此值）
-         耳片座在 xs − 6.8（托架材料在 X &lt; 此值）
-s = −1 : 本體朝 +X，舵盤面在 xs − 6.0（連桿材料在 X &lt; 此值）
-         耳片座在 xs + 6.8（托架材料在 X &gt; 此值）</code></pre>
-<p>一個連桿若要<strong>同時</strong>鎖上關節 <em>j</em> 的舵盤、又承載關節 <em>j+1</em> 的伺服，
-就必須滿足 <code>horn_side(s_j) == seat_side(s_{j+1})</code>，而這<strong>只有在符號交替時成立</strong>。
-搞錯的話，鎖孔會切在空氣中——幾何仍然輸出成一個合法的單一實體，完全沒有錯誤訊息。
-我第一版就是在 J5 上犯了這個錯（見<a href="#failures">失敗 #3</a>）。</p>
-</div>
-
-<figure>
-  <img src="renders/asm_front_20260729T052327Z.png" alt="正視圖">
-  <figcaption>正視圖驗證交替配置：由下而上 J2 伺服朝左、J3 朝右、J4 朝左、J5 朝右。
-  這正是上述手性規則的視覺結果。</figcaption>
-</figure>
-
-<h3>真實安裝特徵（不是簡化方塊）</h3>
-<ul>
-<li><strong>伺服座槽</strong>：11.8 × 22.5 本體 + 每邊 0.4 mm 餘隙的貫穿窗</li>
-<li><strong>M2 鎖孔</strong>：Ø1.7 自攻孔，位置由實測的 27.2 mm 間距推導；
-座板凸緣特意加寬到 Y ∈ [−23, +13]，否則有一顆孔會落在材料外</li>
-<li><strong>舵盤介面</strong>：Ø21.4 × 2.0 沉孔 + Ø8 輪轂讓位 + 4 × Ø1.7 螺孔於 Ø14 節圓</li>
-<li><strong>推力環</strong>：底座頂 Ø54/Ø44 環狀承面，高 12.8 mm——這個高度不是選的，
-是 SG90 舵盤面必然高於安裝面 12.8 mm 的物理結果</li>
-<li><strong>其他</strong>：束線槽、減重孔、加強脊、夾爪防滑齒紋、走線出口</li>
-</ul>
-
-<h3>夾爪</h3>
-<p>雙指四連桿：主動指直接鎖在 J5 舵盤上，惰指裝在腕部延伸柱的 Ø3 銷上，兩者以連桿條耦合成鏡像動作。
-開度 2 mm（閉合）至 46.6 mm（全開），實測映射：</p>
-<table>
-<tr><th>J5 關節角 (rad)</th><td class="num">0.00</td><td class="num">0.10</td><td class="num">0.20</td><td class="num">0.30</td><td class="num">0.45</td><td class="num">0.70</td></tr>
-<tr><th>夾爪開度 (mm)</th><td class="num">2.0</td><td class="num">8.3</td><td class="num">14.7</td><td class="num">21.2</td><td class="num">31.0</td><td class="num">46.6</td></tr>
-</table>
-
-<h2 id="parts">零件清單與驗證</h2>
-<p>驗證的原則來自這台機器上先前的 text-to-CAD 壓測結論
-（<code>~/3d/ttc-test/RESULTS.md</code>）：<strong>CAD 工具鏈不檢查任何幾何意圖</strong>。
-孔切在錯的面上、零件飄浮沒接合，它照樣產出合法 STEP。所以每個零件都要驗
-<em>實體數 + 圓柱直徑普查 + 邊界框</em>；沒切到材料的孔在 build123d 裡是完全靜默的。</p>
-
-<table>
-<tr><th>零件</th><th class="num">體積</th><th>關鍵特徵稽核</th><th>狀態</th></tr>
-<tr><td>p1_base 底座</td><td class="num">76.83 cm³</td><td>2×Ø1.7 J1鎖孔、4×Ø4.5 腳孔、Ø44 環孔</td><td>✓</td></tr>
-<tr><td>p2_turntable_shoulder 轉盤+肩座</td><td class="num">15.80 cm³</td><td>6×Ø1.7（2鎖孔+4舵盤）、Ø21.4 沉孔</td><td>✓</td></tr>
-<tr><td>p3_upper_arm 上臂</td><td class="num">10.65 cm³</td><td>6×Ø1.7、Ø21.4、Ø24 舵盤墊</td><td>✓</td></tr>
-<tr><td>p4_forearm 前臂</td><td class="num">9.44 cm³</td><td>6×Ø1.7、Ø21.4、Ø24</td><td>✓</td></tr>
-<tr><td>p5_wrist_base 腕座</td><td class="num">11.07 cm³</td><td>6×Ø1.7、Ø21.4、Ø3 惰爪銷孔</td><td>✓</td></tr>
-<tr><td>p6_jaw_driven 主動指</td><td class="num">2.42 cm³</td><td>4×Ø1.7 舵盤螺孔、Ø21.4 盲沉孔、Ø3.2 曲柄銷</td><td>✓</td></tr>
-<tr><td>p7_jaw_idler 惰指</td><td class="num">1.34 cm³</td><td>Ø3 樞紐、Ø3.2 曲柄銷</td><td>✓</td></tr>
-<tr><td>p8_coupler 連桿條</td><td class="num">0.34 cm³</td><td>2×Ø3.2</td><td>✓</td></tr>
-</table>
-
-<pre><code>$ python check_parts.py
-...
-PARTS_VERIFIED
-
-$ python assembly.py
-printed parts : 8   total printed volume 127.9 cm3
-envelope      : X[-50.0,50.0] Y[-50.0,50.0] Z[0.0,267.0]
-servos        : 5 x SG90
-CLASH_CHECK_CLEAN  (no pair overlaps by more than 1 mm3)</code></pre>
-
-<h3>連桿質量慣性（由實體算，非估算）</h3>
-<p>每個連桿 = 列印件（PLA 1.24 g/cm³）+ 它承載的那顆 SG90（9 g）。伺服約佔連桿質量的 40%
-且遠離關節軸，用方塊近似會明顯失真，所以用 OCC 的 <code>BRepGProp</code> 取完整慣性張量。</p>
-<table>
-<tr><th>連桿</th><th class="num">質量</th><th class="num">質心 (mm)</th><th class="num">Ixx</th><th class="num">Iyy</th><th class="num">Izz</th></tr>
-<tr><td>base_link</td><td class="num">104.27 g</td><td class="num">(0.0, −0.2, 12.0)</td><td class="num">8.35e−5</td><td class="num">8.33e−5</td><td class="num">1.39e−4</td></tr>
-<tr><td>turntable</td><td class="num">28.59 g</td><td class="num">(−4.9, −2.3, 17.1)</td><td class="num">7.05e−6</td><td class="num">7.00e−6</td><td class="num">8.64e−6</td></tr>
-<tr><td>upper_arm</td><td class="num">22.20 g</td><td class="num">(9.6, −2.6, 50.7)</td><td class="num">1.71e−5</td><td class="num">1.60e−5</td><td class="num">2.06e−6</td></tr>
-<tr><td>forearm</td><td class="num">20.70 g</td><td class="num">(−9.6, −2.8, 44.5)</td><td class="num">1.25e−5</td><td class="num">1.15e−5</td><td class="num">1.98e−6</td></tr>
-<tr><td>wrist</td><td class="num">22.72 g</td><td class="num">(7.4, −5.7, 32.5)</td><td class="num">1.01e−5</td><td class="num">6.63e−6</td><td class="num">5.73e−6</td></tr>
-<tr><td>jaw_driven</td><td class="num">3.00 g</td><td class="num">(−8.7, 0.9, 6.5)</td><td class="num">5.81e−7</td><td class="num">4.72e−7</td><td class="num">1.20e−7</td></tr>
-<tr><td>jaw_idler</td><td class="num">1.66 g</td><td class="num">(−7.5, −2.3, 12.3)</td><td class="num">2.91e−7</td><td class="num">2.71e−7</td><td class="num">2.21e−8</td></tr>
-<tr><th>合計</th><th class="num">203.1 g</th><td colspan="4" class="small">單位 kg·m²，對各連桿質心</td></tr>
-</table>
-
 <h2 id="research">模擬環境調查</h2>
 <p>問題是：<strong>怎麼讓「馬達程式」和「模擬」是同一件事</strong>。調查分兩條路線——
 物理引擎（模擬機構）與韌體模擬器（模擬 MCU）。</p>
@@ -333,293 +202,6 @@ CLASH_CHECK_CLEAN  (no pair overlaps by more than 1 mm3)</code></pre>
 讓兩邊接得起來。這也是為什麼 <code>sketch.ino</code> 是<em>產生</em>的而不是手寫的：
 韌體和模擬跑的是同一組數字。</p>
 </div>
-
-<h2 id="servomodel">伺服模型（訊號鏈）</h2>
-<p>直接餵 <code>target_radians</code> 的模擬，會顯示真實手臂做不到的動作。真實訊號鏈上每一段都會扭曲指令：</p>
-
-<div class="chain">
-sketch.write(deg)
-&nbsp;&nbsp;→ <b>Arduino map()</b>&nbsp;&nbsp;整數運算，0–180° → 544–2400 µs（<b>不是</b> 1000–2000）
-&nbsp;&nbsp;→ <b>50 Hz 取樣</b>&nbsp;&nbsp;伺服每 20 ms 才看一次脈寬，跑更快的控制迴圈是在對自己講話
-&nbsp;&nbsp;→ <b>脈寬→角度</b>&nbsp;&nbsp;SG90 全行程對應 500–2400 µs，與函式庫範圍<b>不對齊</b>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ 所以 write(0)/write(180) 到不了機械端點
-&nbsp;&nbsp;→ <b>迴轉率上限</b>&nbsp;&nbsp;0.1 s/60° ⇒ 10.47 rad/s，與指令步階大小無關
-&nbsp;&nbsp;→ <b>死區</b>&nbsp;&nbsp;約 5 µs（≈0.5°），以下完全不動
-&nbsp;&nbsp;→ 關節設定點 (rad)
-&nbsp;&nbsp;→ <b>MuJoCo position 致動器</b>&nbsp;&nbsp;kp = 1.011 N·m/rad（10° 比例帶）
-&nbsp;&nbsp;→ <b>力矩箝制於 ±0.1765 N·m</b>&nbsp;&nbsp;← 這一段是重點
-&nbsp;&nbsp;→ 剛體動力學
-</div>
-
-<p>最後那道箝制是整個模型的價值所在：伺服撐不住的東西，會表現成<strong>追蹤誤差</strong>而不是動作。
-這正是你希望在列印零件<em>之前</em>就看到的失效模式。</p>
-
-<p class="small">刻意<strong>不</strong>放進伺服模型的：內部 PD 迴路與扭矩極限。那兩者會和負載交互作用，
-屬於物理引擎的職責（MuJoCo 的 <code>kp</code>/<code>forcerange</code>、PyBullet 的 <code>force</code>）。</p>
-
-<h4>一個容易被忽略的細節</h4>
-<p><code>Servo::read()</code> 回傳的是<strong>最後一次寫入的指令</strong>，不是軸的實際位置。
-它不是位置感測器。模型裡刻意保留了這個語意。</p>
-
-<h2 id="results">模擬結果</h2>
-<p>任務：取放一個 15 mm／4 g 的方塊，從 (0, −100, 7.5) mm 搬到 (−70, −70) mm 附近。
-程式為 10 個位姿的序列，位姿角度由數值 IK 求得後量化成整數 <code>Servo.write()</code> 參數。</p>
-
-<figure>
-  <video controls muted loop playsinline src="renders/mujoco_run.mp4"></video>
-  <figcaption>MuJoCo 完整取放（14.3 s，434 影格）。綠點為 IK 的目標夾持點。</figcaption>
-</figure>
-
-<figure>
-  <img src="renders/sim_contact_sheet.png" alt="模擬關鍵影格" class="dark">
-  <figcaption>關鍵影格：接近 → 下降 → 夾取 → 舉起 → 旋轉搬運 → 放下。</figcaption>
-</figure>
-
-<figure>
-  <img src="renders/servo_tracking.png" alt="伺服追蹤與扭矩">
-  <figcaption>上：虛線為經過 PWM 量化與迴轉率限制後的伺服設定點，實線為關節實際角度，
-  兩者之差就是伺服的追蹤誤差。下：致動器力矩，紅色虛線為 SG90 堵轉扭矩。
-  只有肩關節在快速動作時短暫觸頂。</figcaption>
-</figure>
-
-<h3>MuJoCo</h3>
-<table>
-<tr><th>關節</th><th class="num">峰值誤差</th><th class="num">RMS 誤差</th><th class="num">峰值力矩</th><th class="num">佔堵轉</th><th class="num">飽和時間</th></tr>
-<tr><td>j1_base_yaw</td><td class="num">16.11°</td><td class="num">1.40°</td><td class="num">0.1318 N·m</td><td class="num">74.6%</td><td class="num">0.0%</td></tr>
-<tr><td>j2_shoulder</td><td class="num">18.59°</td><td class="num">2.81°</td><td class="num">0.1765 N·m</td><td class="num">100%</td><td class="num">0.8%</td></tr>
-<tr><td>j3_elbow</td><td class="num">14.35°</td><td class="num">1.64°</td><td class="num">0.1110 N·m</td><td class="num">62.9%</td><td class="num">0.0%</td></tr>
-<tr><td>j4_wrist</td><td class="num">12.96°</td><td class="num">1.21°</td><td class="num">0.0469 N·m</td><td class="num">26.5%</td><td class="num">0.0%</td></tr>
-<tr><td>j5_gripper</td><td class="num">10.27°</td><td class="num">2.02°</td><td class="num">0.0773 N·m</td><td class="num">43.8%</td><td class="num">0.0%</td></tr>
-</table>
-<p><strong>酬載：最大舉高 +50.0 mm，水平搬運 73.9 mm → GRASP_SUCCEEDED</strong></p>
-
-<h3>PyBullet 交叉驗證</h3>
-<p>同一支程式、同一個伺服模型、不同物理引擎。只跑一個引擎只能告訴你那個引擎怎麼想。</p>
-<table>
-<tr><th>關節</th><th class="num">峰值誤差</th><th class="num">RMS 誤差</th><th class="num">峰值力矩</th></tr>
-<tr><td>j1_base_yaw</td><td class="num">7.70°</td><td class="num">0.75°</td><td class="num">0.1765 N·m</td></tr>
-<tr><td>j2_shoulder</td><td class="num">22.45°</td><td class="num">2.29°</td><td class="num">0.1765 N·m</td></tr>
-<tr><td>j3_elbow</td><td class="num">2.35°</td><td class="num">0.18°</td><td class="num">0.1765 N·m</td></tr>
-<tr><td>j4_wrist</td><td class="num">1.40°</td><td class="num">0.15°</td><td class="num">0.1684 N·m</td></tr>
-<tr><td>j5_gripper</td><td class="num">4.77°</td><td class="num">2.98°</td><td class="num">0.1765 N·m</td></tr>
-</table>
-<p><strong>酬載：最大舉高 +55.3 mm，水平搬運 75.7 mm → GRASP_SUCCEEDED</strong></p>
-
-<div class="card note">
-<h4>兩引擎的差異怎麼讀</h4>
-<p><strong>任務結果一致</strong>（舉高 50.0 vs 55.3 mm、搬運 73.9 vs 75.7 mm），這是重點。
-但 PyBullet 的關節追蹤誤差普遍較小、峰值力矩卻幾乎都貼在堵轉值——因為
-<code>POSITION_CONTROL</code> 的 <code>maxVelocity</code> 是硬性速度箝制，內部會用滿可用力矩去達成，
-與 MuJoCo 的顯式 kp/kv 比例控制不同。<strong>兩者都不是「錯」，是不同的伺服近似</strong>；
-要比較絕對力矩數字時必須知道這件事。</p>
-</div>
-
-<h2 id="torque">扭矩包絡分析</h2>
-<p>掃描肩／肘關節全行程 61×61 個姿態，讀 MuJoCo 在零速度下的 <code>qfrc_bias</code>——
-那就是各關節必須提供的重力保持力矩。</p>
-
-<figure>
-  <img src="renders/torque_map.png" alt="扭矩包絡圖">
-  <figcaption>各姿態下的峰值關節力矩佔 SG90 堵轉扭矩的比例。綠線為 50%、紅線為 100%
-  （圖中不存在，因為在這張圖的腕部慣例下最大只到 38.4%）。<strong>注意這張圖不是可達範圍的最壞值</strong>——見下方更正。</figcaption>
-</figure>
-
-<div class="kpi">
-  <div><b>0.0789 N·m</b><span>可達範圍最壞（肩 +90°、肘 0°、腕 −6°）</span></div>
-  <div><b>44.7%</b><span>佔堵轉扭矩</span></div>
-  <div><b>100%</b><span>可保持的姿態比例</span></div>
-  <div><b>~36 g</b><span>中位姿態下、維持在 50% 堵轉內的額外酬載餘裕</span></div>
-</div>
-
-<div class="card fail">
-<h4>#34 原本發布的「最壞 38%」不是可達範圍的最壞值 <span class="tag silent">靜默</span> <span class="tag fixed">已更正</span></h4>
-<p>做<a href="#build">第二支手臂的扭矩預算</a>時，用 <code>link_properties.json</code> 的實測質量
-手算完全伸直姿態的肩關節力矩，得到 <strong>44.8%</strong>，與本頁原本寫的 38% 差 6.8 個百分點。
-追下去發現不是「兩個定義都對」：</p>
-<pre>torque_map.py 掃 j2×j3 時，把腕部釘在
-    qpos[j4] = clip(π − a2 − a3)        # 讓夾爪保持朝下</pre>
-<p>那是合理的<strong>操作慣例</strong>，但<strong>受限集合的最大值不是可達集合的最大值</strong>。
-用同一個模型、同一個 <code>qfrc_bias</code>，只改腕部慣例：</p>
-<table>
-<tr><th style="width:250px">腕部慣例</th><th class="num">力矩</th><th class="num">佔堵轉</th><th>最壞姿態</th></tr>
-<tr><td>朝下（原本的圖）</td><td class="num">0.0678 N·m</td><td class="num">38.4%</td><td>j2 +90° j3 0° j4 +90°</td></tr>
-<tr><td>打直 j4=0</td><td class="num">0.0788 N·m</td><td class="num">44.7%</td><td>j2 −90° j3 −4°</td></tr>
-<tr><td><strong>腕部也一起掃</strong></td><td class="num">0.0789 N·m</td><td class="num"><strong>44.7%</strong></td><td>j2 +90° j3 0° j4 −6°</td></tr>
-</table>
-<p><strong>手臂做得到那個姿態</strong>（j2、j3、j4 都在行程內），使用者程式隨時可以下。
-所以原本的 38% <strong>低估需求 6.3 個百分點、相對 17%</strong>。</p>
-<p>連帶更正一句錯誤描述：原本寫最壞姿態是「肩 +90°、肘 0°，<em>即完全水平伸展</em>」——
-但那個姿態的腕部被釘在 +90°、是折起來的，並不是完全水平伸展。
-<strong>這句錯誤描述正是掩蓋低估的地方</strong>：它讓人以為已經涵蓋了最極端的姿態。</p>
-<p><strong>為什麼守門有效</strong>：預算腳本一開始就因為這 6.8 點差距而拒絕繼續
-（<code>BUDGET_BLOCKED_PENDING_ANCHOR</code>）。我第一版把容許值寫成 8 點、剛好讓 6.8 通過，
-發現後改成 3 點——挑一個恰好能過的門檻，就是把錯誤藏起來。
-重現：<code>sim/torque_worst_case.py</code>。</p>
-</div>
-
-<p><strong>後續更正（見 <a href="#ft5425bl">#48</a>）</strong>：下面這個「50% 堵轉」的標準，
-在拿到 FT5425BL 同時標示堵轉與額定的資料之後才看得出來——它<strong>本身就在連續工況之外</strong>
-（44.7% 堵轉 ≈ 134% 連續額定）。第一支手臂撐得住是因為動件只有 70 g、酬載 4 g，
-不是因為這個標準保守。第三、四支手臂改以連續額定為基準。</p>
-<p>用 50% 堵轉當設計上限而不是 100%，是因為便宜的伺服長時間貼在堵轉會過熱、嗡叫並漂移——
-100% 不是可用的工作點。以這個標準看，這支手臂的機構尺寸對 SG90 是<strong>合適</strong>的，不是勉強。</p>
-
-<h2 id="firmware">對應的 Arduino 韌體</h2>
-<p><code>sketch.ino</code> 由 <code>make_ino.py</code> 從<strong>同一個位姿表</strong>產生，
-所以 Uno 寫給 5 顆 SG90 的數字，和模擬餵進伺服模型的數字逐位元相同。</p>
-
-<pre><code>const uint8_t POSE[10][N_JOINTS] PROGMEM = {
-  { 92,  96,  36, 149, 113},   // home
-  { 92, 116,  27, 146, 113},   // hover over part
-  { 92, 140,  24, 133, 113},   // descend
-  { 92, 140,  24, 133,  97},   // close gripper
-  { 92, 115,  26, 146,  97},   // lift
-  { 46, 115,  26, 146,  97},   // traverse
-  { 46, 140,  23, 133,  97},   // place
-  { 46, 140,  23, 133, 113},   // release
-  { 46, 115,  25, 146, 113},   // retreat
-  { 92,  96,  35, 148, 113},   // park
-};</code></pre>
-
-<div class="card note">
-<h4>接線注意（已寫進 .ino 的註解）</h4>
-<p>5 顆 SG90 必須用<strong>獨立的 5 V 電源</strong>（≥2 A）並與 Arduino 共地。
-五顆同時堵轉的電流遠超過板載穩壓器，典型症狀是動作做到一半板子 brown-out 重開。</p>
-</div>
-
-
-<h2 id="v2">v2 機構重繪</h2>
-<p class="lead">v1 精神上是一支 MeArm：平板、直角、每個關節只靠舵盤支撐。它驗證得過，
-但外觀與行為都像切割板材。v2 保持運動學完全不變（關節位置、連桿長度都一樣），
-只重做機構，對照 <code>cad/design_rubric.py</code> 的 12 條規則。</p>
-
-<figure>
-  <img src="renders/v1_v2_montage.png" alt="v1 vs v2 對照">
-  <figcaption>左 v1、右 v2。v2 的連桿有明顯束腰漸變，底座外擴帶圓角，表面連續而非板材堆疊。</figcaption>
-</figure>
-
-<h3>參考來源</h3>
-<table>
-<tr><th style="width:150px">EEZYbotARM Mk2</th><td>ABB IRB460 運動學 1:7 縮放、主臂內部走線、垂直軸用滾珠支撐、
-夾爪快拆接頭。「一支看起來被設計過的列印手臂」的基準</td></tr>
-<tr><th>MeArm</th><td>3mm 平板雷切、廉價伺服、全 M3。<strong>v1 基本上就是板材版的 MeArm</strong></td></tr>
-<tr><th>LittleArm V3</th><td>4 個零件、0.3mm 層高可印。零件數紀律的參考</td></tr>
-<tr><th>列印機器人通則</th><td>中空連桿 8–10mm 內部走線；每關節雙軸承（只靠舵盤會撓曲磨損）；
-螺孔周圍壁厚 ≥2mm；伺服座要有出線槽</td></tr>
-</table>
-
-<h3>改了什麼</h3>
-<table>
-<tr><th style="width:150px">雙剪關節</th><td>每個俯仰關節一側是舵盤、對側是 623ZZ 軸承跑在 Ø3 銷上。
-這是最大的功能升級——只靠舵盤的關節會撓曲並磨損</td></tr>
-<tr><th>手性交替規則消失</th><td>v1 需要 <code>horn_side(s_j) == seat_side(s_{j+1})</code>，
-只有符號交替時成立。<strong>那是單剪的產物</strong>：連桿只有一側有材料。
-叉臂跨過伺服後兩側都有板，下一顆伺服的座可以放任一側。
-統一手性後手臂從 59mm 寬降到 47mm，每節形狀也一致</td></tr>
-<tr><th>錐形 loft 連桿</th><td>斷面是從根部往端部收縮的圓角矩形，受力路徑上不再有等寬平板。
-實測根/腰比 1.72</td></tr>
-<tr><th>其他</th><td>Ø8 內部走線通道、不切斷受力路徑的減重開口、每顆伺服的出線槽、
-轉盤下 8 顆 Ø6 滾珠溝槽（取代塑膠對塑膠滑動）、燕尾快拆夾爪介面</td></tr>
-</table>
-
-<h3>關鍵的建構方式改變</h3>
-<div class="card note">
-<h4>叉臂的縫要「挖」出來，不是「拼」出來</h4>
-<p>v2 第一版我用 union 疊很多板與腹板，結果<strong>比 v1 更亂</strong>——它讀起來像一堆盒子鎖在一起。
-無論加多少圓角，一堆方塊的聯集看起來就是方塊。</p>
-<p>改成：每節連桿是<strong>一整塊斷面漸變的 loft</strong>，然後把伺服的掃掠體積<strong>減掉</strong>，
-叉臂的縫因此是挖出來的。外表面保持連續，這才是「被設計過的零件」與「一堆邊角料」的差別。</p>
-</div>
-
-<h3>規則評分（可量化的 7 條）</h3>
-<table>
-<tr><th>規則</th><th class="num">量測</th><th>結果</th></tr>
-<tr><td>R1/R2 雙剪 + Ø10.1 軸承座</td><td class="num">3/3 個俯仰連桿</td><td style="color:var(--ok)">通過</td></tr>
-<tr><td>R3 錐形斷面（根/腰 ≥1.3）</td><td class="num">42.2/24.5 = 1.72</td><td style="color:var(--ok)">通過</td></tr>
-<tr><td>R4 圓角化（凸面種類數）</td><td class="num">v1 的 10 → v2 的 15</td><td style="color:var(--ok)">通過</td></tr>
-<tr><td>R5 內部走線通道 Ø8</td><td class="num">2/2 個長連桿</td><td style="color:var(--ok)">通過</td></tr>
-<tr><td>R8 連桿實體率 &lt;60%</td><td class="num">23.5%</td><td style="color:var(--ok)">通過</td></tr>
-<tr><td>R9 底座滾珠溝槽</td><td class="num">8 個 Ø6.5 珠座</td><td style="color:var(--ok)">通過</td></tr>
-<tr><td>R12 寬度/連桿長 ≤0.7</td><td class="num">50.8/70 = 0.73</td><td style="color:var(--warn)">規則作廢</td></tr>
-</table>
-<div class="card note">
-<h4>R12 不是沒做到，是規則本身跟 R1 互斥</h4>
-<p>0.7 這條線是我從 MeArm / LittleArm 這類<strong>單剪</strong>參考設計抄來的。
-雙剪跨過一顆 SG90 的寬度有硬下限：舵盤凸台 +11.6 到銷座 −36.4 共 48 mm，
-對 70 mm 連桿就已經是 0.69，再加任何壁厚必然破線。</p>
-<p>保留 R1（結構）、放寬 R12（外觀）——關節撓曲是會壞的，寬一點只是不好看。
-這種衝突記在 <code>design_rubric.py</code> 的 <code>RULE_CONFLICTS</code> 裡，而不是默默調數字讓它通過。</p>
-</div>
-
-<h3>重繪過程中抓到的 6 個問題</h3>
-<table>
-<tr><th style="width:190px">問題</th><th>怎麼發現的</th></tr>
-<tr><td>出線槽開在鎖孔上</td><td>孔數普查：每個零件都少一顆 Ø1.7。槽位 Y∈[−24.3,−15.3] 正好蓋住 Y=−18.95 的鎖孔</td></tr>
-<tr><td>夾爪整組留在 −X</td><td>干涉 738mm³。v1 的 J5 是 s=−1，v2 統一成 s=+1 後舵盤移到 +X，夾爪忘了跟著翻</td></tr>
-<tr><td>托架腹板穿過叉臂走廊</td><td>干涉 924mm³。銷座在叉臂外、伺服座在叉臂內，直連必然穿過</td></tr>
-<tr><td>伺服耳片沒有讓位</td><td>干涉 69mm³。窗口只清本體 22.5mm，耳片有 32.4mm</td></tr>
-<tr><td>讓位切口把零件切成兩塊</td><td>實體數 = 2。干涉檢查是乾淨的，<strong>只有實體數看得出來</strong></td></tr>
-<tr><td>舵盤沉孔後方沒有材料</td><td>孔數普查：4 顆舵盤螺孔只剩 2 顆。連桿收窄後 Ø21.4 沉孔吃掉剩餘厚度</td></tr>
-</table>
-
-<div class="card fail">
-<h4>#28 「數圓柱面」的普查法在 v2 失效 <span class="tag fixed">已修</span></h4>
-<p>v1 沒有圓角，所以每個圓柱面都是孔，數面等於數孔。v2 到處都是 <code>RectangleRounded</code>，
-一個半徑 1.5 的圓角和一個 Ø3 銷孔在「半徑」上完全一樣。</p>
-<p>而且 v2 的多壁結構讓<strong>一個孔穿過兩道壁會產生兩個圓柱面</strong>，
-讓正確的零件看起來多了一顆螺孔。</p>
-<p><strong>修法</strong>：<code>feature_census.py</code> 改為（一）只數<strong>凹面</strong>（孔是凹的、圓角是凸的），
-（二）依<strong>軸線</strong>去重而不是數面。順帶發現 <code>mirror()</code> 會翻轉面方位讓凹凸判斷反過來，
-所以惰爪改成直接用負 Y 建構，不用鏡射。</p>
-</div>
-
-<div class="card note">
-<h4>還沒做：v2 尚未接進模擬與驗證系統</h4>
-<p>目前 v2 <strong>只到 CAD</strong>。URDF、MuJoCo 模型、沙盒幾何、以及那 205 項驗證套件
-<strong>全部仍跑在 v1 上</strong>。要接上去需要：重算 <code>link_properties.json</code>、
-重匯連桿網格、重生 MJCF、重訂黃金基準，並且更新沙盒與對照頁的示範角度
-——因為 j3 的 <code>SERVO_SIGN</code> 從 −1 變成 +1，所有 write() 數值都會變。</p>
-<p>這不是小工程，而且會讓已驗證的數字全部重來，所以我沒有擅自動它。</p>
-</div>
-
-<h3>全螺絲組裝與工程圖</h3>
-<p>把所有緊固件都畫出來、組裝、再出三視圖與爆炸圖，原本的目的是讓 VLM 判讀。
-結論是<strong>看圖不夠</strong>——真正的組裝缺陷全部是「數字」而不是「輪廓」，
-所以這批圖之後才有了 T8 可組裝性那一層（見<a href="#vv">驗證章節</a>）。
-圖仍然保留，因為它們是人工複核最快的入口。</p>
-
-<figure>
-  <img src="renders/dwg_threeview.png" alt="SG90-Arm v2 三視圖與等角視圖">
-  <figcaption>三視圖 + 等角。8 個列印件 + 5 顆 SG90 + 43 件緊固件 + 8 顆鋼珠。
-  螺絲長度不是統一的：由每個孔<strong>沿孔軸的實際材料厚度</strong>從標準階梯自動挑選
-  （M2×6 / ×8 / ×10），所以 BOM 是幾何的讀數而不是對幾何的主張。</figcaption>
-</figure>
-
-<figure>
-  <img src="renders/dwg_exploded.png" alt="SG90-Arm v2 爆炸圖">
-  <figcaption>爆炸圖：整機徑向展開，右側另附 J3 肘關節的分解——
-  舵盤側鎖 4 顆 M2、對側 623ZZ 軸承配 Ø3 銷，這就是 R1 雙剪的實體。</figcaption>
-</figure>
-
-<figure>
-  <img src="renders/dwg_partsheet.png" alt="零件圖示列表與硬體清單">
-  <figcaption>零件圖示列表：8 個列印件各自的縮圖與體積，加上由幾何推導的硬體清單。
-  這張圖上的每個數量都不是手寫的，而是從實體的孔軸數出來的：
-  一顆沒有孔可去的螺絲根本放不進來，一個沒人鎖的孔會以「未使用孔」出現。</figcaption>
-</figure>
-
-<table>
-<tr><th style="width:190px">項目</th><th class="num">數量</th><th>來源</th></tr>
-<tr><td>M2 自攻螺絲</td><td class="num">30</td><td>5 伺服 ×（2 耳片 + 4 舵盤）；長度混合 ×6 / ×8 / ×10</td></tr>
-<tr><td>M3 樞紐螺絲</td><td class="num">2</td><td>夾爪曲柄，×6 與 ×8 各一</td></tr>
-<tr><td>M4 內六角</td><td class="num">4</td><td>底座鎖工作檯</td></tr>
-<tr><td>Ø3 定位銷</td><td class="num">4</td><td>3 個俯仰關節的軸承銷 + 夾爪惰動側</td></tr>
-<tr><td>623ZZ 軸承</td><td class="num">3</td><td>每個俯仰關節一顆（R1 的量化條件）</td></tr>
-<tr><td>Ø6 鋼珠</td><td class="num">8</td><td>底座偏航推力環（R9）</td></tr>
-<tr><td>SG90 伺服馬達</td><td class="num">5</td><td>step.parts 下載並經 sha256 驗證的真實 STEP</td></tr>
-</table>
-<p class="small">重生方式：<code>cad/make_drawings.py</code>、<code>cad/joint_explode.py</code>、
-<code>cad/make_partsheet.py</code>。三者都直接讀當下的 CAD，所以幾何一改圖就跟著改。</p>
 
 <h2 id="access">入口與遠端存取</h2>
 <p class="lead">一個可點擊的入口頁彙整三個系統，並可從 Tailscale 內的任何裝置操作。</p>
@@ -1523,388 +1105,6 @@ T1（解析解對照）、T4（差異測試）、T7（黃金回歸）都要重�
 <p>這是取捨而不是待辦事項，該由你決定。</p>
 </div>
 
-<h2 id="build">動手製作前的調查：兩個 build blocker 與一份先做清單</h2>
-<p class="lead">要真的把它做出來，先查那些<strong>我在 CAD 裡填了具體數字、而填錯就做不出來</strong>的地方。
-查完發現兩個真正的 blocker，其中一個是設計本身的錯，不是製造難度。</p>
-
-<figure>
-  <img src="renders/build_risk.png" alt="左：耳片壁厚預算表；右：舵盤花鍵整齒索引與 j4 行程">
-  <figcaption>左：壁厚的預算表。<strong>標稱 1.10 mm 已是 SG90 的幾何下限</strong>，
-  再扣掉同型異廠的本體浮動就剩 0.80 mm。右：舵盤只能按整齒裝，
-  模型原本要求的 30° 落在齒與齒之間（已改為 2 齒 = 34.29°）。</figcaption>
-</figure>
-
-<div class="card fail">
-<h4>Blocker 1：j4 的舵盤索引角在花鍵上裝不出來 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
-<p>SG90 的輸出花鍵是 <strong>21 齒 → 17.14°/齒</strong>，舵盤只能離散地按整齒安裝。
-而模型裡 <code>HORN_INDEX_DEG["j4_wrist"] = 30.0</code>，<strong>= 1.75 齒，物理上裝不出來</strong>。</p>
-<p>影響是實質的，不是四捨五入的問題。j4 行程寬度固定 180°，索引角只是平移它，
-而腕部這支手臂需要到 <strong>+118°</strong>：</p>
-<table>
-<tr><th style="width:130px">安裝</th><th style="width:190px">j4 行程</th><th>能否到 +118°</th></tr>
-<tr><td>1 齒（17.14°）</td><td>[−72.9°, +107.1°]</td><td style="color:var(--bad)">✗ 出界 10.9°</td></tr>
-<tr><td><strong>2 齒（34.29°）</strong></td><td>[−55.7°, +124.3°]</td><td style="color:var(--ok)">✓ 還有 6.3° 餘裕</td></tr>
-<tr><td>原模型值（30°）</td><td>[−60.0°, +120.0°]</td><td style="color:var(--warn)">數字可行但裝不出來</td></tr>
-</table>
-<p><strong>已修正</strong>：索引角不再是可以手寫的實數，改成<strong>由齒數推導</strong>——
-<code>HORN_TEETH = {"j4_wrist": 2}</code>，<code>HORN_INDEX_DEG</code> 由它乘上 <code>360/21</code> 算出。
-這樣它<strong>再也不可能落在齒與齒之間</strong>，而不是靠一條檢查事後抓。
-原始碼註解裡那句「~34 deg, rounded to 30 for the model」就是錯誤來源：
-那次四捨五入沒留下任何痕跡，因為 30° 仍涵蓋 IK 要的 +118°，
-於是模擬與韌體<strong>一致地</strong>跑在一個沒人裝得出來的組態上。
-連帶重新基準化 T7，並因此發現黃金基準本身也有問題（見 <a href="#nema17">#40</a>）。</p>
-<p><strong>為什麼原本的測試沒抓到</strong>：測試檢查的是「行程寬度＝180°」與「索引角與極限一致」，
-兩者在 30° 下都成立。<strong>當時沒有任何一項知道花鍵是離散的</strong>。</p>
-<p><strong>已經補上了</strong>：T2 新增「舵盤索引角必須是整齒」，常數 <code>SPLINE_TEETH = 21</code>
-放在 <code>HORN_INDEX_DEG</code> 旁邊。這條檢查曾<strong>刻意留成失敗</strong>，
-讓套件回報 204/205 而不是全過——把已知缺陷寫成散文而不寫成測試，
-正是這個專案要避免的事。現在索引角改成 2 齒、T7 重新基準化，它通過了。</p>
-</div>
-
-<div class="card fail">
-<h4>Blocker 2：耳片壁厚已在下限，而 SG90 是被大量翻製的零件</h4>
-<p><a href="#ecosystem">T10 那節</a>算出耳片螺孔的壁厚上限是 1.10 mm，是 SG90 的幾何決定的。
-問題是 SG90 <strong>沒有單一製造商</strong>：它由中國數百家小廠翻製，
-「尺寸、速度、扭矩、軸的大小會依來源甚至批次大幅變動」，
-資料表寫 22.5 mm 的寬度<strong>實測有約 0.3 mm 的浮動</strong>，
-而且<strong>一批的舵盤常常裝不上另一批的軸</strong>。</p>
-<p>對這個設計的意義很直接：0.3 mm 的本體浮動會把 1.10 mm 的壁吃到 <strong>0.80 mm</strong>，
-而 0.4 mm 的裝配間隙也幾乎被吃光。<strong>最脆弱的位置正好是 T10 已經標記為「無法再改善」的那一處。</strong></p>
-<p><strong>可行的做法</strong>：</p>
-<ol>
-<li><strong>五顆伺服買同一批</strong>，到手先量：本體長寬、耳片孔距、舵盤花鍵</li>
-<li>量到的值填回 <code>cad/sg90_params.py</code> —— 它是<strong>單一來源</strong>，
-改一個常數整組零件與整套驗證都會跟著重算（包含那條推導出來的壁厚下限）</li>
-<li>材料<strong>用 PETG 不要用 PLA</strong>。理由不是偏好：自攻螺絲在脆性材料上會直接裂，
-PETG 韌性夠；而 0.80–1.10 mm 的壁正是最會裂的地方</li>
-</ol>
-</div>
-
-<h3>尺寸選擇的驗算</h3>
-<table>
-<tr><th style="width:150px">我填的值</th><th style="width:90px">查證結果</th><th>依據</th></tr>
-<tr><td>M2 攻牙孔 <strong>Ø1.7</strong></td><td style="color:var(--ok)">正確</td>
-  <td>自攻螺絲的引孔應為外徑的 85–90%；M2 → 1.7–1.8 mm。1.7 是 85%，偏緊端，
-  對 PETG 合理</td></tr>
-<tr><td>軸承座 <strong>Ø10.1</strong>（裝 Ø10 的 623ZZ）</td><td style="color:var(--warn)">需實印驗證</td>
-  <td>壓配的建議是<strong>負間隙</strong>（PLA 每側 0.05、PETG 可到 0.10）。
-  Ø10.1 是<strong>正</strong>間隙 +0.1 —— 但 FDM 的孔實際會比模型小 0.1–0.3 mm，
-  所以印出來大概落在 9.8–10.0，剛好變成壓配。
-  <strong>這是碰巧不是設計</strong>，而且高度依賴印表機。必須印試片實測</td></tr>
-<tr><td>裝配間隙 <strong>0.4 mm/側</strong></td><td style="color:var(--warn)">偏緊</td>
-  <td>校準良好的 FDM 在 XY 約 ±0.2 mm，加上伺服本體 0.3 mm 浮動就吃光了。
-  建議先印一個伺服座試片試裝</td></tr>
-</table>
-
-<h3>電源：不能從 Arduino 供電</h3>
-<p>五顆 SG90，每顆堵轉電流約 <strong>0.5–0.7 A</strong>，同時動作時合計 <strong>2.5–3.5 A</strong>。
-Arduino 的穩壓器承受不了，會 brownout 或直接燒。需要：</p>
-<ul>
-<li>獨立 <strong>5–6 V、≥3 A</strong> 電源（或 2S 鋰電 + 5V/3A UBEC）</li>
-<li><strong>共地</strong>：電源的 GND 必須另接一條線到 Arduino 的 GND</li>
-<li>粗一點的線 + 電源端加電容，降低電壓跌落</li>
-</ul>
-<p class="small">注意這裡的 0.5–0.7 A 是社群與資料表的引用值。
-依<a href="#ecosystem">前一節</a>的邏輯，這正是本專案會堅持實測的數字 ——
-而量它需要的 INA219 也正好是補 validation 缺口要用的那一顆。</p>
-
-<h3>組裝順序：伺服要先歸中再上機</h3>
-<p>這一條所有教學都強調，而且是<strong>不可逆的</strong>：舵盤裝上去之後角度就固定了。</p>
-<ol>
-<li><strong>先通電把每顆伺服轉到 90°（中位）</strong>，保持通電再裝舵盤 ——
-  否則關節的行程會有一半被機構極限吃掉</li>
-<li>裝舵盤時若卡不進去、或裝進去孔不在正交方向，把它拔起來轉約 45° 再試</li>
-<li><strong>j4 的舵盤裝在 +2 齒（34.29°）</strong>，不是中位（見 Blocker 1）</li>
-<li>依 <a href="#vv">T8</a> 推導出的裝配順序組裝：<strong>先把伺服鎖上托架，再套上一節連桿的叉臂</strong>。
-  T8 就是依這個順序判定起子路徑的，所以順序反了會有 9 根螺絲鎖不到</li>
-</ol>
-
-<h3>建議的「先做什麼」清單</h3>
-<table>
-<tr><th style="width:40px">#</th><th style="width:230px">動作</th><th>為什麼放在這個順序</th></tr>
-<tr><td>1</td><td>買五顆同批 SG90 + 3 顆 623ZZ，到手先量</td>
-  <td>所有下游數字都由 <code>sg90_params.py</code> 推導。量完才知道要不要改</td></tr>
-<tr><td>2</td><td>印公差試片：伺服座 + 軸承座 + 兩個 Ø1.7 孔</td>
-  <td>幾分鐘的事，但決定 Ø10.1 與 0.4 mm 間隙對不對。
-  Printables 上有現成的孔公差量規與軸承校正件</td></tr>
-<tr><td>3</td><td>量到的值填回 <code>sg90_params.py</code>，重跑 <code>tests/run_all.py</code></td>
-  <td>整套檢查會重新推導，包含壁厚下限。這步是整個驗證系統真正兌現價值的地方</td></tr>
-<tr><td>4</td><td>決定 j4 索引角（建議 34.2857），重新基準化 T7</td>
-  <td>Blocker 1，已修正為 2 齒（34.29°）</td></tr>
-<tr><td>5</td><td>PETG 印全部 8 件，孔周 100% 填充、多加牆</td>
-  <td>0.80–1.10 mm 的壁需要韌性材料與足夠牆數</td></tr>
-<tr><td>6</td><td>接獨立 5 V/3 A 電源，共地，先單顆歸中</td>
-  <td>組裝前的最後一步；歸中之後才碰舵盤</td></tr>
-<tr><td>7</td><td>依 T8 順序組裝</td>
-  <td>先鎖伺服再套叉臂</td></tr>
-</table>
-
-<h3>可用的開源資源</h3>
-<table>
-<tr><th style="width:220px">資源</th><th>用途</th></tr>
-<tr><td><a href="https://www.printables.com/model/466114-hole-tolerance-gauge-for-designing-3d-prints-with">Hole Tolerance Gauge</a></td>
-  <td>孔徑量規，每欄遞增 0.0–0.3 mm。用來定 Ø1.7 與 Ø10.1 要不要補償</td></tr>
-<tr><td><a href="https://www.printables.com/model/10116-printer-tolerance-test">Printer Tolerance Test</a> ·
-  <a href="https://www.printables.com/model/716940-diameter-tolerance-test">Diameter Tolerance Test</a></td>
-  <td>直接量出自己印表機在 XY 的實際偏差</td></tr>
-<tr><td><a href="https://tools.creative3dp.com/tools/hole-tolerance-calculator/">Hole Tolerance Calculator</a> ·
-  <a href="https://grandpacad.com/en/tools/tolerance-fit-calculator">Tolerance &amp; Fit Calculator</a></td>
-  <td>壓配／滑配／間隙的建議值，含軸承與螺絲</td></tr>
-<tr><td><a href="http://learn.robotgeek.com/robotgeek-101-1/233-robotgeek-101-servo-centering.html">RobotGeek 101: Servo Centering</a></td>
-  <td>伺服歸中的標準流程</td></tr>
-<tr><td><a href="https://loginov-rocks.medium.com/calibrate-4-dof-robot-arm-mearm-for-inverse-kinematics-part-2-16698b674694">MeArm IK 校正</a></td>
-  <td>同樣是 SG90 手臂，記錄了實機角度與模型角度對不上時怎麼校</td></tr>
-<tr><td><a href="https://github.com/AntoBrandi/Arduino-Bot">Arduinobot</a></td>
-  <td>韌體與 ROS 2 介面的參考切法（見<a href="#ros">ROS 節</a>）</td></tr>
-</table>
-
-<div class="card note">
-<h4>一句話總結這節</h4>
-<p>設計本身沒有製造難度上的問題——8 件都放得進標準床、都有貼床面、最差擺法只有 11% 需支撐。
-真正的風險是<strong>兩個尺寸決策</strong>：一個是模型裡填了物理上裝不出來的舵盤角度（可修，但會動到已發表數字），
-另一個是壁厚已在 SG90 的幾何下限、而 SG90 本身是尺寸會浮動的翻製零件（要靠實測與換材料吸收）。
-兩者都不是印出來才會發現的問題，但都是<strong>不查資料就不會發現</strong>的問題。</p>
-</div>
-
-<h2 id="nema17">第二支手臂：NEMA 17 步進（A1–A5）</h2>
-<p class="lead">第一支手臂用 SG90（廉價伺服）。第二支換成 42 型步進馬達，
-不是為了做「更好的一支」，而是因為<strong>步進與伺服的失效方式根本不同</strong>——
-而那個差別正好是驗證系統最容易漏掉的東西。</p>
-
-<h3>A1 傳動方案：為什麼是遠端驅動 3:1 同步帶</h3>
-<p>NEMA 17（42×42×40 mm，280 g）比 SG90（9 g）重 31 倍。
-直接把馬達裝在關節上，肩關節就得扛著肘關節的馬達揮動——所以馬達全部留在底座，
-用 GT2 同步帶把扭矩送出去。</p>
-<table>
-<tr><th style="width:180px">項目</th><th class="num">數值</th><th>來源</th></tr>
-<tr><td>馬達保持扭矩</td><td class="num">0.45 N·m</td><td>17HS4401 規格</td></tr>
-<tr><td>減速比</td><td class="num">3.0</td><td>20T → 60T GT2 帶輪</td></tr>
-<tr><td>關節可用扭矩</td><td class="num">1.35 N·m</td><td>0.45 × 3</td></tr>
-<tr><td>關節步距</td><td class="num">0.0375°</td><td>1.8° ÷ 16 細分 ÷ 3</td></tr>
-<tr><td>每關節轉一圈</td><td class="num">9600 步</td><td>同上</td></tr>
-<tr><td>肩帶 / 肘帶</td><td class="num">GT2-188 / GT2-400</td><td>94T / 200T，標準閉環尺寸</td></tr>
-</table>
-<p>皮帶長度是<strong>標準品</strong>，不是算出來想訂就訂的——所以流程反過來：
-先挑得到的閉環皮帶長度，再由它<strong>反推馬達的安裝座標</strong>（<code>MOT_X = 50.5 mm</code>）。
-中心距與皮帶長是可逆的一組式子，選了一邊另一邊就不自由。</p>
-
-<h3>A2 CAD 與 A3 URDF／MJCF</h3>
-<table>
-<tr><th style="width:180px">連桿</th><th class="num">質量</th><th>備註</th></tr>
-<tr><td>base_link</td><td class="num">540.4 g</td><td>含 165×165 底板、轉盤軌道</td></tr>
-<tr><td>turntable</td><td class="num">737.6 g</td><td>含塔柱、兩顆馬達座</td></tr>
-<tr><td>upper_arm</td><td class="num">96.3 g</td><td>抽殼樑，J2→J3 140 mm</td></tr>
-<tr><td>forearm</td><td class="num">93.5 g</td><td>J3→尖端 115 mm</td></tr>
-<tr><td colspan="2" class="num"><strong>合計 1467.8 g</strong></td><td>不含馬達與五金</td></tr>
-</table>
-<p>關節極限<strong>不是手寫的</strong>。步進馬達自己沒有行程上限——極限完全由機構決定，
-所以是把實體旋轉到干涉為止<strong>掃描</strong>出來的：
-j1 ±150°、j2 ±95°、j3 ±85°。A1 的驗證層直接比對 MJCF 的 <code>jnt_range</code>
-與這份掃描結果，不允許任何一邊手動填。</p>
-
-<h3>A4 模擬：步進真正的失效模式</h3>
-<p>MJCF 裡<strong>刻意沒有</strong>建模失步——XML 的註解就這樣寫。原因是：
-位置致動器飽和之後會<em>追回來</em>，那是伺服的行為；步進沒有回授，掉的步<strong>永遠回不來</strong>，
-只有歸原點能清掉。那個不對稱是這兩台機器最本質的差別，它屬於模擬迴圈，不屬於 XML。</p>
-<table>
-<tr><th style="width:150px">酬載</th><th class="num">肩峰值扭矩</th><th class="num">佔容量</th><th class="num">追蹤誤差</th><th>結果</th></tr>
-<tr><td>0 g</td><td class="num">0.210 N·m</td><td class="num">16%</td><td class="num">1.63°</td><td style="color:var(--ok)">✓ 零失步</td></tr>
-<tr><td>500 g</td><td class="num">1.044 N·m</td><td class="num">77%</td><td class="num">1.77°</td><td style="color:var(--ok)">✓ 零失步</td></tr>
-<tr><td><strong>598 g</strong></td><td class="num">—</td><td class="num">~100%</td><td class="num">—</td><td style="color:var(--warn)">失步門檻</td></tr>
-<tr><td>700 g</td><td class="num">1.584 N·m</td><td class="num">117%</td><td class="num">—</td><td style="color:var(--bad)">✗ 塌到關節極限</td></tr>
-</table>
-<p><strong>過門檻之後是單向失控</strong>：一失步手臂就往下垂，力臂變長，需求扭矩再升，
-失更多步。線性外推 600 g 應該是 1.21 N·m，實測 1.396——多出來的就是這個正回饋。
-700 g 以上終角直接停在 95.0°，也就是關節極限，整支塌到底。</p>
-
-<div class="card">
-<h4>順帶查出來的一件事：datasheet 轉速根本開不出來</h4>
-<p>16 細分 = 3200 步/馬達轉。AccelStepper 在 AVR 上大約 <strong>4000 步/s</strong>，
-換算<strong>馬達 75 rpm</strong>——而 datasheet 寫 300 rpm。
-拿 datasheet 轉速當規格，會做出一支<strong>韌體開不動的手臂</strong>。
-所以步進模型裡的速度上限取「MCU 發得出來的」與「馬達轉得動的」<strong>較小者</strong>，
-實際關節上限是 150°/s。要跑到 300 rpm 需要 16000 步/s，得換硬體計時器或降細分。</p>
-</div>
-
-<h3 style="margin-top:2.4rem">A5 韌體與差異測試：兩邊是不是同一台機器</h3>
-<p>SG90 那支的差異測試很容易：兩邊都寫角度，逐位元組比對位姿表就結束了。
-步進手臂難在<strong>兩邊做的是不同的算術</strong>：</p>
-<ul>
-<li><code>sim/stepper.py</code> 在 MuJoCo 的固定 dt 下用連續時間積分速度</li>
-<li>AccelStepper 為<strong>每一步</strong>算一個間隔，MCU 睡到下一步，
-而且把捨入誤差透過 <code>_cn</code> 一路帶下去</li>
-</ul>
-<p>所以「韌體與模擬相符」是一句必須<strong>量出來</strong>的宣稱。
-<code>sim/accelstepper.py</code> 是 <code>computeNewSpeed()</code> 的逐行移植，
-刻意<strong>不整理</strong>——那些彆扭的地方（0.676、<code>_n</code> 的正負號遊戲）在原始碼裡就是彆扭的，
-差異測試的價值全在於第二個實作是<strong>獨立</strong>的，不是我們版本的改寫。</p>
-
-<table>
-<tr><th style="width:210px">檢查</th><th>結果</th></tr>
-<tr><td>以 avr-gcc 實際編譯</td><td>Uno：flash 8448 B（26%）、RAM 465 B（22%）</td></tr>
-<tr><td>位姿表步數 = 模擬下達的步數</td><td style="color:var(--ok)">4 個位姿逐一相符</td></tr>
-<tr><td>行程極限 = CAD 掃描值</td><td style="color:var(--ok)">三軸上下限全等</td></tr>
-<tr><td>與理想梯形的偏差</td><td>短程 −8.0%、梯形轉折 +3.9%、長程收斂 +1.5%</td></tr>
-<tr><td>首步加速度倍率</td><td><strong>1.823×</strong>（模型與移植實測相符）</td></tr>
-<tr><td>變異測試</td><td style="color:var(--ok)">11/11</td></tr>
-</table>
-
-<div class="card">
-<h4>發現：AccelStepper 的第一步不遵守 <code>setAcceleration()</code></h4>
-<p>量測顯示每次移動的<strong>第一步</strong>等效加速度是設定值的 <strong>1.82 倍</strong>，
-而且<strong>與設定值無關</strong>（2000 / 4000 / 8000 / 20000 / 50000 步/s² 全部量到 1.82×）。</p>
-<p>這不是 bug，是 David Austin 的起步修正：<code>c0 = 0.676·√(2/a)·1e6</code>
-比精確值短 32.4%，而第二個間隔是 <code>0.6·c0</code>，所以</p>
-<pre>a_eff = 1 / (0.6 × 0.676² × 2) = 1.823</pre>
-<p>推導值與量測值完全相符。<strong>（我第一次口算成 2.188，漏了第二個間隔的 0.6 因子——
-量測沒對上就是推導錯了，不是量測錯了。）</strong></p>
-<p><strong>對結論的影響</strong>：原本模型把加速度<strong>夾在設定值</strong>，
-等於每次移動都少算一次尖峰。補進模型後重算：</p>
-<table>
-<tr><th style="width:230px">結論</th><th class="num">夾在設定值</th><th class="num">含 1.82× 首步</th></tr>
-<tr><td>酬載失步門檻</td><td class="num">598 g</td><td class="num">598 g（不變）</td></tr>
-<tr><td>零酬載可用斜坡上限</td><td class="num">~400k 步/s²</td><td class="num"><strong>~250k 步/s²</strong></td></tr>
-</table>
-<p>酬載門檻不變，因為首步衝量落在<strong>起始姿態</strong>，而峰值重力出現在移動中段——
-兩個尖峰不同時。但可用斜坡上限掉了 37%，那是實質的設計限制。</p>
-</div>
-
-<div class="card fail">
-<h4>#41 產生器把逗號接在 <code>//</code> 註解後面，整個分隔符被註解掉 <span class="tag fixed">已修正</span></h4>
-<p>陣列初始化長這樣：</p>
-<pre>AccelStepper(AccelStepper::DRIVER, 2, 5)   // j1_base_yaw,
-AccelStepper(AccelStepper::DRIVER, 3, 6)   // j2_shoulder,</pre>
-<p>逗號在註解裡，C++ 看到的是三個相鄰的建構子沒有分隔符。
-<strong>讀起來完全正常</strong>——我用 <code>",\n".join(...)</code>，
-每個元素結尾剛好是註解。</p>
-<p><strong>只有真的跑 arduino-cli 才會知道</strong>。所以 A5 的第一條檢查不是比對字串，
-是實際呼叫 avr-gcc 編譯，並把 flash / RAM 用量報出來而不是「希望夠用」。
-RAM 那條額外檢查存在的理由：POSE 表放 PROGMEM，
-哪天忘了加，堆疊會在執行期靜默撞上全域變數，而編譯照樣過。</p>
-</div>
-
-<div class="card fail">
-<h4>#42 把 <code>run()</code> 的回傳值當成「有沒有踏一步」<span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
-<p>量 AccelStepper 的加速度時，得到 <strong>3118617 步/s²</strong>（設定值 8000），
-而且四種不同行程量到<strong>完全相同</strong>的數字。相同的數字就是量測假象的指紋。</p>
-<p>根因：AccelStepper 的 <code>run()</code> 回傳的是「<strong>還在動嗎</strong>」，不是「踏了一步」。
-我的量測迴圈把每個 20 µs 取樣 tick 都當成一步收進去，44489 筆裡位置根本沒動，
-兩個相隔 20 µs 的 tick 之間算出的「加速度」自然是垃圾。</p>
-<p><strong>修法</strong>：只在 <code>currentPosition()</code> 真的改變時才記錄。
-修完中位數 7800、p99 8000（設定 8000），最大 24288 —— 那個最大值才是真的，
-就是上面那個 1.82× 的首步。</p>
-</div>
-
-<div class="card fail">
-<h4>#43 我又差點挑了一個「恰好能過」的門檻 <span class="tag fixed">已修正</span></h4>
-<p>A5 原本寫「AccelStepper 與連續模型的移動時間差 ≤ 3%」，三個行程量下來
-1600 步 +2.0%、800 步 +0.1%、2400 步 <strong>+3.9%</strong>——失敗。</p>
-<p>把門檻改成 4% 就會過。<strong>那正是 #34 記錄過的錯誤</strong>：挑一個恰好能過的門檻，
-就是把問題藏起來。</p>
-<p><strong>正確做法是去刻畫它</strong>。掃 12 個行程長度後，偏差不是一個常數而是一個<strong>形狀</strong>：</p>
-<table>
-<tr><th style="width:120px">行程</th><th class="num">偏差</th><th>成因</th></tr>
-<tr><td>100 步</td><td class="num" style="color:var(--warn)">−8.0%</td><td>0.676 起步修正讓短程偏快</td></tr>
-<tr><td>800 步</td><td class="num">−0.1%</td><td>過零點</td></tr>
-<tr><td>2400 步</td><td class="num" style="color:var(--warn)">+3.9%</td><td>三角/梯形轉折處</td></tr>
-<tr><td>9600 步</td><td class="num">+1.5%</td><td>長程收斂</td></tr>
-</table>
-<p>所以檢查改成兩條：<strong>偏差有界（≤10%，實測最壞 8.0%）</strong>，
-以及<strong>偏差不隨行程增長</strong>。第二條是關鍵——有界不夠，
-若偏差隨行程單調增大，長行程遲早會失準。
-另外補上一條最強的差異檢查：模型裡那個 1.823 常數，
-<strong>直接從移植的演算法量回來對照</strong>。</p>
-</div>
-
-<h3 style="margin-top:2.4rem">A4 的代價：連續四個「會跑、會印數字」的錯模型</h3>
-<p>模擬是這整個專案裡<strong>最容易產出自信廢話</strong>的一層——沒有任何外部東西會反駁它。
-下面每一個都通過了「程式跑得動而且印出合理的表」，而且是<strong>依序</strong>被發現的，
-每修好一個才看得見下一個。</p>
-
-<div class="card fail">
-<h4>#35 「信念誤差」量到的是迴轉暫態 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
-<p>第一次跑出來的表：失步 <strong>0</strong>，信念誤差 <strong>89.40° / 59.40° / 59.40°</strong>。
-零失步的開環步進，韌體的信念<em>必然</em>等於現實——59° 的信念誤差是不可能的。</p>
-<p>原因：我把韌體的信念寫成「最終目標」，所以指令一下、軸還在轉的時候就被記成誤差。
-那三個數字剛好是各軸的<strong>整段行程</strong>（89.4°≈90°、59.4°≈60°），就是初始步階響應。</p>
-<p><strong>修法</strong>：信念改成「驅動器<strong>已發出</strong>的步數」。真實韌體知道自己發了多少步，
-不是知道終點。這樣 <code>信念 − 現實 ≡ 失步</code>，而驗證層新增的檢查就是直接驗這個恆等式。</p>
-</div>
-
-<div class="card fail">
-<h4>#36 用致動器飽和當失步判準 → 3% 負載報 42752 步失步 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
-<p>修好 #35 後改用「致動器是否貼在力上限」判斷失步。結果肘部在
-<strong>3% 扭矩容量</strong>下報出 33456 步失步。3% 負載不可能失步。</p>
-<p>根因：位置致動器在<strong>每一次</strong>階躍指令的第一個 tick 都會飽和
-（kp=43，誤差 1 rad → 43 N·m，遠超 0.45）。那是<strong>控制器</strong>撞到自己的限制，
-不是<strong>馬達</strong>掉磁極。兩件事在報表上長得一模一樣。</p>
-<p><strong>修法</strong>：判準改回物理量——需求扭矩（重力 ＋ 慣性×加速度）對比保持扭矩。
-同時補上真正缺的東西：<strong>梯形加減速</strong>。對步進下階躍指令等於要求無限加速度，
-真實韌體（AccelStepper）不會這樣做，所以那個「停轉」是我自己的軌跡造成的，不是手臂的問題。</p>
-</div>
-
-<div class="card fail">
-<h4>#37 加速度用「未截斷的速度誤差」算，第一個 tick 就 2600 rad/s² <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
-<p>加上斜坡之後，1% 負載還是失步。追進去發現我把「還沒達成的速度差 ÷ dt」當成加速度，
-而不是「實際施加的那一份」。第一個 tick 算出 <strong>2600 rad/s²</strong>，
-乘上慣量就超過保持扭矩。<strong>修法</strong>：用截斷後的 <code>dv_applied / dt</code>。
-一行之差，而兩個版本印出的表都「看起來合理」。</p>
-</div>
-
-<div class="card fail">
-<h4>#38 MuJoCo 的 <code>gear</code> 是馬達端單位，我一直餵關節角 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
-<p>這個最隱蔽。MuJoCo 的傳動是 <code>length = gear × qpos</code>，
-所以 <code>ctrl</code> 和 <code>kp</code> 都在<strong>馬達端</strong>。
-我把關節角度直接寫進 <code>ctrl</code>，每個關節就停在指令的<strong>三分之一</strong>。</p>
-<p>證據一直印在表上，只是我沒讀出來：<strong>肘部命令 −60°，終角剛好 −20.0°</strong>。
-那個「剛好」是整除關係，不是巧合。</p>
-<p><strong>修法</strong>：<code>kp</code> 與 <code>ctrlrange</code> 全改馬達端
-（<code>kp = 保持扭矩 ÷ 一個馬達整步</code>，關節剛度 <code>gear²·kp</code> = 128.9 N·m/rad），
-迴圈寫入時乘上 gear。修完終角是 90.0° / 0.0° / −60.0°，
-而且肩部空載 0.21 N·m 與手算的 0.20 N·m 對上了。</p>
-</div>
-
-<div class="card fail">
-<h4>#39 <code>kv</code> 的量綱是混的，害步進落後 11° <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
-<p>原式 <code>KV = 2√(KP × 0.02)</code>，那個 <code>0.02</code> 是我當初隨手當「關節慣量」塞的，
-卻被套在<strong>馬達端</strong>增益上。結果迴路過阻尼約 6 倍，每次斜坡都落後 <strong>11°</strong>。</p>
-<p>步進的轉子是被磁場鎖住的：滿扭矩時負載角只有一個整步（關節端 0.60°），不可能落後 11°。</p>
-<p><strong>修法</strong>：阻尼改由<strong>模型實測的慣量</strong>推導——建置時先產生一次 MJCF、載入、
-掃過各關節行程取質量矩陣對角線最大值，再算臨界阻尼。追蹤誤差降到 0.56–2.30°。</p>
-</div>
-
-<div class="card fail">
-<h4>#40 兩個「假通過」：蛻變檢查跟自己比，黃金基準看不見真實變更 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
-<p><strong>(a) dataclass 預設值陷阱。</strong>我寫了一條蛻變檢查「斜坡放緩 → 失步不增」，
-做法是 <code>Stepper.max_accel_steps = 原值 ÷ 4</code>。
-但 dataclass 的預設值在<strong>類別建立時就被烘進 <code>__init__</code> 簽章</strong>，
-事後改類別屬性對新實例毫無作用——那條檢查是<strong>拿同一組參數跑兩次然後比較</strong>，
-永遠通過，什麼都沒測。修法：參數改用傳參，並在檢查裡順便斷言兩次參數<em>確實不同</em>。</p>
-<p><strong>(b) 黃金容差寬到失去意義。</strong>把 j4 索引角從 30° 改成 34.29° 之後，
-T7 黃金回歸<strong>18/18 全過</strong>。但實際上酬載舉高變了 0.62 mm、搬運距離變了 1.23 mm——
-真的變了，只是容差（3 mm / 4 mm）吸收得掉。</p>
-<p>於是去量「同組態重跑的離散度」：MuJoCo 對同一輸入是<strong>位元級決定性</strong>的，
-5 次重跑離散度全是 <strong>0.000000</strong>。也就是說那些容差<strong>不是在吸收雜訊</strong>，
-它只是讓真實幾何變更溜過去。</p>
-<p><strong>修法</strong>：容差改成儲存時捨入量級的 10 倍（0.001°／1e-5 N·m／0.01 mm）。
-驗證方式是把索引角退回 1.75 齒——T7 現在<strong>失敗 15 項</strong>，而不是之前的全過。
-一個看不見 4.29° 幾何變更的黃金回歸，等於沒有釘住任何東西。</p>
-</div>
-
-<div class="card">
-<h4>變異測試：這些檢查真的抓得到嗎</h4>
-<p>A4 的驗證層一次就 21/21 全過。<strong>在連續錯四個模型之後，我不信任這個結果</strong>，
-所以把上面每一個錯模型都<strong>重新植回去</strong>，看套件會不會失敗。</p>
-<p>第一次跑出 9/9「全部抓到」——但九個全是 <code>AttributeError</code>。
-那不是套件抓到變異，是<strong>我的變異腳本自己壞了</strong>（<code>Check</code> 是 dataclass 不是 dict）。
-修掉之後真實結果是 <strong>8/9</strong>。</p>
-<p>唯一漏掉的是「需求扭矩忽略慣性項」——因為在標稱斜坡（8000 步/s²）下慣性項只佔容量
-<strong>2.9%</strong>，套件裡沒有任何情境能分辨兩者。這不該用放寬容差搪塞，
-所以補了一個慣性真的會主導的情境，順便回答一個實際的設計問題：
-<strong>斜坡開到 4×10⁵ 步/s²，零酬載也會失步</strong>——那時馬達撐不住的是慣性，不是重力。
-補上之後 <strong>9/9</strong>，全部由真實檢查失敗抓到。</p>
-</div>
-
 <h2 id="actuators">四支手臂的致動器資料：查證與三個被推翻的數字</h2>
 <p class="lead">四支手臂全都從 <code>cad/actuators.py</code> 讀馬達的數字。
 那裡的一個錯誤不會在任何地方報錯——它會產出<strong>另一台機器</strong>，
@@ -1987,265 +1187,121 @@ T7 黃金回歸<strong>18/18 全過</strong>。但實際上酬載舉高變了 0.
 不是讓它假裝通過。</strong></p>
 </div>
 
-<h2 id="ft5425bl">第三支手臂：FT5425BL 標準舵機（B1 尺寸、B2 CAD、B3 URDF／MJCF、B4 模擬）</h2>
-<p class="lead">扭矩預算用「維持與 SG90 相同的扭矩佔比」把伸距外推到 306 mm。
-實際把靜力算一遍——<strong>那個伸距空載就用掉連續額定的 88%</strong>。
-問題不在算術，在於<strong>那個「相同的佔比」本身指的是什麼</strong>。</p>
+<h2 id="external">外部 AI 報告的評估：哪些成立、哪些不適用</h2>
+<p class="lead">使用者請另一個 AI 做了一份《深度研究與突破建議報告》。
+逐項對照本專案的實際程式碼之後，
+<strong>三項它列為「盲點」的東西早就做了、三項是真的缺口</strong>。
+差別的來源很明確：那份報告開頭寫「針對您的<strong>手稿紀錄</strong>」——
+它讀的是這個發布頁，<strong>沒有讀到程式碼</strong>，所以是從敘述反推缺口。</p>
 
+<h3>它說的盲點，實際上已經做了</h3>
+<table>
+<tr><th style="width:30%">報告的指控</th><th>實際狀況</th></tr>
+<tr><td>「SG90 內部 50Hz (20ms) 控制環路的 ZOH 延遲會導致 Sim-to-Real 嚴重震盪」</td>
+    <td style="color:var(--ok)"><strong>已建模</strong>。<code>sim/sg90_servo.py</code> 的檔頭就寫著
+    「50 Hz frame rate：伺服每 20 ms 才取樣一次新脈衝」，
+    且 <code>write()</code> 在一個 20 ms 幀過去之前不會生效</td></tr>
+<tr><td>「STL/OBJ 是空心網格，直接算慣性張量會導致質量與轉動慣量嚴重失真」</td>
+    <td style="color:var(--ok)"><strong>不適用</strong>。慣量走 OCC 的
+    <code>BRepGProp</code> 從<strong>實體</strong>算，網格只用於顯示與碰撞</td></tr>
+<tr><td>「應確保慣性張量滿足物理三角不等式 I<sub>xx</sub>+I<sub>yy</sub> ≥ I<sub>zz</sub>」</td>
+    <td style="color:var(--ok)"><strong>已有這條檢查</strong>。
+    <code>suite_geometry.py</code> 的 T0 層逐連桿驗主慣性三角不等式</td></tr>
+</table>
+<p>另外幾項是<strong>已經做過的決策被當成建議提出</strong>：
+「採用 MuJoCo 作為核心引擎」（本專案一開始就是）、
+「NEMA 17 + SG90 混合驅動」（NEMA17 手臂的夾爪就是 SG90）、
+「關節分工：肩/肘用 NEMA 17 搭 GT2 皮帶」（A1 已做，而且是 3:1
+不是它建議的 5:1——因為<strong>皮帶長度是標準品</strong>，
+先選得到的閉環皮帶再反推馬達座標，5:1 沒有給出這個推導）。</p>
+<p>還有一項會是<strong>退步</strong>：「優先採用 Zoo Text-to-CAD 產生 STEP」。
+本專案的 CAD 是 build123d 的參數化程式碼，每個尺寸都由約束推導、進版本控制、
+改一個常數全部跟著動。換成生成出來的 STEP 會失去這些。
+Text-to-CAD 本身<a href="#ecosystem">早就查過</a>了。</p>
+
+<h3>它說對的：三個真的缺口</h3>
 <div class="card fail">
-<h4>#48 第一支手臂的設計上限其實在連續工況之外 <span class="tag silent">靜默</span></h4>
-<p>本頁一直寫著：「用 50% 堵轉當設計上限而不是 100%……以這個標準看，
-這支手臂的機構尺寸對 SG90 是<strong>合適</strong>的，不是勉強。」</p>
-<p>做第三支手臂時查到 FT5425BL 的資料<strong>同時給了堵轉與額定</strong>
-（28.5 / 9.5 kg·cm，比值 3.0）。把同樣的比值套回 SG90：</p>
-<pre>SG90 堵轉 0.176 N·m　→　連續約 0.059 N·m
-第一支手臂最壞姿態 0.0788 N·m
-                = 44.7% 堵轉
-                = <strong>約 134% 連續額定</strong></pre>
-<p>也就是說，<strong>那個「50% 堵轉」的設計上限，本身就在連續工況之外</strong>。
-第一支手臂撐得住，是因為它只有 70 g 的動件、酬載 4 g，
-而且沒有人要求它保持同一個姿勢一小時。</p>
-<p><strong>這句話沒有算錯，但它把一個相對標準說成了絕對結論。</strong>
-「以這個標準看是合適的」——而那個標準是我自己訂的，
-訂的時候手上沒有任何一顆馬達的連續額定值可以對照。</p>
-<p><strong>影響</strong>：第一支手臂不改（它能動，而且用途是展示與教學）；
-但第三、第四支手臂改以<strong>連續額定</strong>為基準，
-四支手臂的對照報告會把兩種基準並列，不會混在同一欄。</p>
-</div>
-
-<h3>B1 決策：直接驅動，伸距 190 mm</h3>
-<p>先驗證「標準舵機該不該像 NEMA 17 那樣做成遠端驅動」。
-A1 之所以把步進馬達移到底座，是因為它 280 g、是 SG90 的 31 倍。
-FT5425BL 只有 67.6 g：</p>
+<h4>#54 MJCF 的 <code>frictionloss</code> 是 0，代表模擬手臂完全沒有靜摩擦 <span class="tag silent">靜默</span></h4>
+<p>報告說預設模擬器「僅有庫倫+黏滯摩擦，無法反映 SG90 塑膠齒輪的高靜摩擦」。
+查下去發現<strong>比它說的更糟</strong>：兩份 MJCF 的 <code>frictionloss</code>
+根本沒設，也就是 <strong>0</strong>——連庫倫摩擦都沒有，只有黏滯阻尼。</p>
+<p>它引的論文是真的：Duclusaud 等人
+<a href="https://arxiv.org/abs/2410.08650">《Extended Friction Models for the
+Physics Simulation of Servo Actuators》</a>，並且開源了辨識工具
+（<a href="https://github.com/Rhoban/bam">Rhoban/bam</a>）。三個模型是：</p>
+<pre>M1 庫倫-黏滯   τ = Kv·|θ̇| + Kc
+M2 加 Stribeck  τ = Kv·θ̇ + Kc + exp(−|θ̇/θ̇ˢ|^α)·Kcˢ
+M3 加負載相關   τ = Kv·θ̇ + Kc + Kl·|τm − τe|</pre>
+<p><strong>但他們辨識的是 Dynamixel MX-64/MX-106 與 eRob 諧波減速機</strong>，
+沒有一顆是 9 g 的塑膠齒輪 SG90——<strong>參數不能直接搬</strong>。
+而要辨識就需要實體與擺錘試驗台，那是本專案定義上沒有的東西。</p>
+<p><strong>所以不憑空指定一個數字，改成把它當不確定度處理</strong>
+（ASME VVUQ 對未知參數的標準做法）：掃過 0–25% 堵轉扭矩的合理範圍，
+看哪些<strong>結論</strong>撐得住。</p>
 <table>
-<tr><th style="width:130px">酬載</th><th class="num">直接驅動</th><th class="num">遠端驅動</th><th class="num">買到多少</th></tr>
-<tr><td>100 g</td><td class="num">190 mm</td><td class="num">252 mm</td><td class="num">+33%</td></tr>
-<tr><td>200 g</td><td class="num">143 mm</td><td class="num">182 mm</td><td class="num">+28%</td></tr>
-<tr><td>500 g</td><td class="num" style="color:var(--bad)">不可行</td><td class="num">80 mm</td><td class="num">—</td></tr>
+<tr><th class="num">關節摩擦</th><th class="num">舉高</th><th class="num">搬運</th><th class="num">j2 峰值誤差</th><th>任務</th></tr>
+<tr><td class="num">0%（已發布）</td><td class="num">49.57 mm</td><td class="num">75.10 mm</td><td class="num">18.68°</td><td style="color:var(--ok)">成功</td></tr>
+<tr><td class="num">5%</td><td class="num">48.13 mm</td><td class="num">74.88 mm</td><td class="num">19.30°</td><td style="color:var(--ok)">成功</td></tr>
+<tr><td class="num">15%</td><td class="num">45.63 mm</td><td class="num">75.00 mm</td><td class="num">20.51°</td><td style="color:var(--ok)">成功</td></tr>
+<tr><td class="num">25%</td><td class="num">43.51 mm</td><td class="num">74.86 mm</td><td class="num">21.47°</td><td style="color:var(--ok)">成功</td></tr>
 </table>
-<p>兩顆舵機只佔靜態力矩的一小部分（306 mm 時 0.31 N·m 中的 0.11 N·m），
-遠端驅動只買到 28–33% 伸距，卻要付出兩組同步帶、張緊機構與背隙。
-<strong>標準舵機留在關節上是對的</strong>——這是算出來的，不是照慣例假設的。</p>
-
-<table>
-<tr><th style="width:190px">B1 定案</th><th>值</th></tr>
-<tr><td>傳動</td><td>直接驅動，每個關節一顆</td></tr>
-<tr><td>伸距</td><td>190 mm（上臂 105 / 前臂 85）</td></tr>
-<tr><td>設計酬載</td><td>100 g</td></tr>
-<tr><td>肩關節力矩</td><td>0.651 N·m ＝ <strong>69.9% 連續額定</strong>、23.3% 堵轉</td></tr>
-<tr><td>舵盤索引</td><td>25T → 14.4°/齒（整齒約束，同 SG90 的 21T）</td></tr>
-</table>
-<p><strong>與第一支手臂對照，這才是有意義的比較</strong>：</p>
-<table>
-<tr><th style="width:150px">手臂</th><th class="num">伸距</th><th class="num">酬載</th><th>扭矩依據</th></tr>
-<tr><td>SG90</td><td class="num">202 mm</td><td class="num">4 g</td><td>44.7% 堵轉（≈134% 連續）</td></tr>
-<tr><td><strong>FT5425BL</strong></td><td class="num">190 mm</td><td class="num"><strong>100 g</strong></td><td style="color:var(--ok)">69.9% 連續額定</td></tr>
-</table>
-<p>不是「標準舵機做出更短的手臂」——是<strong>伸距相當、酬載 25 倍，
-而且待在連續工況內</strong>。</p>
-
-<h3>B2 CAD：直驅關節的三件事佔同一塊空間</h3>
-<p>直驅關節有三個東西在同一個位置：<strong>舵機</strong>、
-<strong>夾住它的叉臂</strong>（屬於下連桿）、
-<strong>被舵盤帶動的輪轂</strong>（屬於上連桿）。
-第一版把上連桿畫成從關節軸開始的實心樑，於是三者重疊——
-算圖出來是一根融成一體的柱子，<strong>完全看不到關節</strong>。</p>
-<table>
-<tr><th style="width:230px">問題</th><th>症狀</th><th>根因</th></tr>
-<tr><td>拓樸重疊</td><td>算圖是一根柱子</td><td>三個實體佔同一空間</td></tr>
-<tr><td>前臂裂成 3 個實體</td><td>T0 會擋</td><td>耳片沒包過關節軸就合攏，跨接槽從端面切穿</td></tr>
-<tr><td>包絡 66.6 而非 40.0</td><td>沒有斷面有這個寬度</td><td><strong>loft 預設是樣條</strong>，斷面突降時外凸</td></tr>
-<tr><td>八個螺栓孔僅 79% 材料</td><td>T10 擋下</td><td><strong><code>Cylinder</code> 第一個參數是半徑</strong>，Ø9 寫成了 Ø18</td></tr>
-</table>
-
-<div class="card">
-<h4>參數掃描：耳片再厚也沒用</h4>
-<p>T10 報「八個舵盤螺栓孔只有 2 mm 要求的 79%」。
-直覺是耳片太薄，於是把耳片厚度從 3.90 加到 6.0、再加到 10.0——
-<strong>三次都是 79%</strong>。</p>
-<table>
-<tr><th style="width:200px">改動</th><th>結果</th></tr>
-<tr><td>耳片 3.90（基準）</td><td style="color:var(--bad)">最低 79%（8 孔）</td></tr>
-<tr><td>耳片 6.0</td><td style="color:var(--bad)">最低 79%（8 孔）</td></tr>
-<tr><td>耳片 10.0</td><td style="color:var(--bad)">最低 79%（8 孔）</td></tr>
-<tr><td>螺栓圓移到 R=13</td><td style="color:var(--ok)">通過</td></tr>
-<tr><td>孔徑縮到 Ø2.2</td><td style="color:var(--ok)">通過</td></tr>
-</table>
-<p>後兩列才指出<strong>約束是徑向的、不是壁厚</strong>。
-追進去發現 <code>Cylinder(9.0, 200.0)</code> 的第一個參數是<strong>半徑</strong>：
-我要的是 Ø9 的舵盤讓位孔，實際做出 Ø18，
-螺栓孔緣離孔壁只剩 <strong>0.61 mm</strong>。</p>
-<p><strong>不掃參數的話，我會一路加厚耳片而永遠修不好。</strong>
-「猜一個原因去修」和「量哪個變數真的驅動這個數字」是兩件事。</p>
-</div>
-
-<h4>三個拍出來的數字改為由約束推導</h4>
-<table>
-<tr><th style="width:150px">常數</th><th>原本</th><th>改為</th></tr>
-<tr><td><code>HUB_H</code></td><td><code>SB_L*0.85</code> = 34.51</td><td>跨接槽 + 2×(螺栓半徑 + R7 邊距) = 35.80</td></tr>
-<tr><td><code>END_SOLID</code></td><td>20.0（硬寫）</td><td>輪轂伸出 + 螺栓位置 + 邊距 = 40.0</td></tr>
-<tr><td><code>HORN_BOLT_R</code></td><td>8.0（硬寫）</td><td>由舵盤孔直徑推導 = 7.85/軸</td></tr>
-</table>
-
-<h4>驗證結果</h4>
-<table>
-<tr><th style="width:230px">層</th><th>結果</th></tr>
-<tr><td>T0 幾何完整性</td><td style="color:var(--ok)">8/8（2 項跳過：尚未產出網格與連桿屬性）</td></tr>
-<tr><td>T8 可組裝性</td><td style="color:var(--ok)">5/5（螺絲起子伸得到、無干涉）</td></tr>
-<tr><td>T10 可列印性</td><td style="color:var(--ok)">5/5</td></tr>
-</table>
-<p>接上 <code>ArmBundle</code> 只花了三行——這正是當初做那層抽象的目的。</p>
-
-<h4>實測質量回推，B1 的尺寸站得住</h4>
-<table>
-<tr><th style="width:170px">項目</th><th class="num">質量 g</th><th class="num">力臂 mm</th><th class="num">力矩 N·m</th></tr>
-<tr><td>upper_arm</td><td class="num">79.0</td><td class="num">42.6</td><td class="num">0.033</td></tr>
-<tr><td>forearm</td><td class="num">65.3</td><td class="num">133.9</td><td class="num">0.086</td></tr>
-<tr><td>j3 舵機</td><td class="num">67.6</td><td class="num">105.0</td><td class="num">0.070</td></tr>
-<tr><td>j4 腕舵機</td><td class="num">67.6</td><td class="num">190.0</td><td class="num">0.126</td></tr>
-<tr><td>夾爪</td><td class="num">50.0</td><td class="num">190.0</td><td class="num">0.093</td></tr>
-<tr><td>酬載</td><td class="num">100.0</td><td class="num">230.0</td><td class="num">0.226</td></tr>
-<tr><td colspan="3"><strong>肩關節合計</strong></td><td class="num"><strong>0.633</strong></td></tr>
-</table>
-<p><strong>67.9% 連續額定</strong>（B1 用估計質量算的是 69.9%）。
-實測連桿比估計重 10%，但質心比「連桿中點」的假設更靠內
-（上臂 42.6 mm 而非 52.5），兩者相抵之後比原估計還好一點。空載 43.7%。</p>
-
-<h3>B3 URDF／MJCF：極限有兩個作者</h3>
-<p>NEMA 17 那支的關節極限只有一個來源——步進沒有自身行程，機構就是極限。
-這支相反：<strong>舵機有硬性的 180°</strong>，怎麼樣都過不去。
-所以每個關節的極限是兩個獨立約束的<strong>交集</strong>：</p>
-<table>
-<tr><th style="width:130px">關節</th><th class="num">機構掃描</th><th class="num">舵機行程</th><th class="num">生效</th><th>綁住的是</th></tr>
-<tr><td>j1 迴轉</td><td class="num">±150°</td><td class="num">±90°</td><td class="num">±90°</td><td><strong>舵機</strong></td></tr>
-<tr><td>j2 肩</td><td class="num">±75°</td><td class="num">±90°</td><td class="num">±75°</td><td><strong>機構</strong></td></tr>
-<tr><td>j3 肘</td><td class="num">±95°</td><td class="num">±90°</td><td class="num">±90°</td><td><strong>舵機</strong></td></tr>
-</table>
-<p>取交集不是重點，<strong>記錄「哪一邊綁住」才是</strong>——兩者的意思相反：
-機構綁住代表<strong>改幾何可以放寬</strong>；舵機綁住代表<strong>幾何幫不上忙</strong>，
-只能重新索引舵盤，而那是拿一端換另一端。
-只報一個數字而不說是誰造成的，就會有人去加厚一面牆，
-想買一段舵機本來就不會給的行程。</p>
-
-<div class="card fail">
-<h4>#49 掃出來的肩關節行程是 0°——連續三次，三個不同原因 <span class="tag fixed">已修正</span></h4>
-<p>掃描把實體轉到干涉為止。前三次跑出來的肩關節範圍是
-<strong>[+5, −5]</strong>（負寬度）、然後 <strong>[0, 0]</strong>、再一次 <strong>[0, 0]</strong>。
-每一次都是不同的原因，而且每修好一個才看得見下一個：</p>
-<table>
-<tr><th style="width:210px">第幾次</th><th>根因</th></tr>
-<tr><td>一：[+5, −5]</td><td>跨接槽用叉臂的<strong>半邊長</strong>（23.9）挖，
-  註解卻寫「half-diagonal」——真值是 <strong>29.7</strong>，叉臂角落卡在輪轂實心區</td></tr>
-<tr><td>二：[0, 0]</td><td>零位就相交 <strong>4667 mm³</strong>：
-  舵機截面的 <strong>X/Y 寫反了</strong>（舵機 40.6 在 X、20.0 在 Y，
-  我寫成 X=26.8 裝不下、Y=46.6 撞耳片）</td></tr>
-<tr><td>三：[0, 0]</td><td>耳片往下伸 34.3，旋轉時最低點掃到軸下 <strong>41.5</strong>，
-  而肩軸只在轉盤面上 36——耳片掃到圓盤</td></tr>
-</table>
-<p>共通點：<strong>這三個數字全是我拍的</strong>，不是從它們要配合的東西推導出來的。
-改成推導之後：</p>
-<pre>YOKE_R      = √((SB_L/2+WALL)² + (SB_H/2+WALL)²)   叉臂在輪轂座標系掃出的圓盤
-HUB_REACH   = YOKE_R + 間隙 + 4                     耳片必須包過那個圓盤
-HUB_SWEPT_R = √((SB_L/2+WALL)² + HUB_REACH²)        耳片自己掃出的半徑
-Z_J2        = 轉盤面 + HUB_SWEPT_R + 1.5            肩軸高度</pre>
-<p>還有一個結構認知的錯誤：我把耳片在關節<strong>下方</strong>也接起來，
-於是叉臂沒有路徑往下接回轉盤——轉盤因此變成 3 個分離的實體。
-真實的伺服 U 型接頭是<strong>在舵機上方合攏、下方留兩片自由板</strong>，
-把跨接槽加上向下的開口才對。</p>
-</div>
-
-<div class="card fail">
-<h4>#50 docstring 宣稱了 MuJoCo 做不到的事 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
-<p>MJCF 產生器的說明寫著速度上限「以關節速度限制放進去」。
-<strong>MuJoCo 沒有關節速度上限這種東西</strong>，而程式也確實沒寫進 XML——
-那句話是一個只存在於散文裡的限制。</p>
-<p>0.08 s/60° = 13.1 rad/s，在 190 mm 的手臂上是尖端 2.5 m/s。
-忽略它，模擬就會允許手臂做出舵機做不到的動作。</p>
-<p><strong>修法</strong>：說清楚 MuJoCo 放不下，改由 B4 的模擬迴圈執行——
-和步進的發步率上限放在同一個地方。並在 B3 加一條檢查驗
-<code>MAX_RADPS</code> 有被匯出，因為<strong>只寫在註解裡的限制等於不存在</strong>。</p>
-</div>
-
-<h4>B3 驗證層（27 項，變異測試 5/5）</h4>
-<p>刻意把幾條拆成兩句話，因為「數字對」和「關係對」不是同一件事：</p>
+<p><strong>結論分成兩類</strong>：</p>
 <ul>
-<li>極限 = 交集　<strong>以及</strong>　極限不超出任一來源
-——後者在「兩邊用同樣的錯誤算法」時仍會擋下</li>
-<li>forcerange = 連續額定　<strong>以及</strong>　forcerange ≠ 堵轉值
-——若哪天有人把 0.932 改標成堵轉，只驗前者不會發現</li>
-<li>「綁住的是誰」必須與它宣稱總結的兩個範圍相符——<strong>過期的欄位比沒有更糟</strong></li>
+<li><strong>撐得住的</strong>：任務成敗（四個取樣點全成功）、搬運距離（離散 &lt;0.5%）、
+以及扭矩包絡那節的 44.7%——因為峰值扭矩取自 <code>qfrc_bias</code>（重力/科氏），
+<strong>摩擦根本不進入那一項</strong></li>
+<li><strong>撐不住的</strong>：<strong>舉高</strong>。0→25% 之間掉 12%，
+所以本頁原本寫的「最大舉高 +50.0 mm」<strong>是無摩擦上界，不是值</strong>。
+已更正為區間。</li>
 </ul>
-
-<h3>B4 模擬：伺服的失效不是漂移，是「一直撐著然後燒掉」</h3>
-<p>步進手臂問的是「有沒有失步」。伺服問不出這個問題——它永遠知道自己在哪。
-它的失效安靜得多：<strong>撐住、繼續撐、過熱</strong>。
-所以這一層報的是<strong>工作時率</strong>，不是漂移。</p>
-
-<div class="card fail">
-<h4>#51 我把關節速度夾在額定值，藏掉了最該報告的事件 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
-<p><a href="#ft5425bl">#50</a> 說速度上限要在模擬迴圈裡執行。第一版夾在**設定點的迴轉速率**，
-關節本身仍衝到 14.21 rad/s（資料表的 109%）。於是我改夾關節速度——
-先夾在 <code>mj_step</code> 之後（沒用，位置已經走完了），
-再移到之前。<strong>三次都沒對。</strong></p>
-<p>追進去看那一刻發生什麼，才發現方向根本錯了：</p>
-<pre>k=744  肩 -75.13°   nefc 0
-k=745  肩 -75.36°   nefc 1   ← 越過機構極限 -75°，約束啟動
-       肘速度單步 -9.86 rad/s（≈9863 rad/s²，是致動器上限 913 的十倍）</pre>
-<p>（<code>ncon</code> 是<strong>接觸</strong>數；關節極限在 MuJoCo 裡是<strong>約束</strong>，
-不出現在那裡。查錯欄位讓我多繞了一圈。）</p>
-<p><strong>那不是舵機在驅動，是手臂撐不住、被重力反驅動、然後撞進極限，
-衝擊把前臂甩到 21.7 rad/s。</strong></p>
-<p><strong>0.08 s/60° 限制的是舵機能<em>驅動</em>多快，不是別人能對它做多快。</strong>
-夾住關節速度會把整件事抹掉——而那正是這次模擬最該講的事。
-改成分開報「自由運動速度」與「含撞擊速度」，並在撞到極限時明講。</p>
+<p><strong>零摩擦不是中性預設，是最樂觀的那一端</strong>——這句話現在是
+<code>tests/suite_uq.py</code> 的第一條檢查，而不是一句散文。
+新增 U1 不確定度層 6 項，含「摩擦越大舉得越低」的單調性檢查
+（摩擦只會吃能量不會給能量，非單調代表求解器出問題而非物理）。</p>
 </div>
 
 <div class="card fail">
-<h4>#52 資料表的速度在這支手臂上不能用 <span class="tag fixed">已納入設計</span></h4>
-<p>照資料表 13.09 rad/s 下指令，酬載 100 g 時：</p>
-<table>
-<tr><th style="width:150px">指令速率</th><th class="num">佔資料表</th><th class="num">肩峰值</th><th class="num">佔額定</th><th>撞極限</th><th class="num">追蹤誤差</th></tr>
-<tr><td>13.09 rad/s</td><td class="num">100%</td><td class="num">0.951</td><td class="num" style="color:var(--bad)">102%</td><td style="color:var(--bad)">是</td><td class="num">48.7°</td></tr>
-<tr><td><strong>6.54 rad/s</strong></td><td class="num">50%</td><td class="num">0.553</td><td class="num" style="color:var(--ok)">59%</td><td style="color:var(--ok)">否</td><td class="num">20.0°</td></tr>
-<tr><td>3.27 rad/s</td><td class="num">25%</td><td class="num">0.515</td><td class="num">55%</td><td>否</td><td class="num">8.4°</td></tr>
-<tr><td>1.31 rad/s</td><td class="num">10%</td><td class="num">0.514</td><td class="num">55%</td><td>否</td><td class="num">4.1°</td></tr>
-</table>
-<p>60° 的肩部動作以滿速下達，會<strong>過衝 15° 撞進 −75° 的機構極限</strong>，
-而且拉到連續額定的 102%。<strong>減半就完全不撞，扭矩掉到 59%</strong>；
-再減到 1/4 幾乎沒有額外好處——<strong>50% 就是那個轉折點，是量出來的不是挑的</strong>。</p>
-<p>這是伺服版的「datasheet 300 rpm 韌體開不出來」：
-<strong>0.08 s/60° 是空載值</strong>，帶著 190 mm 手臂根本跑不到。
-B5 的韌體必須限速到這裡。</p>
+<h4>#55 齒輪虛隙（backlash）從未建模 <span class="tag silent">靜默</span></h4>
+<p>報告指出 SG90 的 4–5 級塑膠齒輪有 1–3° 虛隙，剛體 URDF 表現不出來。
+查證：<code>backlash</code> 這個字在整個 repo 只出現一次，
+而且是在 FT5425BL 檔頭講<strong>皮帶</strong>虛隙的註解裡——關節虛隙確實沒有建模。</p>
+<p>影響方向與摩擦相反：虛隙讓關節在換向時有一段<strong>不受控的自由行程</strong>，
+會使定位誤差變大、也會讓夾爪在夾持瞬間有一段空行程。
+以 1–3° 計，對 202 mm 的手臂尖端是 3.5–10.6 mm 的位置不確定——
+<strong>比目前報出的任何追蹤誤差都大</strong>。</p>
+<p>MuJoCo 沒有原生的虛隙關節，要做得用兩個關節加軟約束或
+<code>solreflimit</code> 的死區來近似。<strong>暫不實作</strong>，
+理由與摩擦相同：沒有實測參數，做出來只是把一個猜測寫得像測量。
+記為明確的驗證缺口，並列進<a href="#limits">已知限制</a>。</p>
 </div>
 
-<h4>靜態保持 vs 動態運行：兩個不同的酬載上限</h4>
-<table>
-<tr><th style="width:230px">問題</th><th class="num">答案</th></tr>
-<tr><td>空載靜態最壞姿態</td><td class="num">0.401 N·m ＝ 43% 額定（肩 −75°、肘 −10°）</td></tr>
-<tr><td>能<strong>保持</strong>的酬載上限</td><td class="num">≈ 235 g</td></tr>
-<tr><td>能<strong>運行</strong>的酬載（滿速）</td><td class="num" style="color:var(--bad)">&lt; 50 g（過衝就撞極限）</td></tr>
-<tr><td>能<strong>運行</strong>的酬載（限速 50%）</td><td class="num" style="color:var(--ok)">100 g 用 59% 額定</td></tr>
-</table>
-<p>「撐得住」和「動得了」是兩個數字，而且差 4 倍以上。
-B1 的靜態預算算的是前者——同 <a href="#torque">#34</a> 那一類：
-<strong>受限集合的最大值不是可達集合的最大值</strong>。</p>
-
-<h4>B4 驗證層（10 項）</h4>
-<p>刻意把「限速有效」拆成三條：會撞極限、限速後不撞、以及扭矩顯著下降。
-只驗最後一條的話，一個把限速寫成無效的模型仍會通過。
-另外驗「<code>read()</code> 回報的是指令不是軸位置」——
-四支手臂裡只有 DM-J4310 報得出真實位置，模型不可以假裝別的做得到。</p>
-
-<div class="card">
-<h4>這支手臂的尺寸是暫定的，而且程式會一直這樣說</h4>
-<p>上面每一個數字都建立在「額定 9.5 kg·cm」上，
-而那個值<strong>只有單一經銷商來源，且剛好是堵轉的 1/3</strong>。
-<code>sizing_ft5425bl.py</code> 每次執行都會印出
-<code>BUDGET_UNVERIFIED_BASIS</code> 並說明：真值若是堵轉的 1/4，
-伸距要再縮約 10%。</p>
-<p>不擋住工作，但也不讓「沒驗證」這件事悄悄消失——
-這跟 <a href="#actuators">#44</a> 那個裝飾了一整段時間的旗標是同一個教訓。</p>
+<div class="card fail">
+<h4>#56 多顆舵機同時堵轉的電壓驟降沒有進模型 <span class="tag silent">靜默</span></h4>
+<p>報告指出峰值電流可衝到 500–700 mA/顆，與控制板共用電源會使電壓掉到
+4.2–4.5 V，實際扭矩比理論值衰減 20% 以上。</p>
+<p>本專案<strong>有寫</strong>電源要獨立（韌體註解與製作清單都寫了
+「五顆舵機需外部 5–6 V ≥3 A」），但<strong>模型裡的堵轉扭矩是定值</strong>，
+不隨同時動作的軸數衰減。也就是說：接線建議有了，模型沒跟上。</p>
+<p>這一項<strong>可以在不買硬體的情況下部分處理</strong>——電壓-扭矩關係是線性的，
+資料表給了 4.8 V 與 6 V 兩點。但同時動作幾軸、電源內阻多少，
+仍然是未知參數，所以處理方式與摩擦一致：<strong>下一步做成 U1 的第二個掃描維度</strong>，
+量「扭矩衰減 0–25% 時哪些結論還成立」。</p>
 </div>
+
+<h3>報告本身的價值在哪</h3>
+<p>六項裡三項不成立、三項成立。但那三項成立的<strong>都很有份量</strong>——
+尤其 <code>frictionloss=0</code> 這件事，我自己的 12 層測試<strong>沒有任何一條會抓到</strong>，
+因為所有檢查都在問「模型內部是否自洽」，
+而零摩擦是<strong>自洽的、只是不真實</strong>。</p>
+<p>這正好是 <a href="#vv">V&amp;V 那節</a>一開始就寫著的區別：
+本專案做的是 <strong>verification</strong>（模型算得對不對），
+不是 <strong>validation</strong>（模型像不像真的）。
+一份從外部、只讀敘述的審視能挑出這個，
+恰恰因為它<strong>沒有被我的內部一致性框架綁住</strong>。</p>
+<p>至於那三項不成立的——它們的共同點是<strong>從敘述推測實作</strong>。
+這也是可以修的：紀錄頁沒有把「伺服模型有建 20ms 幀」、
+「慣量從實體算」這些寫進顯眼的位置，所以外部讀者合理地假設沒做。
+<strong>那是這個頁面的問題，不是那份報告的問題。</strong></p>
 
 <h2 id="limits">已知限制</h2>
 <ul>

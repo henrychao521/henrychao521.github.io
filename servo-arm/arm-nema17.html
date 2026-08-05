@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEMA17-Arm — 42 型步進 · 遠端 GT2 3:1 · 255 mm</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#151b23; --panel2:#1c232d; --line:#2a323d;
+  --fg:#e6edf3; --dim:#8b98a5; --accent:#4f9cf9; --ok:#3fb950; --bad:#f85149;
+  --warn:#d29922; --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:15px/1.75 -apple-system,"PingFang TC","Noto Sans TC",Helvetica,sans-serif;}
+#wrap{display:flex;min-height:100vh}
+nav{width:250px;flex:0 0 250px;background:var(--panel);border-right:1px solid var(--line);
+  position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 0}
+nav h1{font-size:15px;margin:0 20px 4px;letter-spacing:.4px}
+nav .sub{font-size:11.5px;color:var(--dim);margin:0 20px 18px;line-height:1.5}
+nav a{display:block;padding:7px 20px;color:var(--dim);text-decoration:none;font-size:13px;
+  border-left:2px solid transparent}
+nav a:hover{color:var(--fg);background:var(--panel2)}
+nav a.on{color:var(--accent);border-left-color:var(--accent);background:var(--panel2)}
+nav .grp{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:#5b6673;
+  margin:16px 20px 4px}
+main{flex:1;min-width:0;padding:38px 46px 90px;max-width:1080px}
+h2{font-size:23px;margin:44px 0 6px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+h2:first-child{margin-top:0}
+h3{font-size:17px;margin:26px 0 8px;color:#c9d5e1}
+h4{font-size:14.5px;margin:18px 0 6px;color:var(--dim)}
+p{margin:10px 0}
+code{font-family:var(--mono);font-size:.88em;background:var(--panel2);padding:1px 5px;
+  border-radius:4px;color:#a5d6ff}
+pre{background:#0a0e14;border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+  overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6}
+pre code{background:none;padding:0;color:#c9d1d9}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:7px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel2);font-weight:600;color:#c9d5e1}
+td.num{text-align:right;font-family:var(--mono)}
+.lead{color:var(--dim);font-size:14px;margin-bottom:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:16px 20px;margin:16px 0}
+.card.fail{border-left:3px solid var(--bad)}
+.card.win{border-left:3px solid var(--ok)}
+.card.note{border-left:3px solid var(--warn)}
+.card h4{margin-top:0;color:var(--fg);font-size:15px}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;
+  font-family:var(--mono);margin-left:8px;vertical-align:middle}
+.tag.fixed{background:rgba(63,185,80,.14);color:var(--ok);border:1px solid rgba(63,185,80,.35)}
+.tag.silent{background:rgba(248,81,73,.14);color:var(--bad);border:1px solid rgba(248,81,73,.35)}
+.tag.limit{background:rgba(210,153,34,.14);color:var(--warn);border:1px solid rgba(210,153,34,.35)}
+figure{margin:20px 0}
+figure img{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
+figure img.dark{background:var(--panel)}
+figcaption{font-size:12.5px;color:var(--dim);margin-top:7px}
+video{width:100%;border:1px solid var(--line);border-radius:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+.kpi div{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px 15px}
+.kpi b{display:block;font-size:21px;font-family:var(--mono);color:var(--accent);line-height:1.3}
+.kpi span{font-size:11.5px;color:var(--dim)}
+.chain{font-family:var(--mono);font-size:12.5px;background:#0a0e14;border:1px solid var(--line);
+  border-radius:8px;padding:16px;line-height:2.1;overflow-x:auto}
+.chain b{color:var(--accent);font-weight:600}
+ul,ol{padding-left:22px}
+li{margin:5px 0}
+a{color:var(--accent)}
+.small{font-size:12.5px;color:var(--dim)}
+hr{border:0;border-top:1px solid var(--line);margin:30px 0}
+@media(max-width:900px){#wrap{flex-direction:column}nav{width:100%;height:auto;position:static;flex:none}main{padding:24px 18px 60px}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="wrap">
+<nav>
+  <h1>NEMA17-Arm</h1>
+  <p class="sub">42 型步進 · 遠端 GT2 3:1 · 255 mm</p>
+  <div class="grp">頁面</div>
+  <a href="report.html">專案總覽與驗證系統</a>
+  <a href="arm-sg90.html">SG90-Arm</a>
+  <span class="cur" style="display:block;padding:5px 20px;color:var(--accent);font-weight:600;font-size:13px">▸ NEMA17-Arm</span>
+  <a href="arm-ft5425bl.html">FT5425BL-Arm</a>
+  <div class="grp">本頁章節</div>
+  <a href="#nema17">第二支手臂：NEMA 17 步進（A1–A5）</a>
+</nav><main><p style="margin-bottom:1.6rem;color:var(--dim);font-size:13px">← 回<a href="report.html" style="color:var(--accent)">專案總覽與驗證系統</a></p><h2 id="nema17">第二支手臂：NEMA 17 步進（A1–A5）</h2>
+<p class="lead">第一支手臂用 SG90（廉價伺服）。第二支換成 42 型步進馬達，
+不是為了做「更好的一支」，而是因為<strong>步進與伺服的失效方式根本不同</strong>——
+而那個差別正好是驗證系統最容易漏掉的東西。</p>
+
+<h3>A1 傳動方案：為什麼是遠端驅動 3:1 同步帶</h3>
+<p>NEMA 17（42×42×40 mm，280 g）比 SG90（9 g）重 31 倍。
+直接把馬達裝在關節上，肩關節就得扛著肘關節的馬達揮動——所以馬達全部留在底座，
+用 GT2 同步帶把扭矩送出去。</p>
+<table>
+<tr><th style="width:180px">項目</th><th class="num">數值</th><th>來源</th></tr>
+<tr><td>馬達保持扭矩</td><td class="num">0.45 N·m</td><td>17HS4401 規格</td></tr>
+<tr><td>減速比</td><td class="num">3.0</td><td>20T → 60T GT2 帶輪</td></tr>
+<tr><td>關節可用扭矩</td><td class="num">1.35 N·m</td><td>0.45 × 3</td></tr>
+<tr><td>關節步距</td><td class="num">0.0375°</td><td>1.8° ÷ 16 細分 ÷ 3</td></tr>
+<tr><td>每關節轉一圈</td><td class="num">9600 步</td><td>同上</td></tr>
+<tr><td>肩帶 / 肘帶</td><td class="num">GT2-188 / GT2-400</td><td>94T / 200T，標準閉環尺寸</td></tr>
+</table>
+<p>皮帶長度是<strong>標準品</strong>，不是算出來想訂就訂的——所以流程反過來：
+先挑得到的閉環皮帶長度，再由它<strong>反推馬達的安裝座標</strong>（<code>MOT_X = 50.5 mm</code>）。
+中心距與皮帶長是可逆的一組式子，選了一邊另一邊就不自由。</p>
+
+<h3>A2 CAD 與 A3 URDF／MJCF</h3>
+<table>
+<tr><th style="width:180px">連桿</th><th class="num">質量</th><th>備註</th></tr>
+<tr><td>base_link</td><td class="num">540.4 g</td><td>含 165×165 底板、轉盤軌道</td></tr>
+<tr><td>turntable</td><td class="num">737.6 g</td><td>含塔柱、兩顆馬達座</td></tr>
+<tr><td>upper_arm</td><td class="num">96.3 g</td><td>抽殼樑，J2→J3 140 mm</td></tr>
+<tr><td>forearm</td><td class="num">93.5 g</td><td>J3→尖端 115 mm</td></tr>
+<tr><td colspan="2" class="num"><strong>合計 1467.8 g</strong></td><td>不含馬達與五金</td></tr>
+</table>
+<p>關節極限<strong>不是手寫的</strong>。步進馬達自己沒有行程上限——極限完全由機構決定，
+所以是把實體旋轉到干涉為止<strong>掃描</strong>出來的：
+j1 ±150°、j2 ±95°、j3 ±85°。A1 的驗證層直接比對 MJCF 的 <code>jnt_range</code>
+與這份掃描結果，不允許任何一邊手動填。</p>
+
+<h3>A4 模擬：步進真正的失效模式</h3>
+<p>MJCF 裡<strong>刻意沒有</strong>建模失步——XML 的註解就這樣寫。原因是：
+位置致動器飽和之後會<em>追回來</em>，那是伺服的行為；步進沒有回授，掉的步<strong>永遠回不來</strong>，
+只有歸原點能清掉。那個不對稱是這兩台機器最本質的差別，它屬於模擬迴圈，不屬於 XML。</p>
+<table>
+<tr><th style="width:150px">酬載</th><th class="num">肩峰值扭矩</th><th class="num">佔容量</th><th class="num">追蹤誤差</th><th>結果</th></tr>
+<tr><td>0 g</td><td class="num">0.210 N·m</td><td class="num">16%</td><td class="num">1.63°</td><td style="color:var(--ok)">✓ 零失步</td></tr>
+<tr><td>500 g</td><td class="num">1.044 N·m</td><td class="num">77%</td><td class="num">1.77°</td><td style="color:var(--ok)">✓ 零失步</td></tr>
+<tr><td><strong>598 g</strong></td><td class="num">—</td><td class="num">~100%</td><td class="num">—</td><td style="color:var(--warn)">失步門檻</td></tr>
+<tr><td>700 g</td><td class="num">1.584 N·m</td><td class="num">117%</td><td class="num">—</td><td style="color:var(--bad)">✗ 塌到關節極限</td></tr>
+</table>
+<p><strong>過門檻之後是單向失控</strong>：一失步手臂就往下垂，力臂變長，需求扭矩再升，
+失更多步。線性外推 600 g 應該是 1.21 N·m，實測 1.396——多出來的就是這個正回饋。
+700 g 以上終角直接停在 95.0°，也就是關節極限，整支塌到底。</p>
+
+<div class="card">
+<h4>順帶查出來的一件事：datasheet 轉速根本開不出來</h4>
+<p>16 細分 = 3200 步/馬達轉。AccelStepper 在 AVR 上大約 <strong>4000 步/s</strong>，
+換算<strong>馬達 75 rpm</strong>——而 datasheet 寫 300 rpm。
+拿 datasheet 轉速當規格，會做出一支<strong>韌體開不動的手臂</strong>。
+所以步進模型裡的速度上限取「MCU 發得出來的」與「馬達轉得動的」<strong>較小者</strong>，
+實際關節上限是 150°/s。要跑到 300 rpm 需要 16000 步/s，得換硬體計時器或降細分。</p>
+</div>
+
+<h3 style="margin-top:2.4rem">A5 韌體與差異測試：兩邊是不是同一台機器</h3>
+<p>SG90 那支的差異測試很容易：兩邊都寫角度，逐位元組比對位姿表就結束了。
+步進手臂難在<strong>兩邊做的是不同的算術</strong>：</p>
+<ul>
+<li><code>sim/stepper.py</code> 在 MuJoCo 的固定 dt 下用連續時間積分速度</li>
+<li>AccelStepper 為<strong>每一步</strong>算一個間隔，MCU 睡到下一步，
+而且把捨入誤差透過 <code>_cn</code> 一路帶下去</li>
+</ul>
+<p>所以「韌體與模擬相符」是一句必須<strong>量出來</strong>的宣稱。
+<code>sim/accelstepper.py</code> 是 <code>computeNewSpeed()</code> 的逐行移植，
+刻意<strong>不整理</strong>——那些彆扭的地方（0.676、<code>_n</code> 的正負號遊戲）在原始碼裡就是彆扭的，
+差異測試的價值全在於第二個實作是<strong>獨立</strong>的，不是我們版本的改寫。</p>
+
+<table>
+<tr><th style="width:210px">檢查</th><th>結果</th></tr>
+<tr><td>以 avr-gcc 實際編譯</td><td>Uno：flash 8448 B（26%）、RAM 465 B（22%）</td></tr>
+<tr><td>位姿表步數 = 模擬下達的步數</td><td style="color:var(--ok)">4 個位姿逐一相符</td></tr>
+<tr><td>行程極限 = CAD 掃描值</td><td style="color:var(--ok)">三軸上下限全等</td></tr>
+<tr><td>與理想梯形的偏差</td><td>短程 −8.0%、梯形轉折 +3.9%、長程收斂 +1.5%</td></tr>
+<tr><td>首步加速度倍率</td><td><strong>1.823×</strong>（模型與移植實測相符）</td></tr>
+<tr><td>變異測試</td><td style="color:var(--ok)">11/11</td></tr>
+</table>
+
+<div class="card">
+<h4>發現：AccelStepper 的第一步不遵守 <code>setAcceleration()</code></h4>
+<p>量測顯示每次移動的<strong>第一步</strong>等效加速度是設定值的 <strong>1.82 倍</strong>，
+而且<strong>與設定值無關</strong>（2000 / 4000 / 8000 / 20000 / 50000 步/s² 全部量到 1.82×）。</p>
+<p>這不是 bug，是 David Austin 的起步修正：<code>c0 = 0.676·√(2/a)·1e6</code>
+比精確值短 32.4%，而第二個間隔是 <code>0.6·c0</code>，所以</p>
+<pre>a_eff = 1 / (0.6 × 0.676² × 2) = 1.823</pre>
+<p>推導值與量測值完全相符。<strong>（我第一次口算成 2.188，漏了第二個間隔的 0.6 因子——
+量測沒對上就是推導錯了，不是量測錯了。）</strong></p>
+<p><strong>對結論的影響</strong>：原本模型把加速度<strong>夾在設定值</strong>，
+等於每次移動都少算一次尖峰。補進模型後重算：</p>
+<table>
+<tr><th style="width:230px">結論</th><th class="num">夾在設定值</th><th class="num">含 1.82× 首步</th></tr>
+<tr><td>酬載失步門檻</td><td class="num">598 g</td><td class="num">598 g（不變）</td></tr>
+<tr><td>零酬載可用斜坡上限</td><td class="num">~400k 步/s²</td><td class="num"><strong>~250k 步/s²</strong></td></tr>
+</table>
+<p>酬載門檻不變，因為首步衝量落在<strong>起始姿態</strong>，而峰值重力出現在移動中段——
+兩個尖峰不同時。但可用斜坡上限掉了 37%，那是實質的設計限制。</p>
+</div>
+
+<div class="card fail">
+<h4>#41 產生器把逗號接在 <code>//</code> 註解後面，整個分隔符被註解掉 <span class="tag fixed">已修正</span></h4>
+<p>陣列初始化長這樣：</p>
+<pre>AccelStepper(AccelStepper::DRIVER, 2, 5)   // j1_base_yaw,
+AccelStepper(AccelStepper::DRIVER, 3, 6)   // j2_shoulder,</pre>
+<p>逗號在註解裡，C++ 看到的是三個相鄰的建構子沒有分隔符。
+<strong>讀起來完全正常</strong>——我用 <code>",\n".join(...)</code>，
+每個元素結尾剛好是註解。</p>
+<p><strong>只有真的跑 arduino-cli 才會知道</strong>。所以 A5 的第一條檢查不是比對字串，
+是實際呼叫 avr-gcc 編譯，並把 flash / RAM 用量報出來而不是「希望夠用」。
+RAM 那條額外檢查存在的理由：POSE 表放 PROGMEM，
+哪天忘了加，堆疊會在執行期靜默撞上全域變數，而編譯照樣過。</p>
+</div>
+
+<div class="card fail">
+<h4>#42 把 <code>run()</code> 的回傳值當成「有沒有踏一步」<span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>量 AccelStepper 的加速度時，得到 <strong>3118617 步/s²</strong>（設定值 8000），
+而且四種不同行程量到<strong>完全相同</strong>的數字。相同的數字就是量測假象的指紋。</p>
+<p>根因：AccelStepper 的 <code>run()</code> 回傳的是「<strong>還在動嗎</strong>」，不是「踏了一步」。
+我的量測迴圈把每個 20 µs 取樣 tick 都當成一步收進去，44489 筆裡位置根本沒動，
+兩個相隔 20 µs 的 tick 之間算出的「加速度」自然是垃圾。</p>
+<p><strong>修法</strong>：只在 <code>currentPosition()</code> 真的改變時才記錄。
+修完中位數 7800、p99 8000（設定 8000），最大 24288 —— 那個最大值才是真的，
+就是上面那個 1.82× 的首步。</p>
+</div>
+
+<div class="card fail">
+<h4>#43 我又差點挑了一個「恰好能過」的門檻 <span class="tag fixed">已修正</span></h4>
+<p>A5 原本寫「AccelStepper 與連續模型的移動時間差 ≤ 3%」，三個行程量下來
+1600 步 +2.0%、800 步 +0.1%、2400 步 <strong>+3.9%</strong>——失敗。</p>
+<p>把門檻改成 4% 就會過。<strong>那正是 #34 記錄過的錯誤</strong>：挑一個恰好能過的門檻，
+就是把問題藏起來。</p>
+<p><strong>正確做法是去刻畫它</strong>。掃 12 個行程長度後，偏差不是一個常數而是一個<strong>形狀</strong>：</p>
+<table>
+<tr><th style="width:120px">行程</th><th class="num">偏差</th><th>成因</th></tr>
+<tr><td>100 步</td><td class="num" style="color:var(--warn)">−8.0%</td><td>0.676 起步修正讓短程偏快</td></tr>
+<tr><td>800 步</td><td class="num">−0.1%</td><td>過零點</td></tr>
+<tr><td>2400 步</td><td class="num" style="color:var(--warn)">+3.9%</td><td>三角/梯形轉折處</td></tr>
+<tr><td>9600 步</td><td class="num">+1.5%</td><td>長程收斂</td></tr>
+</table>
+<p>所以檢查改成兩條：<strong>偏差有界（≤10%，實測最壞 8.0%）</strong>，
+以及<strong>偏差不隨行程增長</strong>。第二條是關鍵——有界不夠，
+若偏差隨行程單調增大，長行程遲早會失準。
+另外補上一條最強的差異檢查：模型裡那個 1.823 常數，
+<strong>直接從移植的演算法量回來對照</strong>。</p>
+</div>
+
+<h3 style="margin-top:2.4rem">A4 的代價：連續四個「會跑、會印數字」的錯模型</h3>
+<p>模擬是這整個專案裡<strong>最容易產出自信廢話</strong>的一層——沒有任何外部東西會反駁它。
+下面每一個都通過了「程式跑得動而且印出合理的表」，而且是<strong>依序</strong>被發現的，
+每修好一個才看得見下一個。</p>
+
+<div class="card fail">
+<h4>#35 「信念誤差」量到的是迴轉暫態 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>第一次跑出來的表：失步 <strong>0</strong>，信念誤差 <strong>89.40° / 59.40° / 59.40°</strong>。
+零失步的開環步進，韌體的信念<em>必然</em>等於現實——59° 的信念誤差是不可能的。</p>
+<p>原因：我把韌體的信念寫成「最終目標」，所以指令一下、軸還在轉的時候就被記成誤差。
+那三個數字剛好是各軸的<strong>整段行程</strong>（89.4°≈90°、59.4°≈60°），就是初始步階響應。</p>
+<p><strong>修法</strong>：信念改成「驅動器<strong>已發出</strong>的步數」。真實韌體知道自己發了多少步，
+不是知道終點。這樣 <code>信念 − 現實 ≡ 失步</code>，而驗證層新增的檢查就是直接驗這個恆等式。</p>
+</div>
+
+<div class="card fail">
+<h4>#36 用致動器飽和當失步判準 → 3% 負載報 42752 步失步 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>修好 #35 後改用「致動器是否貼在力上限」判斷失步。結果肘部在
+<strong>3% 扭矩容量</strong>下報出 33456 步失步。3% 負載不可能失步。</p>
+<p>根因：位置致動器在<strong>每一次</strong>階躍指令的第一個 tick 都會飽和
+（kp=43，誤差 1 rad → 43 N·m，遠超 0.45）。那是<strong>控制器</strong>撞到自己的限制，
+不是<strong>馬達</strong>掉磁極。兩件事在報表上長得一模一樣。</p>
+<p><strong>修法</strong>：判準改回物理量——需求扭矩（重力 ＋ 慣性×加速度）對比保持扭矩。
+同時補上真正缺的東西：<strong>梯形加減速</strong>。對步進下階躍指令等於要求無限加速度，
+真實韌體（AccelStepper）不會這樣做，所以那個「停轉」是我自己的軌跡造成的，不是手臂的問題。</p>
+</div>
+
+<div class="card fail">
+<h4>#37 加速度用「未截斷的速度誤差」算，第一個 tick 就 2600 rad/s² <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>加上斜坡之後，1% 負載還是失步。追進去發現我把「還沒達成的速度差 ÷ dt」當成加速度，
+而不是「實際施加的那一份」。第一個 tick 算出 <strong>2600 rad/s²</strong>，
+乘上慣量就超過保持扭矩。<strong>修法</strong>：用截斷後的 <code>dv_applied / dt</code>。
+一行之差，而兩個版本印出的表都「看起來合理」。</p>
+</div>
+
+<div class="card fail">
+<h4>#38 MuJoCo 的 <code>gear</code> 是馬達端單位，我一直餵關節角 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>這個最隱蔽。MuJoCo 的傳動是 <code>length = gear × qpos</code>，
+所以 <code>ctrl</code> 和 <code>kp</code> 都在<strong>馬達端</strong>。
+我把關節角度直接寫進 <code>ctrl</code>，每個關節就停在指令的<strong>三分之一</strong>。</p>
+<p>證據一直印在表上，只是我沒讀出來：<strong>肘部命令 −60°，終角剛好 −20.0°</strong>。
+那個「剛好」是整除關係，不是巧合。</p>
+<p><strong>修法</strong>：<code>kp</code> 與 <code>ctrlrange</code> 全改馬達端
+（<code>kp = 保持扭矩 ÷ 一個馬達整步</code>，關節剛度 <code>gear²·kp</code> = 128.9 N·m/rad），
+迴圈寫入時乘上 gear。修完終角是 90.0° / 0.0° / −60.0°，
+而且肩部空載 0.21 N·m 與手算的 0.20 N·m 對上了。</p>
+</div>
+
+<div class="card fail">
+<h4>#39 <code>kv</code> 的量綱是混的，害步進落後 11° <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>原式 <code>KV = 2√(KP × 0.02)</code>，那個 <code>0.02</code> 是我當初隨手當「關節慣量」塞的，
+卻被套在<strong>馬達端</strong>增益上。結果迴路過阻尼約 6 倍，每次斜坡都落後 <strong>11°</strong>。</p>
+<p>步進的轉子是被磁場鎖住的：滿扭矩時負載角只有一個整步（關節端 0.60°），不可能落後 11°。</p>
+<p><strong>修法</strong>：阻尼改由<strong>模型實測的慣量</strong>推導——建置時先產生一次 MJCF、載入、
+掃過各關節行程取質量矩陣對角線最大值，再算臨界阻尼。追蹤誤差降到 0.56–2.30°。</p>
+</div>
+
+<div class="card fail">
+<h4>#40 兩個「假通過」：蛻變檢查跟自己比，黃金基準看不見真實變更 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p><strong>(a) dataclass 預設值陷阱。</strong>我寫了一條蛻變檢查「斜坡放緩 → 失步不增」，
+做法是 <code>Stepper.max_accel_steps = 原值 ÷ 4</code>。
+但 dataclass 的預設值在<strong>類別建立時就被烘進 <code>__init__</code> 簽章</strong>，
+事後改類別屬性對新實例毫無作用——那條檢查是<strong>拿同一組參數跑兩次然後比較</strong>，
+永遠通過，什麼都沒測。修法：參數改用傳參，並在檢查裡順便斷言兩次參數<em>確實不同</em>。</p>
+<p><strong>(b) 黃金容差寬到失去意義。</strong>把 j4 索引角從 30° 改成 34.29° 之後，
+T7 黃金回歸<strong>18/18 全過</strong>。但實際上酬載舉高變了 0.62 mm、搬運距離變了 1.23 mm——
+真的變了，只是容差（3 mm / 4 mm）吸收得掉。</p>
+<p>於是去量「同組態重跑的離散度」：MuJoCo 對同一輸入是<strong>位元級決定性</strong>的，
+5 次重跑離散度全是 <strong>0.000000</strong>。也就是說那些容差<strong>不是在吸收雜訊</strong>，
+它只是讓真實幾何變更溜過去。</p>
+<p><strong>修法</strong>：容差改成儲存時捨入量級的 10 倍（0.001°／1e-5 N·m／0.01 mm）。
+驗證方式是把索引角退回 1.75 齒——T7 現在<strong>失敗 15 項</strong>，而不是之前的全過。
+一個看不見 4.29° 幾何變更的黃金回歸，等於沒有釘住任何東西。</p>
+</div>
+
+<div class="card">
+<h4>變異測試：這些檢查真的抓得到嗎</h4>
+<p>A4 的驗證層一次就 21/21 全過。<strong>在連續錯四個模型之後，我不信任這個結果</strong>，
+所以把上面每一個錯模型都<strong>重新植回去</strong>，看套件會不會失敗。</p>
+<p>第一次跑出 9/9「全部抓到」——但九個全是 <code>AttributeError</code>。
+那不是套件抓到變異，是<strong>我的變異腳本自己壞了</strong>（<code>Check</code> 是 dataclass 不是 dict）。
+修掉之後真實結果是 <strong>8/9</strong>。</p>
+<p>唯一漏掉的是「需求扭矩忽略慣性項」——因為在標稱斜坡（8000 步/s²）下慣性項只佔容量
+<strong>2.9%</strong>，套件裡沒有任何情境能分辨兩者。這不該用放寬容差搪塞，
+所以補了一個慣性真的會主導的情境，順便回答一個實際的設計問題：
+<strong>斜坡開到 4×10⁵ 步/s²，零酬載也會失步</strong>——那時馬達撐不住的是慣性，不是重力。
+補上之後 <strong>9/9</strong>，全部由真實檢查失敗抓到。</p>
+</div>
+
+</main>
+</div>
+<script>
+const links=[...document.querySelectorAll('nav a')];
+const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.toggle('on', l.getAttribute('href')==='#'+e.target.id));
+    }
+  });
+},{rootMargin:'-15% 0px -75% 0px'});
+secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

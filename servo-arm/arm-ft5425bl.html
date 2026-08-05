@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FT5425BL-Arm — 標準舵機 · 直接驅動 · 190 mm · 酬載 100 g</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#151b23; --panel2:#1c232d; --line:#2a323d;
+  --fg:#e6edf3; --dim:#8b98a5; --accent:#4f9cf9; --ok:#3fb950; --bad:#f85149;
+  --warn:#d29922; --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:15px/1.75 -apple-system,"PingFang TC","Noto Sans TC",Helvetica,sans-serif;}
+#wrap{display:flex;min-height:100vh}
+nav{width:250px;flex:0 0 250px;background:var(--panel);border-right:1px solid var(--line);
+  position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 0}
+nav h1{font-size:15px;margin:0 20px 4px;letter-spacing:.4px}
+nav .sub{font-size:11.5px;color:var(--dim);margin:0 20px 18px;line-height:1.5}
+nav a{display:block;padding:7px 20px;color:var(--dim);text-decoration:none;font-size:13px;
+  border-left:2px solid transparent}
+nav a:hover{color:var(--fg);background:var(--panel2)}
+nav a.on{color:var(--accent);border-left-color:var(--accent);background:var(--panel2)}
+nav .grp{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:#5b6673;
+  margin:16px 20px 4px}
+main{flex:1;min-width:0;padding:38px 46px 90px;max-width:1080px}
+h2{font-size:23px;margin:44px 0 6px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+h2:first-child{margin-top:0}
+h3{font-size:17px;margin:26px 0 8px;color:#c9d5e1}
+h4{font-size:14.5px;margin:18px 0 6px;color:var(--dim)}
+p{margin:10px 0}
+code{font-family:var(--mono);font-size:.88em;background:var(--panel2);padding:1px 5px;
+  border-radius:4px;color:#a5d6ff}
+pre{background:#0a0e14;border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+  overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6}
+pre code{background:none;padding:0;color:#c9d1d9}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:7px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel2);font-weight:600;color:#c9d5e1}
+td.num{text-align:right;font-family:var(--mono)}
+.lead{color:var(--dim);font-size:14px;margin-bottom:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:16px 20px;margin:16px 0}
+.card.fail{border-left:3px solid var(--bad)}
+.card.win{border-left:3px solid var(--ok)}
+.card.note{border-left:3px solid var(--warn)}
+.card h4{margin-top:0;color:var(--fg);font-size:15px}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;
+  font-family:var(--mono);margin-left:8px;vertical-align:middle}
+.tag.fixed{background:rgba(63,185,80,.14);color:var(--ok);border:1px solid rgba(63,185,80,.35)}
+.tag.silent{background:rgba(248,81,73,.14);color:var(--bad);border:1px solid rgba(248,81,73,.35)}
+.tag.limit{background:rgba(210,153,34,.14);color:var(--warn);border:1px solid rgba(210,153,34,.35)}
+figure{margin:20px 0}
+figure img{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
+figure img.dark{background:var(--panel)}
+figcaption{font-size:12.5px;color:var(--dim);margin-top:7px}
+video{width:100%;border:1px solid var(--line);border-radius:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+.kpi div{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px 15px}
+.kpi b{display:block;font-size:21px;font-family:var(--mono);color:var(--accent);line-height:1.3}
+.kpi span{font-size:11.5px;color:var(--dim)}
+.chain{font-family:var(--mono);font-size:12.5px;background:#0a0e14;border:1px solid var(--line);
+  border-radius:8px;padding:16px;line-height:2.1;overflow-x:auto}
+.chain b{color:var(--accent);font-weight:600}
+ul,ol{padding-left:22px}
+li{margin:5px 0}
+a{color:var(--accent)}
+.small{font-size:12.5px;color:var(--dim)}
+hr{border:0;border-top:1px solid var(--line);margin:30px 0}
+@media(max-width:900px){#wrap{flex-direction:column}nav{width:100%;height:auto;position:static;flex:none}main{padding:24px 18px 60px}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="wrap">
+<nav>
+  <h1>FT5425BL-Arm</h1>
+  <p class="sub">標準舵機 · 直接驅動 · 190 mm · 酬載 100 g</p>
+  <div class="grp">頁面</div>
+  <a href="report.html">專案總覽與驗證系統</a>
+  <a href="arm-sg90.html">SG90-Arm</a>
+  <a href="arm-nema17.html">NEMA17-Arm</a>
+  <span class="cur" style="display:block;padding:5px 20px;color:var(--accent);font-weight:600;font-size:13px">▸ FT5425BL-Arm</span>
+  <div class="grp">本頁章節</div>
+  <a href="#ft5425bl">第三支手臂：FT5425BL 標準舵機（B1 尺寸、B2 CAD、B3 URDF／MJCF、B4 模擬）</a>
+</nav><main><p style="margin-bottom:1.6rem;color:var(--dim);font-size:13px">← 回<a href="report.html" style="color:var(--accent)">專案總覽與驗證系統</a></p><h2 id="ft5425bl">第三支手臂：FT5425BL 標準舵機（B1 尺寸、B2 CAD、B3 URDF／MJCF、B4 模擬）</h2>
+<p class="lead">扭矩預算用「維持與 SG90 相同的扭矩佔比」把伸距外推到 306 mm。
+實際把靜力算一遍——<strong>那個伸距空載就用掉連續額定的 88%</strong>。
+問題不在算術，在於<strong>那個「相同的佔比」本身指的是什麼</strong>。</p>
+
+<div class="card fail">
+<h4>#48 第一支手臂的設計上限其實在連續工況之外 <span class="tag silent">靜默</span></h4>
+<p>本頁一直寫著：「用 50% 堵轉當設計上限而不是 100%……以這個標準看，
+這支手臂的機構尺寸對 SG90 是<strong>合適</strong>的，不是勉強。」</p>
+<p>做第三支手臂時查到 FT5425BL 的資料<strong>同時給了堵轉與額定</strong>
+（28.5 / 9.5 kg·cm，比值 3.0）。把同樣的比值套回 SG90：</p>
+<pre>SG90 堵轉 0.176 N·m　→　連續約 0.059 N·m
+第一支手臂最壞姿態 0.0788 N·m
+                = 44.7% 堵轉
+                = <strong>約 134% 連續額定</strong></pre>
+<p>也就是說，<strong>那個「50% 堵轉」的設計上限，本身就在連續工況之外</strong>。
+第一支手臂撐得住，是因為它只有 70 g 的動件、酬載 4 g，
+而且沒有人要求它保持同一個姿勢一小時。</p>
+<p><strong>這句話沒有算錯，但它把一個相對標準說成了絕對結論。</strong>
+「以這個標準看是合適的」——而那個標準是我自己訂的，
+訂的時候手上沒有任何一顆馬達的連續額定值可以對照。</p>
+<p><strong>影響</strong>：第一支手臂不改（它能動，而且用途是展示與教學）；
+但第三、第四支手臂改以<strong>連續額定</strong>為基準，
+四支手臂的對照報告會把兩種基準並列，不會混在同一欄。</p>
+</div>
+
+<h3>B1 決策：直接驅動，伸距 190 mm</h3>
+<p>先驗證「標準舵機該不該像 NEMA 17 那樣做成遠端驅動」。
+A1 之所以把步進馬達移到底座，是因為它 280 g、是 SG90 的 31 倍。
+FT5425BL 只有 67.6 g：</p>
+<table>
+<tr><th style="width:130px">酬載</th><th class="num">直接驅動</th><th class="num">遠端驅動</th><th class="num">買到多少</th></tr>
+<tr><td>100 g</td><td class="num">190 mm</td><td class="num">252 mm</td><td class="num">+33%</td></tr>
+<tr><td>200 g</td><td class="num">143 mm</td><td class="num">182 mm</td><td class="num">+28%</td></tr>
+<tr><td>500 g</td><td class="num" style="color:var(--bad)">不可行</td><td class="num">80 mm</td><td class="num">—</td></tr>
+</table>
+<p>兩顆舵機只佔靜態力矩的一小部分（306 mm 時 0.31 N·m 中的 0.11 N·m），
+遠端驅動只買到 28–33% 伸距，卻要付出兩組同步帶、張緊機構與背隙。
+<strong>標準舵機留在關節上是對的</strong>——這是算出來的，不是照慣例假設的。</p>
+
+<table>
+<tr><th style="width:190px">B1 定案</th><th>值</th></tr>
+<tr><td>傳動</td><td>直接驅動，每個關節一顆</td></tr>
+<tr><td>伸距</td><td>190 mm（上臂 105 / 前臂 85）</td></tr>
+<tr><td>設計酬載</td><td>100 g</td></tr>
+<tr><td>肩關節力矩</td><td>0.651 N·m ＝ <strong>69.9% 連續額定</strong>、23.3% 堵轉</td></tr>
+<tr><td>舵盤索引</td><td>25T → 14.4°/齒（整齒約束，同 SG90 的 21T）</td></tr>
+</table>
+<p><strong>與第一支手臂對照，這才是有意義的比較</strong>：</p>
+<table>
+<tr><th style="width:150px">手臂</th><th class="num">伸距</th><th class="num">酬載</th><th>扭矩依據</th></tr>
+<tr><td>SG90</td><td class="num">202 mm</td><td class="num">4 g</td><td>44.7% 堵轉（≈134% 連續）</td></tr>
+<tr><td><strong>FT5425BL</strong></td><td class="num">190 mm</td><td class="num"><strong>100 g</strong></td><td style="color:var(--ok)">69.9% 連續額定</td></tr>
+</table>
+<p>不是「標準舵機做出更短的手臂」——是<strong>伸距相當、酬載 25 倍，
+而且待在連續工況內</strong>。</p>
+
+<h3>B2 CAD：直驅關節的三件事佔同一塊空間</h3>
+<p>直驅關節有三個東西在同一個位置：<strong>舵機</strong>、
+<strong>夾住它的叉臂</strong>（屬於下連桿）、
+<strong>被舵盤帶動的輪轂</strong>（屬於上連桿）。
+第一版把上連桿畫成從關節軸開始的實心樑，於是三者重疊——
+算圖出來是一根融成一體的柱子，<strong>完全看不到關節</strong>。</p>
+<table>
+<tr><th style="width:230px">問題</th><th>症狀</th><th>根因</th></tr>
+<tr><td>拓樸重疊</td><td>算圖是一根柱子</td><td>三個實體佔同一空間</td></tr>
+<tr><td>前臂裂成 3 個實體</td><td>T0 會擋</td><td>耳片沒包過關節軸就合攏，跨接槽從端面切穿</td></tr>
+<tr><td>包絡 66.6 而非 40.0</td><td>沒有斷面有這個寬度</td><td><strong>loft 預設是樣條</strong>，斷面突降時外凸</td></tr>
+<tr><td>八個螺栓孔僅 79% 材料</td><td>T10 擋下</td><td><strong><code>Cylinder</code> 第一個參數是半徑</strong>，Ø9 寫成了 Ø18</td></tr>
+</table>
+
+<div class="card">
+<h4>參數掃描：耳片再厚也沒用</h4>
+<p>T10 報「八個舵盤螺栓孔只有 2 mm 要求的 79%」。
+直覺是耳片太薄，於是把耳片厚度從 3.90 加到 6.0、再加到 10.0——
+<strong>三次都是 79%</strong>。</p>
+<table>
+<tr><th style="width:200px">改動</th><th>結果</th></tr>
+<tr><td>耳片 3.90（基準）</td><td style="color:var(--bad)">最低 79%（8 孔）</td></tr>
+<tr><td>耳片 6.0</td><td style="color:var(--bad)">最低 79%（8 孔）</td></tr>
+<tr><td>耳片 10.0</td><td style="color:var(--bad)">最低 79%（8 孔）</td></tr>
+<tr><td>螺栓圓移到 R=13</td><td style="color:var(--ok)">通過</td></tr>
+<tr><td>孔徑縮到 Ø2.2</td><td style="color:var(--ok)">通過</td></tr>
+</table>
+<p>後兩列才指出<strong>約束是徑向的、不是壁厚</strong>。
+追進去發現 <code>Cylinder(9.0, 200.0)</code> 的第一個參數是<strong>半徑</strong>：
+我要的是 Ø9 的舵盤讓位孔，實際做出 Ø18，
+螺栓孔緣離孔壁只剩 <strong>0.61 mm</strong>。</p>
+<p><strong>不掃參數的話，我會一路加厚耳片而永遠修不好。</strong>
+「猜一個原因去修」和「量哪個變數真的驅動這個數字」是兩件事。</p>
+</div>
+
+<h4>三個拍出來的數字改為由約束推導</h4>
+<table>
+<tr><th style="width:150px">常數</th><th>原本</th><th>改為</th></tr>
+<tr><td><code>HUB_H</code></td><td><code>SB_L*0.85</code> = 34.51</td><td>跨接槽 + 2×(螺栓半徑 + R7 邊距) = 35.80</td></tr>
+<tr><td><code>END_SOLID</code></td><td>20.0（硬寫）</td><td>輪轂伸出 + 螺栓位置 + 邊距 = 40.0</td></tr>
+<tr><td><code>HORN_BOLT_R</code></td><td>8.0（硬寫）</td><td>由舵盤孔直徑推導 = 7.85/軸</td></tr>
+</table>
+
+<h4>驗證結果</h4>
+<table>
+<tr><th style="width:230px">層</th><th>結果</th></tr>
+<tr><td>T0 幾何完整性</td><td style="color:var(--ok)">8/8（2 項跳過：尚未產出網格與連桿屬性）</td></tr>
+<tr><td>T8 可組裝性</td><td style="color:var(--ok)">5/5（螺絲起子伸得到、無干涉）</td></tr>
+<tr><td>T10 可列印性</td><td style="color:var(--ok)">5/5</td></tr>
+</table>
+<p>接上 <code>ArmBundle</code> 只花了三行——這正是當初做那層抽象的目的。</p>
+
+<h4>實測質量回推，B1 的尺寸站得住</h4>
+<table>
+<tr><th style="width:170px">項目</th><th class="num">質量 g</th><th class="num">力臂 mm</th><th class="num">力矩 N·m</th></tr>
+<tr><td>upper_arm</td><td class="num">79.0</td><td class="num">42.6</td><td class="num">0.033</td></tr>
+<tr><td>forearm</td><td class="num">65.3</td><td class="num">133.9</td><td class="num">0.086</td></tr>
+<tr><td>j3 舵機</td><td class="num">67.6</td><td class="num">105.0</td><td class="num">0.070</td></tr>
+<tr><td>j4 腕舵機</td><td class="num">67.6</td><td class="num">190.0</td><td class="num">0.126</td></tr>
+<tr><td>夾爪</td><td class="num">50.0</td><td class="num">190.0</td><td class="num">0.093</td></tr>
+<tr><td>酬載</td><td class="num">100.0</td><td class="num">230.0</td><td class="num">0.226</td></tr>
+<tr><td colspan="3"><strong>肩關節合計</strong></td><td class="num"><strong>0.633</strong></td></tr>
+</table>
+<p><strong>67.9% 連續額定</strong>（B1 用估計質量算的是 69.9%）。
+實測連桿比估計重 10%，但質心比「連桿中點」的假設更靠內
+（上臂 42.6 mm 而非 52.5），兩者相抵之後比原估計還好一點。空載 43.7%。</p>
+
+<h3>B3 URDF／MJCF：極限有兩個作者</h3>
+<p>NEMA 17 那支的關節極限只有一個來源——步進沒有自身行程，機構就是極限。
+這支相反：<strong>舵機有硬性的 180°</strong>，怎麼樣都過不去。
+所以每個關節的極限是兩個獨立約束的<strong>交集</strong>：</p>
+<table>
+<tr><th style="width:130px">關節</th><th class="num">機構掃描</th><th class="num">舵機行程</th><th class="num">生效</th><th>綁住的是</th></tr>
+<tr><td>j1 迴轉</td><td class="num">±150°</td><td class="num">±90°</td><td class="num">±90°</td><td><strong>舵機</strong></td></tr>
+<tr><td>j2 肩</td><td class="num">±75°</td><td class="num">±90°</td><td class="num">±75°</td><td><strong>機構</strong></td></tr>
+<tr><td>j3 肘</td><td class="num">±95°</td><td class="num">±90°</td><td class="num">±90°</td><td><strong>舵機</strong></td></tr>
+</table>
+<p>取交集不是重點，<strong>記錄「哪一邊綁住」才是</strong>——兩者的意思相反：
+機構綁住代表<strong>改幾何可以放寬</strong>；舵機綁住代表<strong>幾何幫不上忙</strong>，
+只能重新索引舵盤，而那是拿一端換另一端。
+只報一個數字而不說是誰造成的，就會有人去加厚一面牆，
+想買一段舵機本來就不會給的行程。</p>
+
+<div class="card fail">
+<h4>#49 掃出來的肩關節行程是 0°——連續三次，三個不同原因 <span class="tag fixed">已修正</span></h4>
+<p>掃描把實體轉到干涉為止。前三次跑出來的肩關節範圍是
+<strong>[+5, −5]</strong>（負寬度）、然後 <strong>[0, 0]</strong>、再一次 <strong>[0, 0]</strong>。
+每一次都是不同的原因，而且每修好一個才看得見下一個：</p>
+<table>
+<tr><th style="width:210px">第幾次</th><th>根因</th></tr>
+<tr><td>一：[+5, −5]</td><td>跨接槽用叉臂的<strong>半邊長</strong>（23.9）挖，
+  註解卻寫「half-diagonal」——真值是 <strong>29.7</strong>，叉臂角落卡在輪轂實心區</td></tr>
+<tr><td>二：[0, 0]</td><td>零位就相交 <strong>4667 mm³</strong>：
+  舵機截面的 <strong>X/Y 寫反了</strong>（舵機 40.6 在 X、20.0 在 Y，
+  我寫成 X=26.8 裝不下、Y=46.6 撞耳片）</td></tr>
+<tr><td>三：[0, 0]</td><td>耳片往下伸 34.3，旋轉時最低點掃到軸下 <strong>41.5</strong>，
+  而肩軸只在轉盤面上 36——耳片掃到圓盤</td></tr>
+</table>
+<p>共通點：<strong>這三個數字全是我拍的</strong>，不是從它們要配合的東西推導出來的。
+改成推導之後：</p>
+<pre>YOKE_R      = √((SB_L/2+WALL)² + (SB_H/2+WALL)²)   叉臂在輪轂座標系掃出的圓盤
+HUB_REACH   = YOKE_R + 間隙 + 4                     耳片必須包過那個圓盤
+HUB_SWEPT_R = √((SB_L/2+WALL)² + HUB_REACH²)        耳片自己掃出的半徑
+Z_J2        = 轉盤面 + HUB_SWEPT_R + 1.5            肩軸高度</pre>
+<p>還有一個結構認知的錯誤：我把耳片在關節<strong>下方</strong>也接起來，
+於是叉臂沒有路徑往下接回轉盤——轉盤因此變成 3 個分離的實體。
+真實的伺服 U 型接頭是<strong>在舵機上方合攏、下方留兩片自由板</strong>，
+把跨接槽加上向下的開口才對。</p>
+</div>
+
+<div class="card fail">
+<h4>#50 docstring 宣稱了 MuJoCo 做不到的事 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>MJCF 產生器的說明寫著速度上限「以關節速度限制放進去」。
+<strong>MuJoCo 沒有關節速度上限這種東西</strong>，而程式也確實沒寫進 XML——
+那句話是一個只存在於散文裡的限制。</p>
+<p>0.08 s/60° = 13.1 rad/s，在 190 mm 的手臂上是尖端 2.5 m/s。
+忽略它，模擬就會允許手臂做出舵機做不到的動作。</p>
+<p><strong>修法</strong>：說清楚 MuJoCo 放不下，改由 B4 的模擬迴圈執行——
+和步進的發步率上限放在同一個地方。並在 B3 加一條檢查驗
+<code>MAX_RADPS</code> 有被匯出，因為<strong>只寫在註解裡的限制等於不存在</strong>。</p>
+</div>
+
+<h4>B3 驗證層（27 項，變異測試 5/5）</h4>
+<p>刻意把幾條拆成兩句話，因為「數字對」和「關係對」不是同一件事：</p>
+<ul>
+<li>極限 = 交集　<strong>以及</strong>　極限不超出任一來源
+——後者在「兩邊用同樣的錯誤算法」時仍會擋下</li>
+<li>forcerange = 連續額定　<strong>以及</strong>　forcerange ≠ 堵轉值
+——若哪天有人把 0.932 改標成堵轉，只驗前者不會發現</li>
+<li>「綁住的是誰」必須與它宣稱總結的兩個範圍相符——<strong>過期的欄位比沒有更糟</strong></li>
+</ul>
+
+<h3>B4 模擬：伺服的失效不是漂移，是「一直撐著然後燒掉」</h3>
+<p>步進手臂問的是「有沒有失步」。伺服問不出這個問題——它永遠知道自己在哪。
+它的失效安靜得多：<strong>撐住、繼續撐、過熱</strong>。
+所以這一層報的是<strong>工作時率</strong>，不是漂移。</p>
+
+<div class="card fail">
+<h4>#51 我把關節速度夾在額定值，藏掉了最該報告的事件 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p><a href="#ft5425bl">#50</a> 說速度上限要在模擬迴圈裡執行。第一版夾在**設定點的迴轉速率**，
+關節本身仍衝到 14.21 rad/s（資料表的 109%）。於是我改夾關節速度——
+先夾在 <code>mj_step</code> 之後（沒用，位置已經走完了），
+再移到之前。<strong>三次都沒對。</strong></p>
+<p>追進去看那一刻發生什麼，才發現方向根本錯了：</p>
+<pre>k=744  肩 -75.13°   nefc 0
+k=745  肩 -75.36°   nefc 1   ← 越過機構極限 -75°，約束啟動
+       肘速度單步 -9.86 rad/s（≈9863 rad/s²，是致動器上限 913 的十倍）</pre>
+<p>（<code>ncon</code> 是<strong>接觸</strong>數；關節極限在 MuJoCo 裡是<strong>約束</strong>，
+不出現在那裡。查錯欄位讓我多繞了一圈。）</p>
+<p><strong>那不是舵機在驅動，是手臂撐不住、被重力反驅動、然後撞進極限，
+衝擊把前臂甩到 21.7 rad/s。</strong></p>
+<p><strong>0.08 s/60° 限制的是舵機能<em>驅動</em>多快，不是別人能對它做多快。</strong>
+夾住關節速度會把整件事抹掉——而那正是這次模擬最該講的事。
+改成分開報「自由運動速度」與「含撞擊速度」，並在撞到極限時明講。</p>
+</div>
+
+<div class="card fail">
+<h4>#52 資料表的速度在這支手臂上不能用 <span class="tag fixed">已納入設計</span></h4>
+<p>照資料表 13.09 rad/s 下指令，酬載 100 g 時：</p>
+<table>
+<tr><th style="width:150px">指令速率</th><th class="num">佔資料表</th><th class="num">肩峰值</th><th class="num">佔額定</th><th>撞極限</th><th class="num">追蹤誤差</th></tr>
+<tr><td>13.09 rad/s</td><td class="num">100%</td><td class="num">0.951</td><td class="num" style="color:var(--bad)">102%</td><td style="color:var(--bad)">是</td><td class="num">48.7°</td></tr>
+<tr><td><strong>6.54 rad/s</strong></td><td class="num">50%</td><td class="num">0.553</td><td class="num" style="color:var(--ok)">59%</td><td style="color:var(--ok)">否</td><td class="num">20.0°</td></tr>
+<tr><td>3.27 rad/s</td><td class="num">25%</td><td class="num">0.515</td><td class="num">55%</td><td>否</td><td class="num">8.4°</td></tr>
+<tr><td>1.31 rad/s</td><td class="num">10%</td><td class="num">0.514</td><td class="num">55%</td><td>否</td><td class="num">4.1°</td></tr>
+</table>
+<p>60° 的肩部動作以滿速下達，會<strong>過衝 15° 撞進 −75° 的機構極限</strong>，
+而且拉到連續額定的 102%。<strong>減半就完全不撞，扭矩掉到 59%</strong>；
+再減到 1/4 幾乎沒有額外好處——<strong>50% 就是那個轉折點，是量出來的不是挑的</strong>。</p>
+<p>這是伺服版的「datasheet 300 rpm 韌體開不出來」：
+<strong>0.08 s/60° 是空載值</strong>，帶著 190 mm 手臂根本跑不到。
+B5 的韌體必須限速到這裡。</p>
+</div>
+
+<h4>靜態保持 vs 動態運行：兩個不同的酬載上限</h4>
+<table>
+<tr><th style="width:230px">問題</th><th class="num">答案</th></tr>
+<tr><td>空載靜態最壞姿態</td><td class="num">0.401 N·m ＝ 43% 額定（肩 −75°、肘 −10°）</td></tr>
+<tr><td>能<strong>保持</strong>的酬載上限</td><td class="num">≈ 235 g</td></tr>
+<tr><td>能<strong>運行</strong>的酬載（滿速）</td><td class="num" style="color:var(--bad)">&lt; 50 g（過衝就撞極限）</td></tr>
+<tr><td>能<strong>運行</strong>的酬載（限速 50%）</td><td class="num" style="color:var(--ok)">100 g 用 59% 額定</td></tr>
+</table>
+<p>「撐得住」和「動得了」是兩個數字，而且差 4 倍以上。
+B1 的靜態預算算的是前者——同 <a href="#torque">#34</a> 那一類：
+<strong>受限集合的最大值不是可達集合的最大值</strong>。</p>
+
+<h4>B4 驗證層（10 項）</h4>
+<p>刻意把「限速有效」拆成三條：會撞極限、限速後不撞、以及扭矩顯著下降。
+只驗最後一條的話，一個把限速寫成無效的模型仍會通過。
+另外驗「<code>read()</code> 回報的是指令不是軸位置」——
+四支手臂裡只有 DM-J4310 報得出真實位置，模型不可以假裝別的做得到。</p>
+
+<div class="card">
+<h4>這支手臂的尺寸是暫定的，而且程式會一直這樣說</h4>
+<p>上面每一個數字都建立在「額定 9.5 kg·cm」上，
+而那個值<strong>只有單一經銷商來源，且剛好是堵轉的 1/3</strong>。
+<code>sizing_ft5425bl.py</code> 每次執行都會印出
+<code>BUDGET_UNVERIFIED_BASIS</code> 並說明：真值若是堵轉的 1/4，
+伸距要再縮約 10%。</p>
+<p>不擋住工作，但也不讓「沒驗證」這件事悄悄消失——
+這跟 <a href="#actuators">#44</a> 那個裝飾了一整段時間的旗標是同一個教訓。</p>
+</div>
+
+</main>
+</div>
+<script>
+const links=[...document.querySelectorAll('nav a')];
+const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.toggle('on', l.getAttribute('href')==='#'+e.target.id));
+    }
+  });
+},{rootMargin:'-15% 0px -75% 0px'});
+secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
