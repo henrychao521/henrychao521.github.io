@@ -69,7 +69,28 @@ li{margin:5px 0}
 a{color:var(--accent)}
 .small{font-size:12.5px;color:var(--dim)}
 hr{border:0;border-top:1px solid var(--line);margin:30px 0}
-@media(max-width:900px){#wrap{flex-direction:column}nav{width:100%;height:auto;position:static;flex:none}main{padding:24px 18px 60px}.grid2{grid-template-columns:1fr}}
+/* Mobile.  The record page is read on a phone more than on a desktop, and two
+   things overflow there: wide tables (up to 596 px) and long <code> spans
+   (576 px).  Both scroll inside their own box rather than dragging the whole
+   document sideways -- a page that scrolls horizontally is unreadable on a
+   phone, and the split arm pages inherit this block, so fixing it here fixes
+   all four. */
+@media(max-width:900px){
+  #wrap{flex-direction:column}
+  nav{width:100%;height:auto;position:static;flex:none}
+  main{padding:24px 14px 60px}
+  .grid2{grid-template-columns:1fr}
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;
+        white-space:nowrap;font-size:12.5px}
+  th,td{padding:6px 8px}
+  th[style*="width"],td[style*="width"]{width:auto !important}
+  code{overflow-wrap:anywhere;word-break:break-word}
+  pre{overflow-x:auto;font-size:12px}
+  h1{font-size:22px;line-height:1.35}
+  h2{font-size:19px}
+  h3{font-size:16px}
+  img,video{max-width:100%;height:auto}
+}
 </style>
 </head>
 <body>
