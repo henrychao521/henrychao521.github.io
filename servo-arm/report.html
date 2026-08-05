@@ -118,6 +118,7 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <a href="#ecosystem">相鄰領域調查：CAD→URDF、模仿學習、sim-to-real、text-to-CAD</a>
   <a href="#actuators">四支手臂的致動器資料：查證與三個被推翻的數字</a>
   <a href="#external">外部 AI 報告的評估：哪些成立、哪些不適用</a>
+  <a href="#compare4">四支手臂對照</a>
   <a href="#limits">已知限制</a>
   <a href="#files">檔案與重現方式</a>
   <a href="#refs">引用來源</a>
@@ -1326,6 +1327,54 @@ M3 加負載相關   τ = Kv·θ̇ + Kc + Kl·|τm − τe|</pre>
 「慣量從實體算」這些寫進顯眼的位置，所以外部讀者合理地假設沒做。
 <strong>那是這個頁面的問題，不是那份報告的問題。</strong></p>
 
+<h2 id="compare4">四支手臂對照</h2>
+<p class="lead">同一個題目做四遍，換四種致動器。比較的不是哪支比較好——是<strong>不同致動器把哪些問題推到設計的哪一層</strong>。下表每個數字都由 <code>tools/make_comparison.py</code> 在建置時從程式碼與 <code>results.json</code> 讀出，不是手打的。</p>
+<table>
+<tr><th style="width:16%">手臂</th><th>致動器</th><th class="num">保持扭矩</th><th>依據</th><th class="num">伸距</th><th class="num">酬載</th><th>回授</th></tr>
+<tr><td><a href="arm-sg90.html">SG90-Arm</a></td><td>SG90 微型舵機<br><span style="color:var(--dim);font-size:12px">9 g · 直驅</span></td><td class="num">0.06 N·m</td><td style="color:var(--warn)">額定（未驗證）</td><td class="num">202 mm</td><td class="num">4 g</td><td style="color:var(--dim)">無</td></tr>
+<tr><td><a href="arm-nema17.html">NEMA17-Arm</a></td><td>NEMA 17 (42 型步進) L=40<br><span style="color:var(--dim);font-size:12px">280 g · 遠端 GT2 3:1</span></td><td class="num">0.45 N·m</td><td style="color:var(--ok)">連續</td><td class="num">255 mm</td><td class="num">598 g</td><td style="color:var(--dim)">無</td></tr>
+<tr><td><a href="arm-ft5425bl.html">FT5425BL-Arm</a></td><td>Feetech FT5425BL（標準尺寸無<br><span style="color:var(--dim);font-size:12px">68 g · 直驅</span></td><td class="num">0.93 N·m</td><td style="color:var(--warn)">額定（未驗證）</td><td class="num">190 mm</td><td class="num">100 g</td><td style="color:var(--dim)">無</td></tr>
+<tr><td><a href="arm-sts3215.html">STS3215-Arm</a></td><td>Feetech STS3215/ST3215<br><span style="color:var(--dim);font-size:12px">55 g · 直驅</span></td><td class="num">1.00 N·m</td><td style="color:var(--ok)">額定</td><td class="num">212 mm</td><td class="num">100 g</td><td style="color:var(--ok)">position／velocity／load／voltage／current／temperature</td></tr>
+</table>
+<h3>每支手臂把問題推到哪一層</h3>
+<table><tr><th style="width:18%">手臂</th><th>這支特有的失效模式</th></tr>
+<tr><td>SG90-Arm</td><td>第一支。開環，全部的驗證只能拿模型比模型</td></tr>
+<tr><td>NEMA17-Arm</td><td>失步是永久的；A4 為此連錯四個會跑會印數字的模型</td></tr>
+<tr><td>FT5425BL-Arm</td><td>已被 STS3215 取代：無回授、額定扭矩只能用 1/3 法則推</td></tr>
+<tr><td>STS3215-Arm</td><td>唯一有回授的；韌體可以讀回來確認動作到位</td></tr>
+</table>
+<h3>驗證能力的階梯</h3>
+<p>這是四支手臂最實質的差別，也是換掉 FT5425BL 的唯一理由：</p>
+<table><tr><th style="width:22%">能做到的驗證</th><th class="num">SG90</th><th class="num">NEMA17</th><th class="num">FT5425BL</th><th class="num">STS3215</th></tr>
+<tr><td>模型內部自洽（T0–T11）</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--ok)">✓</td></tr>
+<tr><td>與獨立實作對照</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--ok)">✓ AccelStepper 移植</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--ok)">✓ 原廠協定範例</td></tr>
+<tr><td>與原廠文件的位元組對照</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--ok)">✓ 10/10</td></tr>
+<tr><td>機器回報自己的位置</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--ok)">✓</td></tr>
+<tr><td>韌體可驗證動作是否到位</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--ok)">✓</td></tr>
+<tr><td>與實體量測比對</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--warn)">△ 第三方單一樣本</td></tr>
+<tr><td>在我們的台子上驗證（validation）</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td></tr>
+</table>
+<p><strong>最後一列四支都是 ✗</strong>，而那一列才是 validation。這個專案做的全部是 verification——沒有任何一個數字量過我們自己的實體硬體。</p>
+<p style="color:var(--dim);font-size:13px">目前全套 465/465 項通過。</p>
+<div class="card fail">
+<h4>#58 產生這張對照表時，資料自己揭穿了 #48 只改到一半 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>對照表第一版印出 <strong>SG90　0.18 N·m　依據：連續</strong>。
+但 0.18 N·m 是<strong>堵轉</strong>值——<a href="#external">#48</a> 就是在講這件事，
+而我當時<strong>只更正了頁面上的敘述，沒有更正資料</strong>。</p>
+<p>D0 有一條規則正是為此存在：「若記了較低的額定值，主數字依定義就是峰值」。
+它對 SG90 <strong>不觸發</strong>，因為 SG90 根本沒有額定值可以比——
+<strong>那條規則的盲點就是「什麼都沒記」的情況</strong>。</p>
+<p>修法：SG90 的 17.6 N·cm 標為峰值，並依同一套 1/3 慣例補上未驗證的額定值
+（與 FT5425BL 的處理一致）。改完之後：</p>
+<pre>SG90 額定 0.059 N·m
+第一支手臂最壞姿態 0.0788 N·m  →  <strong>134% 額定</strong></pre>
+<p>與 #48 的結論完全一致——只是現在<strong>資料本身這樣說</strong>，
+而不是靠一段散文說。</p>
+<p><strong>為什麼是「產生一張表」揭穿的</strong>：那張表把四支手臂的同一欄位排在一起。
+單獨看 SG90 的記錄，「0.18 N·m」沒有任何不對；
+和另外三支的「額定」並排時，「連續」兩個字才顯得刺眼。
+<strong>對照本身就是一種驗證</strong>，這也是為什麼這張表要由程式產生而不是手打。</p>
+</div>
 <h2 id="limits">已知限制</h2>
 <ul>
 <li><strong>夾爪閉鏈在 URDF 裡是近似的。</strong> 夾爪是兩指 + 連桿條的四連桿，URDF 是嚴格樹狀結構、
