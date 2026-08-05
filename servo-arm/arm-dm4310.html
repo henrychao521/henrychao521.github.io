@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DM-J4310-Arm — 準直驅 · 力矩回授 · 173 mm · 酬載 500 g</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#151b23; --panel2:#1c232d; --line:#2a323d;
+  --fg:#e6edf3; --dim:#8b98a5; --accent:#4f9cf9; --ok:#3fb950; --bad:#f85149;
+  --warn:#d29922; --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:15px/1.75 -apple-system,"PingFang TC","Noto Sans TC",Helvetica,sans-serif;}
+#wrap{display:flex;min-height:100vh}
+nav{width:250px;flex:0 0 250px;background:var(--panel);border-right:1px solid var(--line);
+  position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 0}
+nav h1{font-size:15px;margin:0 20px 4px;letter-spacing:.4px}
+nav .sub{font-size:11.5px;color:var(--dim);margin:0 20px 18px;line-height:1.5}
+nav a{display:block;padding:7px 20px;color:var(--dim);text-decoration:none;font-size:13px;
+  border-left:2px solid transparent}
+nav a:hover{color:var(--fg);background:var(--panel2)}
+nav a.on{color:var(--accent);border-left-color:var(--accent);background:var(--panel2)}
+nav .grp{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:#5b6673;
+  margin:16px 20px 4px}
+main{flex:1;min-width:0;padding:38px 46px 90px;max-width:1080px}
+h2{font-size:23px;margin:44px 0 6px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+h2:first-child{margin-top:0}
+h3{font-size:17px;margin:26px 0 8px;color:#c9d5e1}
+h4{font-size:14.5px;margin:18px 0 6px;color:var(--dim)}
+p{margin:10px 0}
+code{font-family:var(--mono);font-size:.88em;background:var(--panel2);padding:1px 5px;
+  border-radius:4px;color:#a5d6ff}
+pre{background:#0a0e14;border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+  overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6}
+pre code{background:none;padding:0;color:#c9d1d9}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:7px 11px;text-align:left;vertical-align:top}
+th{background:var(--panel2);font-weight:600;color:#c9d5e1}
+td.num{text-align:right;font-family:var(--mono)}
+.lead{color:var(--dim);font-size:14px;margin-bottom:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:16px 20px;margin:16px 0}
+.card.fail{border-left:3px solid var(--bad)}
+.card.win{border-left:3px solid var(--ok)}
+.card.note{border-left:3px solid var(--warn)}
+.card h4{margin-top:0;color:var(--fg);font-size:15px}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;
+  font-family:var(--mono);margin-left:8px;vertical-align:middle}
+.tag.fixed{background:rgba(63,185,80,.14);color:var(--ok);border:1px solid rgba(63,185,80,.35)}
+.tag.silent{background:rgba(248,81,73,.14);color:var(--bad);border:1px solid rgba(248,81,73,.35)}
+.tag.limit{background:rgba(210,153,34,.14);color:var(--warn);border:1px solid rgba(210,153,34,.35)}
+figure{margin:20px 0}
+figure img{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
+figure img.dark{background:var(--panel)}
+figcaption{font-size:12.5px;color:var(--dim);margin-top:7px}
+video{width:100%;border:1px solid var(--line);border-radius:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+.kpi div{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px 15px}
+.kpi b{display:block;font-size:21px;font-family:var(--mono);color:var(--accent);line-height:1.3}
+.kpi span{font-size:11.5px;color:var(--dim)}
+.chain{font-family:var(--mono);font-size:12.5px;background:#0a0e14;border:1px solid var(--line);
+  border-radius:8px;padding:16px;line-height:2.1;overflow-x:auto}
+.chain b{color:var(--accent);font-weight:600}
+ul,ol{padding-left:22px}
+li{margin:5px 0}
+a{color:var(--accent)}
+.small{font-size:12.5px;color:var(--dim)}
+hr{border:0;border-top:1px solid var(--line);margin:30px 0}
+/* Mobile.  The record page is read on a phone more than on a desktop, and two
+   things overflow there: wide tables (up to 596 px) and long <code> spans
+   (576 px).  Both scroll inside their own box rather than dragging the whole
+   document sideways -- a page that scrolls horizontally is unreadable on a
+   phone, and the split arm pages inherit this block, so fixing it here fixes
+   all four. */
+@media(max-width:900px){
+  #wrap{flex-direction:column}
+  nav{width:100%;height:auto;position:static;flex:none}
+  main{padding:24px 14px 60px}
+  .grid2{grid-template-columns:1fr}
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;
+        white-space:nowrap;font-size:12.5px}
+  th,td{padding:6px 8px}
+  th[style*="width"],td[style*="width"]{width:auto !important}
+  code{overflow-wrap:anywhere;word-break:break-word}
+  pre{overflow-x:auto;font-size:12px}
+  h1{font-size:22px;line-height:1.35}
+  h2{font-size:19px}
+  h3{font-size:16px}
+  img,video{max-width:100%;height:auto}
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+<nav>
+  <h1>DM-J4310-Arm</h1>
+  <p class="sub">準直驅 · 力矩回授 · 173 mm · 酬載 500 g</p>
+  <div class="grp">頁面</div>
+  <a href="report.html">專案總覽與驗證系統</a>
+  <a href="arm-sg90.html">SG90-Arm</a>
+  <a href="arm-nema17.html">NEMA17-Arm</a>
+  <a href="arm-ft5425bl.html">FT5425BL-Arm</a>
+  <span class="cur" style="display:block;padding:5px 20px;color:var(--accent);font-weight:600;font-size:13px">▸ DM-J4310-Arm</span>
+  <a href="arm-sts3215.html">STS3215-Arm</a>
+  <div class="grp">本頁章節</div>
+  <a href="#dm4310">第五支：DM-J4310 準直驅（C1 決策、C5 CAN 協定）</a>
+</nav><main><p style="margin-bottom:1.6rem;color:var(--dim);font-size:13px">← 回<a href="report.html" style="color:var(--accent)">專案總覽與驗證系統</a></p><h2 id="dm4310">第五支：DM-J4310 準直驅（C1 決策、C5 CAN 協定）</h2>
+<p class="lead">四顆致動器裡唯一會<strong>回報力矩</strong>的。
+那是<a href="#compare4">驗證階梯</a>上比位置回授高一階的格子：
+機器回報它<strong>產生的力</strong>，而不只是它在哪裡。</p>
+
+<h3>C1：遠端驅動買到 +69% 伸距，仍然被拒絕</h3>
+<table>
+<tr><th style="width:22%">酬載</th><th class="num">直驅</th><th class="num">遠端驅動</th><th class="num">差</th></tr>
+<tr><td>500 g</td><td class="num">173 mm</td><td class="num">293 mm</td><td class="num">+69%</td></tr>
+<tr><td>1000 g</td><td class="num">109 mm</td><td class="num">157 mm</td><td class="num">+44%</td></tr>
+</table>
+<p>325 g 與 NEMA 17 同級，單看質量，答案應該和 A1 一樣：搬到底座。
+<strong>+69% 遠比 FT5425BL 的 +28% 有份量</strong>。</p>
+<p><strong>拒絕的理由不是質量，是力矩路徑。</strong>
+它回報的 T 是<strong>馬達端</strong>、由繞組電流推估、位在自身 10:1 減速的另一側。
+加一組皮帶，感測器與負載之間就變成<strong>兩級未被量測的摩擦</strong>：
+原廠至少刻畫過的內建齒輪箱，加上沒有人量過的列印皮帶。
+遠端驅動等於<strong>用「讓這支手臂存在的那個量測失去意義」換 120 mm 伸距</strong>。</p>
+<p>這與 B1 是<strong>不同的論證</strong>：B1 拒絕遠端驅動是因為它買太少；
+這裡它買很多而仍被拒絕。結論相同、理由相反——<strong>所以這個問題必須重問，不能沿用</strong>。</p>
+<p>C1 定案：直驅、伸距 <strong>173 mm</strong>、酬載 <strong>500 g</strong>、
+肩關節 2.10 N·m = 70% 連續額定、30% 峰值。</p>
+
+<h3>C5：位元打包的協定，錯一格仍是合法指令</h3>
+<p>前面每一支手臂的韌體錯了都會大聲失敗：Feetech 校驗和不對就沒有回應、
+<code>Servo.write()</code> 打錯會超出範圍。MIT 模式沒有這種餘裕：</p>
+<pre>p(16) + v(12) + Kp(12) + Kd(12) + t_ff(12) = 64 位元 = 8 位元組
+                                              <strong>沒有一位餘裕</strong></pre>
+<p>欄位寫錯一個 nibble<strong>不會溢位</strong>——它落進鄰居，
+馬達就用一個沒人選的增益執行一個沒人下的指令。</p>
+<p>而且 DAMIAO <strong>沒有公布範例封包</strong>，所以 B'5 對照原廠位元組的做法在這裡用不了。
+能用的只有結構：位元預算、逐欄往返、<strong>欄位隔離</strong>（唯一抓得到 nibble 錯位的檢查）、
+以及超範圍必須<strong>夾住而非回繞</strong>（回繞會把關節送到行程的另一端，而回繞後的值完全合法）。</p>
+<p><strong>寫明這一層的盲點</strong>：一致套用到打包與解包的佈局錯誤在這裡是<strong>隱形的</strong>——
+往返完美、欄位隔離、位元預算都對。只有實機或原廠範例能分辨。</p>
+
+<div class="card fail">
+<h4>#59 我的變異測試方法本身有 bug，而且兩個方向都會報錯 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
+<p>C5 的套件單獨跑 17/17，<strong>下一次跑卻失敗 3 項，中間沒有任何編輯</strong>。
+那種結果必須追，不能重跑到它同意為止。</p>
+<p>追出來的根因：<strong>CPython 的 <code>__pycache__</code> 以來源檔 mtime 為鍵，
+解析度是一秒</strong>。我的變異腳本在同一秒內把 <code>dm_can.py</code> 重寫了七次，
+於是 Python 服務的是<strong>快取住的變異版本</strong>。</p>
+<p><strong>它在兩個方向都會騙人</strong>：</p>
+<ul>
+<li>報「抓到」——但變異其實從未被載入，看到的失敗來自<strong>上一個</strong>還在快取裡的變異</li>
+<li>報「乾淨」——但還原其實沒生效，磁碟上的檔案是對的、被匯入的模組不是</li>
+</ul>
+<p><strong>這影響先前每一次變異測試的可信度</strong>。修法是把它抽成
+<code>tests/mutate.py</code>，明確清除該檔的 <code>.pyc</code> 並呼叫
+<code>importlib.invalidate_caches()</code>。</p>
+<p><strong>用修好的方法重跑，立刻挖出一個真的洞</strong>：
+B'4 的「拿掉編碼器量化」<strong>沒有被抓到</strong>——因為我的檢查只驗
+「感測誤差 ≤ 半個計數」，量化拿掉後誤差變成 <strong>0</strong>，
+當然通過，而模型的編碼器就變成無限精確。</p>
+<p><strong>只從上方設界的檢查，抓不到「那個現象根本不存在」。</strong>
+A4 為此加過「過載後確實失步」，這一層我沒加。已補上
+「回報值確實是整數個計數」——量化一消失它立刻失敗。</p>
+<p>修好之後：C5 變異 7/7、B'4 變異 4/4。</p>
+</div>
+
+<h3>C 系列目前的狀態</h3>
+<table>
+<tr><th style="width:16%">階段</th><th>狀態</th></tr>
+<tr><td>C1 傳動決策</td><td style="color:var(--ok)">完成（173 mm / 500 g / 直驅）</td></tr>
+<tr><td>C2 CAD</td><td style="color:var(--warn)">未做</td></tr>
+<tr><td>C3 URDF/MJCF</td><td style="color:var(--warn)">未做（依賴 C2）</td></tr>
+<tr><td>C4 模擬</td><td style="color:var(--warn)">未做（依賴 C3）</td></tr>
+<tr><td>C5 CAN 協定層</td><td style="color:var(--ok)">完成，17 項檢查、變異 7/7</td></tr>
+</table>
+<p><strong>C2 沒做的原因是它需要不同的安裝方式</strong>：
+DM-J4310 靠<strong>法蘭</strong>（Ø38 螺栓圓 4×M3）鎖，不是靠耳片，
+輸出也是法蘭。FT5425BL／STS3215 共用的那份「舵機夾在叉臂裡、輪轂跨在外面」
+的推導在這裡<strong>不適用</strong>，得另寫一套關節結構。</p>
+
+</main>
+</div>
+<script>
+const links=[...document.querySelectorAll('nav a')];
+const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.toggle('on', l.getAttribute('href')==='#'+e.target.id));
+    }
+  });
+},{rootMargin:'-15% 0px -75% 0px'});
+secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
