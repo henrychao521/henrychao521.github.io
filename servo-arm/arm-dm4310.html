@@ -233,6 +233,38 @@ FT5425BL 與 STS3215 兩支手臂也一樣，
 要驗就得替它們建緊固件模型，跟 SG90 與 NEMA 17 兩支一樣。</p>
 </div>
 
+<div class="card fail">
+<h4>#62 補上緊固件模型之後，T8 立刻找到兩個真缺陷 <span class="tag fixed">已修正</span></h4>
+<p><a href="#dm4310">#61</a> 把三支手臂的 T8 從「真空通過」改成跳過。
+這次替它們建了緊固件模型（<code>cad/fasteners_generic.py</code>），
+讓那一層有東西可檢查——<strong>第一次跑就抓到兩個真的問題</strong>。</p>
+<p><strong>(a) M4 螺絲鑽進 M3 的孔位。</strong>
+STS3215 手臂是用注入的方式共用 FT5425BL 的設計，而
+<code>servo_tab_holes()</code> 把讓位孔<strong>硬寫成 M4</strong>——
+對 Ø4.50 耳片的 FT5425BL 是對的，對 Ø3.80（M3）的 STS3215 是錯的。
+T8 報出加大的孔與舵盤螺栓干涉 <strong>45 mm³，三處</strong>。
+改成由 <code>SERVO.mount_hole_d</code> 推導。</p>
+<p><strong>(b) 螺栓圓與耳片樣式幾乎重疊。</strong>
+改成 M3 之後干涉降到 27 mm³ 但<strong>沒有消失</strong>——所以根因不只是直徑。
+算下去：STS3215 的耳片孔在半徑 <strong>11.74 mm、127.2°</strong>，
+舵盤螺栓在半徑 <strong>11.10 mm、135°</strong>——
+<strong>幾乎在同一個圓上，只差 7.8°</strong>。
+FT5425BL 的孔在 −36.25／+13.25，遠得多，所以從來不會撞。</p>
+<p>修法是把螺栓方陣轉 45°（0/90/180/270 而非 45/135/225/315），
+而且<strong>由耳片樣式決定要不要轉</strong>，不是全域改掉——
+決定這件事的是舵機的孔位，不是這個檔案。</p>
+<table>
+<tr><th style="width:22%">手臂</th><th class="num">緊固件</th><th>BOM</th></tr>
+<tr><td>FT5425BL</td><td class="num">14</td><td>M4×16 ×5、M4×10 ×1、M3×12 ×8</td></tr>
+<tr><td>STS3215</td><td class="num">10</td><td>M3×8 ×2、M3×10 ×4、M3×12 ×4</td></tr>
+<tr><td>DM-J4310</td><td class="num">26</td><td>M3×12 ×12、M3×10 ×4、M3×8 ×7、M3×6 ×3</td></tr>
+</table>
+<p><strong>誠實標註</strong>：這些數量比「4 顆致動器 × 4 孔 + 舵盤螺栓」的直覺值低，
+代表收集器把跨零件的同軸孔合併了。方向是保守的（少算不會漏掉干涉），
+但<strong>不代表完整</strong>——與 NEMA 17 那支手寫的 28 項相比，
+這三支的緊固件模型仍然比較粗。</p>
+</div>
+
 <h3>C 系列目前的狀態</h3>
 <table>
 <tr><th style="width:16%">階段</th><th>狀態</th></tr>
