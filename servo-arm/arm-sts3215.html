@@ -195,6 +195,60 @@ FT5425BL 那支的紀錄<strong>保留為被取代的設計</strong>——
 <p>全套 <strong>445/445</strong>。接下來是 B'5 韌體（半雙工序列匯流排協定）
 與四支手臂的對照報告。</p>
 
+<h3 id="stsmesh">B'6：連桿網格與慣性，以及它揭穿的一件事</h3>
+<p>這支手臂之前只有 CAD，沒有連桿網格與慣性張量，所以 T0 的兩項檢查一直顯示
+「這支手臂還沒產出網格」。那個跳過訊息讀起來像「不適用」，其實是「沒做」。</p>
+<p>補的方式不是複製 FT5425BL 的產生器。這支手臂本來就是
+<em>同一個設計模組換一顆舵機</em>——<code>arm_sts3215.py</code> 是把致動器注入
+<code>arm_ft5425bl.py</code>，而不是抄一份幾何程式碼。質量特性的產生器如果用抄的，
+等於把同一個錯誤往下搬一層，兩份實作會在任何一支手臂改動時分岔。
+所以產生器也改成可注入：同一張 <code>LINKS</code> 表、同一組
+<code>_gprops</code>／<code>_parallel_axis</code>、同一個從尺寸預算讀出的夾爪假設值，
+只換舵機質量與輸出路徑。</p>
+<table>
+<tr><th style="width:22%">連桿</th><th>STS3215（212 mm／55 g 舵機）</th><th>FT5425BL（190 mm／67.6 g 舵機）</th></tr>
+<tr><td>base_link</td><td>170.4 g</td><td>211.0 g</td></tr>
+<tr><td>turntable</td><td>193.7 g</td><td>184.2 g</td></tr>
+<tr><td>upper_arm</td><td>151.1 g</td><td>145.1 g</td></tr>
+<tr><td>forearm</td><td>182.4 g</td><td>180.6 g</td></tr>
+<tr><td><strong>合計</strong></td><td><strong>697.7 g</strong></td><td><strong>720.9 g</strong></td></tr>
+</table>
+<p>連桿更長卻更輕，不是同一支手臂的小擾動——舵機輕了 12.6 g、連桿長了 22 mm，
+對肩關節的慣量一個往下一個往上。</p>
+
+<div class="fail">
+<h4>失敗 #66：FT5425BL 的連桿慣性過期了十天，而 T0 一路回報 32/32</h4>
+<p>把產生器改成可注入之後，重跑 FT5425BL 應該得到<strong>逐位元組相同</strong>的輸出——
+畢竟只是換了取值來源。結果 <code>git diff</code> 顯示質量與慣性都變了，
+<code>upper_arm.stl</code> 甚至變大了 1200 位元組。</p>
+<p>不是重構壞掉。是磁碟上的產物本來就過期：</p>
+<pre><code>cad/arm_ft5425bl.py     最後修改 2026-08-11（#62 緊固件修正）
+urdf/meshes_ft5425bl/   最後產生 2026-08-01</code></pre>
+<p><strong>URDF 描述的是 #62 修正之前的幾何，整個 C 系列都是。</strong>
+upper_arm 差 0.178 mg——M4 鑽進 M3 孔位的那 45 mm³ 干涉、
+以及螺栓圓轉 45° 的修正，都沒有進到模擬裡。</p>
+<p>T0 在這段期間一直回報 32/32：網格 watertight、慣性張量對稱、正定、
+主慣性滿足三角不等式。<strong>每一項都通過，而且每一項都在驗證一個十天前的物件。</strong>
+那些檢查問的是「這個 JSON 是不是一個合法的剛體」，
+從來沒有問過「這個 JSON 是不是<em>現在這支</em>手臂」。</p>
+<p>修法是加一項會把答案重算出來的檢查：</p>
+<pre><code>fresh = {q["name"]: q for q in arm.link_gen()}   # 從現在的 cad/ 重算
+ok = worst_m &lt; 1e-12 and worst_i &lt; 1e-15         # 容差是 JSON 的往返精度，
+                                                 # 不是工程餘裕</code></pre>
+<p>容差刻意取得極緊：檔案存的是完整雙精度，所以「沒過期」的意思是<strong>逐位元相同</strong>，
+任何高於這個的差異都是真的幾何差異。並且照 #65 學到的規矩，
+這項檢查必須被證明會失敗——把 STS3215 的 upper_arm 質量改掉 0.178 mg
+（正好是真實過期造成的差），它抓到了：</p>
+<pre><code>FAIL 連桿慣性與現行 CAD 一致（非過期產物）
+     最大質量差 178.000 mg（upper_arm）</code></pre>
+<p>四支手臂全部接上這項檢查後，重建 FT5425BL 的網格、URDF 與 MJCF，
+全套由 538 項成長到 <strong>567 項全過、4 項跳過</strong>，
+而且四項跳過都是真的不適用，不再有任何一項是「還沒做」。</p>
+<p>這是這個專案裡反覆出現的同一個形狀第四次：#59 的 .pyc 快取、#61 的 0/0、
+#65 的固定設定點，現在是過期的產物。共同點不是檢查寫錯了，
+是<strong>檢查通過的對象不是它宣稱的對象</strong>。</p>
+</div>
+
 </main>
 </div>
 <script>
