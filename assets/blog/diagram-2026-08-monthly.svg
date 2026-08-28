@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" width="900" height="300" role="img"
+     aria-label="2026 年 8 月專案月報：十條線，以及其中三件「原本以為是程式的錯」">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#eef2f7"/>
+    </linearGradient>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="300" fill="url(#bg)"/>
+  <text x="34" y="42" font-family="'Helvetica Neue',Arial,sans-serif" font-size="21" font-weight="700" fill="#0f172a">
+    2026 · 08 專案月報
+  </text>
+  <text x="34" y="66" font-family="'Helvetica Neue',Arial,sans-serif" font-size="13.5" fill="#64748b">
+    十條線，以及三件「原本以為是程式的錯」
+  </text>
+
+  <!-- 十條線 -->
+  <g font-family="'Helvetica Neue',Arial,sans-serif" font-size="11.5" fill="#334155">
+    <rect x="34"  y="92" width="152" height="46" rx="7" fill="#fff" stroke="#cbd5e1"/>
+    <text x="46" y="112" font-weight="700" font-size="12" fill="#0f172a">機械手臂</text>
+    <text x="46" y="129">5 種致動器 · 567 驗證</text>
+
+    <rect x="198" y="92" width="152" height="46" rx="7" fill="#fff" stroke="#cbd5e1"/>
+    <text x="210" y="112" font-weight="700" font-size="12" fill="#0f172a">離網通訊</text>
+    <text x="210" y="129">硬體重做 · GPS 結案</text>
+
+    <rect x="362" y="92" width="152" height="46" rx="7" fill="#fff" stroke="#cbd5e1"/>
+    <text x="374" y="112" font-weight="700" font-size="12" fill="#0f172a">掌機改裝</text>
+    <text x="374" y="129">STM32 硬體逆向</text>
+
+    <rect x="526" y="92" width="152" height="46" rx="7" fill="#fff" stroke="#cbd5e1"/>
+    <text x="538" y="112" font-weight="700" font-size="12" fill="#0f172a">監控主機學會聽</text>
+    <text x="538" y="129">錄音 · 逐字稿 · 聲音事件</text>
+
+    <rect x="690" y="92" width="176" height="46" rx="7" fill="#fff" stroke="#cbd5e1"/>
+    <text x="702" y="112" font-weight="700" font-size="12" fill="#0f172a">口袋 AI 工作站</text>
+    <text x="702" y="129">斷電 63 秒自動回線</text>
+
+    <rect x="34"  y="148" width="152" height="46" rx="7" fill="#fff" stroke="#cbd5e1"/>
+    <text x="46" y="168" font-weight="700" font-size="12" fill="#0f172a">教科書互動平台</text>
+    <text x="46" y="185">24 節 · 89 模組</text>
+
+    <rect x="198" y="148" width="152" height="46" rx="7" fill="#fff" stroke="#cbd5e1"/>
+    <text x="210" y="168" font-weight="700" font-size="12" fill="#0f172a">節點站封存</text>
+    <text x="210" y="185">169 筆重新編號</text>
+
+    <rect x="362" y="148" width="152" height="46" rx="7" fill="#fff" stroke="#cbd5e1"/>
+    <text x="374" y="168" font-weight="700" font-size="12" fill="#0f172a">語音辨識打磨</text>
+    <text x="374" y="185">拼音約束校正</text>
+
+    <rect x="526" y="148" width="152" height="46" rx="7" fill="#fff" stroke="#cbd5e1"/>
+    <text x="538" y="168" font-weight="700" font-size="12" fill="#0f172a">教學講義專區</text>
+    <text x="538" y="185">16 節單檔 HTML</text>
+
+    <rect x="690" y="148" width="176" height="46" rx="7" fill="#fff" stroke="#cbd5e1"/>
+    <text x="702" y="168" font-weight="700" font-size="12" fill="#0f172a">維運修正</text>
+    <text x="702" y="185">警報去重 · 雨量分級</text>
+  </g>
+
+  <!-- 三件誤判 -->
+  <rect x="34" y="212" width="832" height="62" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="48" y="232" font-family="'Helvetica Neue',Arial,sans-serif" font-size="12.5"
+        font-weight="700" fill="#9a3412">三件「原本以為是程式的錯」</text>
+  <g font-family="'Helvetica Neue',Arial,sans-serif" font-size="11.5">
+    <text x="48"  y="256" fill="#7c2d12">座標永遠一樣</text>
+    <line x1="140" y1="252" x2="176" y2="252" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ar)"/>
+    <text x="184" y="256" fill="#166534" font-weight="700">模組故障</text>
+
+    <text x="310" y="256" fill="#7c2d12">序列埠 0 位元組</text>
+    <line x1="412" y1="252" x2="448" y2="252" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ar)"/>
+    <text x="456" y="256" fill="#166534" font-weight="700">兩條線接反</text>
+
+    <text x="590" y="256" fill="#7c2d12">「757 位在線」</text>
+    <line x1="682" y1="252" x2="718" y2="252" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ar)"/>
+    <text x="726" y="256" fill="#166534" font-weight="700">只進不出的假指標</text>
+  </g>
+</svg>

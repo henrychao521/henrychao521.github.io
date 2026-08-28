@@ -296,6 +296,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!Array.isArray(posts) || posts.length === 0) { sec.style.display = 'none'; return; }
     // 精選展示順序（旗艦作品領頭）；不在清單的新文章自動依日期排在後面
     const FEATURED_ORDER = [
+      '2026-08-31-monthly-report',
+      '2026-08-31-servo-arm-five-actuators',
+      '2026-08-31-meshtastic-hardware-rebuild',
+      '2026-08-31-gamewatch-esp32-reverse',
+      '2026-08-31-pibook-audio-pipeline',
+      '2026-08-31-pi5-pocket-workstation',
+      '2026-08-31-livingtech-b-platform',
+      '2026-08-31-st-node-analysis',
+      '2026-08-31-ambient-notes-part2',
       '2026-07-23-meshtastic-family-mesh',
       '2026-07-14-pcb-grader-solder-ai',
       '2026-07-08-lattice-hinge-designer',
@@ -313,6 +322,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     posts.sort((a, b) => (rank(a.slug) - rank(b.slug)) || (new Date(b.date) - new Date(a.date)));
     // 各篇示意圖：點進去前先看到「大概在做什麼」的流程／架構圖
     const DIAGRAM = {
+      '2026-08-31-monthly-report':                '/assets/blog/diagram-2026-08-monthly.svg',
+      '2026-08-31-servo-arm-five-actuators':       '/assets/blog/diagram-servo-arm.svg',
+      '2026-08-31-meshtastic-hardware-rebuild':    '/assets/blog/diagram-mesh-rebuild.svg',
+      '2026-08-31-gamewatch-esp32-reverse':        '/assets/blog/diagram-gw-esp32.svg',
+      '2026-08-31-pibook-audio-pipeline':          '/assets/blog/diagram-pibook-audio.svg',
+      '2026-08-31-pi5-pocket-workstation':         '/assets/blog/diagram-pi5-pocket.svg',
+      '2026-08-31-livingtech-b-platform':          '/assets/blog/diagram-livingtech-b.svg',
+      '2026-08-31-st-node-analysis':               '/assets/blog/diagram-st-node.svg',
+      '2026-08-31-ambient-notes-part2':            '/assets/blog/diagram-ambient-notes-2.svg',
       '2026-07-23-meshtastic-family-mesh':        '/assets/blog/diagram-meshtastic-mesh.svg',
       '2026-07-14-pcb-grader-solder-ai':          '/assets/blog/diagram-pcb-grader.svg',
       '2026-07-08-lattice-hinge-designer':        '/assets/blog/diagram-lattice-hinge.svg',
