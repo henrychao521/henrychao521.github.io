@@ -2,7 +2,7 @@
 title: "[實作紀錄] 口袋裡的 AI 工作站：拔掉電源 63 秒後，它自己爬回線上"
 date: 2026-08-31T13:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-pi5-pocket.svg"
+cover: "/assets/blog/cover-pi5-pocket.jpg"
 category: "專案分享"
 tags: [樹莓派, Tailscale, 遠端控制, AI協作, 自動化]
 level: "⭐⭐ 中階"

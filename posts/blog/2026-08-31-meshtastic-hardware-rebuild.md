@@ -2,7 +2,7 @@
 title: "[除錯紀錄] 我改了兩星期程式，最後發現是模組壞了：一顆 GPS 的懸案與兩條接反的線"
 date: 2026-08-31T10:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-mesh-rebuild.svg"
+cover: "/assets/blog/cover-mesh-rebuild.jpg"
 category: "專案分享"
 tags: [Meshtastic, LoRa, GPS, 序列埠, 硬體除錯, 離線通訊]
 level: "⭐⭐ 中階"

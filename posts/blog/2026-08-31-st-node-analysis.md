@@ -2,7 +2,7 @@
 title: "[資料處理] 藏在網頁原始碼裡的資料庫：兩個學年度的學習節點，169 筆被悄悄重新編號"
 date: 2026-08-31T15:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-st-node.svg"
+cover: "/assets/blog/cover-st-node.jpg"
 category: "專案分享"
 tags: [資料處理, 開放資料, 課綱, 資料識讀, Excel]
 level: "⭐⭐ 中階"

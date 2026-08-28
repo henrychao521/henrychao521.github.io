@@ -2,7 +2,7 @@
 title: "[完整教學] 把一整本教科書變成會自動回報進度的互動平台：24 節、89 個模組、366 題"
 date: 2026-08-31T14:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-livingtech-b.svg"
+cover: "/assets/blog/cover-livingtech-b.jpg"
 category: "專案分享"
 tags: [互動教材, 教學平台, 評量系統, 生活科技, 題庫, AI協作]
 level: "⭐⭐ 中階"

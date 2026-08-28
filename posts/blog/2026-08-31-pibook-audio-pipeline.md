@@ -2,7 +2,7 @@
 title: "[完整教學] 讓監控主機學會「聽」：一個 83% 的判定其實來自別的房間"
 date: 2026-08-31T12:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-pibook-audio.svg"
+cover: "/assets/blog/cover-pibook-audio.jpg"
 category: "專案分享"
 tags: [樹莓派, 邊緣運算, 語音辨識, 聲音事件, AI協作, 資料識讀]
 level: "⭐⭐ 中階"

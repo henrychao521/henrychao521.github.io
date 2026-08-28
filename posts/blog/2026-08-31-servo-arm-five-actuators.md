@@ -2,7 +2,7 @@
 title: "[完整教學] 同一支機械手臂，換五種馬達重做五次：從「它不知道自己在哪」到力矩回授"
 date: 2026-08-31T09:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-servo-arm.svg"
+cover: "/assets/blog/cover-servo-arm.jpg"
 category: "專案分享"
 tags: [機械手臂, 逆向運動學, 伺服馬達, MuJoCo, 驗證方法, AI協作, 專題製作]
 level: "⭐⭐⭐ 進階"

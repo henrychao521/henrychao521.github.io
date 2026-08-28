@@ -2,7 +2,7 @@
 title: "[硬體逆向] 把任天堂 Game & Watch 改成外接螢幕：沒有接腳圖，怎麼把一顆晶片的腳位問出來"
 date: 2026-08-31T11:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-gw-esp32.svg"
+cover: "/assets/blog/cover-gw-esp32.jpg"
 category: "專案分享"
 tags: [硬體逆向, ESP32, STM32, 電子電路, 韌體, 開箱分享]
 level: "⭐⭐⭐ 進階"

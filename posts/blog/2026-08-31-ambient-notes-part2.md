@@ -2,7 +2,7 @@
 title: "[AI實戰] 語音逐字稿 Part 2：我拿語言模型潤稿，結果改壞的比改對的多"
 date: 2026-08-31T16:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-ambient-notes-2.svg"
+cover: "/assets/blog/cover-ambient-notes-2.jpg"
 category: "專案分享"
 tags: [語音辨識, 本地AI, 逐字稿, 台灣用語, 驗證方法, AI協作]
 level: "⭐⭐⭐ 進階"

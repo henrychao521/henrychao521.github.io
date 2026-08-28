@@ -2,7 +2,7 @@
 title: "[每月專案] 八月做了十件事，其中三件是「原本以為是程式的錯」"
 date: 2026-08-31T09:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-2026-08-monthly.svg"
+cover: "/assets/blog/cover-2026-08-monthly.jpg"
 category: "專案分享"
 tags: [機械手臂, 逆向運動學, Meshtastic, 硬體逆向, 語音辨識, 教學平台, 樹莓派, AI協作, 生活科技]
 level: "⭐⭐ 中階"
