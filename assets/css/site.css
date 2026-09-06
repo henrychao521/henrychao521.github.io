@@ -102,35 +102,17 @@ button { font: inherit; cursor: pointer; }
 .w-section-head p { margin: 0; color: var(--w-muted); font-size: 15px; }
 .w-section-head .more { margin-left: auto; font-weight: 700; text-decoration: underline; text-underline-offset: 6px; font-size: 15px; }
 
-/* 照片拼貼（12 欄不等寬） */
-.w-collage { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 118px; gap: 18px; margin-top: 26px; }
+/* 照片拼貼：統一尺寸（3 欄、4:3 框），2026-09-07 依使用者要求由不等寬改為等寬 */
+.w-collage { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-top: 26px; }
 .w-collage a { display: flex; flex-direction: column; gap: 10px; text-decoration: none; min-width: 0; }
-.w-collage img { width: 100%; flex: 1; min-height: 0; object-fit: cover; border: 3px solid var(--w-rule); background: #ddd; }
+.w-collage img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border: 3px solid var(--w-rule); background: #ddd; }
 .w-collage .cap { font-size: 14px; line-height: 1.5; color: var(--w-muted); }
 .w-collage .cap b { color: var(--w-ink); }
-.w-collage .text-tile { border: 3px solid var(--w-rule); padding: 18px 20px; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; background: #fff8e8; }
+.w-collage .text-tile { border: 3px solid var(--w-rule); aspect-ratio: 4 / 3; padding: 18px 20px; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; background: #fff8e8; }
 .w-collage .text-tile b { font-size: 20px; line-height: 1.25; }
 .w-collage .text-tile span { font-size: 14px; color: var(--w-muted); }
-.c-5x4 { grid-column: span 5; grid-row: span 4; }
-.c-4x4 { grid-column: span 4; grid-row: span 4; }
-.c-4x3 { grid-column: span 4; grid-row: span 3; }
-.c-3x3 { grid-column: span 3; grid-row: span 3; }
-.c-3x2 { grid-column: span 3; grid-row: span 2; }
-.c-4x2 { grid-column: span 4; grid-row: span 2; }
-.c-6x3 { grid-column: span 6; grid-row: span 3; }
-.c-6x4 { grid-column: span 6; grid-row: span 4; }
-.c-8x4 { grid-column: span 8; grid-row: span 4; }
-@media (max-width: 900px) {
-  .w-collage { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: 96px; }
-  .c-5x4, .c-6x4, .c-8x4 { grid-column: span 6; grid-row: span 4; }
-  .c-4x4, .c-4x3, .c-6x3 { grid-column: span 3; grid-row: span 3; }
-  .c-3x3, .c-3x2, .c-4x2 { grid-column: span 3; grid-row: span 3; }
-}
-@media (max-width: 560px) {
-  .w-collage { grid-template-columns: 1fr; grid-auto-rows: auto; }
-  .w-collage > * { grid-column: auto !important; grid-row: auto !important; }
-  .w-collage img { height: 220px; flex: none; }
-}
+@media (max-width: 900px) { .w-collage { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .w-collage { grid-template-columns: 1fr; } }
 
 /* 文章列：一列一篇，2px 線分隔 */
 .w-rows { margin-top: 18px; border-top: 2px solid var(--w-rule); }
@@ -163,7 +145,7 @@ button { font: inherit; cursor: pointer; }
 @media (max-width: 640px) { .w-links a { grid-template-columns: 1fr; gap: 2px; } }
 
 /* 作品拼貼（線上作品的操作畫面截圖） */
-.w-shots { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px; margin-top: 26px; }
+.w-shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-top: 26px; }
 .w-shots a { text-decoration: none; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
 .w-shots img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border: 3px solid var(--w-rule); background: #ddd; }
 .w-shots .text-tile { border: 3px solid var(--w-rule); background: #fff8e8; aspect-ratio: 16 / 10; display: flex; flex-direction: column; justify-content: flex-end; padding: 18px; }
@@ -171,9 +153,10 @@ button { font: inherit; cursor: pointer; }
 .w-shots .cap { font-size: 14px; line-height: 1.5; color: var(--w-muted); }
 .w-shots .cap b { color: var(--w-ink); display: block; font-size: 16px; }
 .w-shots .cap .kind { font-family: var(--mono); font-size: 12px; color: var(--w-muted); }
-.s-6 { grid-column: span 6; } .s-4 { grid-column: span 4; } .s-3 { grid-column: span 3; } .s-8 { grid-column: span 8; } .s-12 { grid-column: span 12; }
-@media (max-width: 900px) { .s-6, .s-8 { grid-column: span 12; } .s-4, .s-3 { grid-column: span 6; } }
-@media (max-width: 560px) { .w-shots > * { grid-column: span 12 !important; } }
+.w-shots > * { grid-column: span 1; }
+.w-shots .w-loading, .w-shots .w-error { grid-column: 1 / -1; }
+@media (max-width: 900px) { .w-shots { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .w-shots { grid-template-columns: 1fr; } }
 
 .w-loading, .w-error { padding: 24px 0; color: var(--w-muted); font-family: var(--mono); font-size: 13px; }
 .w-error { color: #9f1239; }
