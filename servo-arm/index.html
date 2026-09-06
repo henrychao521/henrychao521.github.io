@@ -5,164 +5,595 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SG90-Arm · 入口</title>
 <style>
-:root{--bg:#0d1117;--panel:#151b23;--panel2:#1c232d;--line:#2a323d;--fg:#e6edf3;
-  --dim:#8b98a5;--accent:#4f9cf9;--fk:#f0883e;--ok:#3fb950;--bad:#f85149;--warn:#d29922;
-  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);min-height:100vh;
-  font:15px/1.7 -apple-system,"PingFang TC","Noto Sans TC",Helvetica,sans-serif}
-.wrap{max-width:1000px;margin:0 auto;padding:38px 24px 70px}
-h1{font-size:26px;margin:0 0 4px;letter-spacing:.3px}
-.sub{color:var(--dim);font-size:14px;margin:0 0 26px}
-.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:11px;margin:0 0 30px}
-.kpi div{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:11px 13px}
-.kpi b{display:block;font-size:19px;font-family:var(--mono);color:var(--accent);line-height:1.35}
-.kpi span{font-size:11.5px;color:var(--dim)}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:16px;margin-bottom:32px}
-a.card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;
-  padding:20px 22px;text-decoration:none;color:inherit;transition:.13s;position:relative;overflow:hidden}
-a.card:hover{border-color:#3d4855;background:var(--panel2);transform:translateY(-2px)}
-a.card .ic{font-size:24px;line-height:1;margin-bottom:11px;display:block}
-a.card h2{font-size:17px;margin:0 0 6px;color:var(--fg)}
-a.card p{font-size:13px;color:var(--dim);margin:0 0 10px;line-height:1.6}
-a.card .go{font-size:12px;font-family:var(--mono);color:var(--accent)}
-a.card .bar{position:absolute;left:0;top:0;bottom:0;width:3px}
-.b1{background:var(--accent)} .b2{background:var(--ok)} .b3{background:var(--fk)}
-h3{font-size:15px;margin:30px 0 9px;padding-bottom:7px;border-bottom:1px solid var(--line)}
-table{border-collapse:collapse;width:100%;font-size:13px}
-th,td{border:1px solid var(--line);padding:7px 11px;text-align:left;vertical-align:top}
-th{background:var(--panel2);width:150px;color:#c9d5e1;font-weight:600}
-code{font-family:var(--mono);font-size:.88em;background:var(--panel2);padding:1px 5px;
-  border-radius:4px;color:#a5d6ff}
-pre{background:#0a0e14;border:1px solid var(--line);border-radius:8px;padding:12px 14px;
-  overflow-x:auto;font-family:var(--mono);font-size:12px;margin:9px 0}
-.pill{display:inline-block;font-size:11px;font-family:var(--mono);padding:2px 9px;
-  border-radius:20px;vertical-align:middle}
-.pill.on{background:rgba(63,185,80,.15);color:var(--ok);border:1px solid rgba(63,185,80,.35)}
-.pill.off{background:rgba(248,81,73,.15);color:var(--bad);border:1px solid rgba(248,81,73,.35)}
-.pill.wait{background:rgba(139,152,165,.14);color:var(--dim);border:1px solid var(--line)}
-.note{font-size:12.5px;color:var(--dim);margin:9px 0}
-.copy{cursor:pointer;border:1px solid var(--line);background:var(--panel2);color:var(--fg);
-  font:inherit;font-size:11.5px;padding:2px 9px;border-radius:5px;margin-left:7px}
-.copy:hover{border-color:#3d4855}
-footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);
-  font-size:12px;color:var(--dim)}
+:root {
+  --line: #17171a;
+  --bg: #f6f4ee;
+  --red: #e8412c;
+  --mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: "Noto Sans TC", -apple-system, "BlinkMacSystemFont", "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0L0 0 0 40' fill='none' stroke='%2317171a' stroke-width='0.5' stroke-opacity='0.15'/%3E%3C/svg%3E");
+  color: var(--line);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  padding: 20px;
+  min-height: 100vh;
+}
+.frame {
+  max-width: 1100px;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+.sheet-header {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  font-family: var(--mono);
+  font-size: 13px;
+  background: #fff;
+  border-bottom: 2px solid var(--line);
+}
+.sheet-header > div {
+  padding: 12px 16px;
+  border-right: 1px solid var(--line);
+  font-weight: bold;
+}
+.sheet-header > div:last-child {
+  border-right: none;
+}
+.border-top { border-top: 1px solid var(--line); }
+.border-bottom { border-bottom: 1px solid var(--line); }
+.border-right { border-right: 1px solid var(--line); }
+.mt-auto { margin-top: auto; }
+
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+}
+.hero-info {
+  flex: 1 1 360px;
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hero-visual {
+  flex: 1 1 400px;
+  position: relative;
+  min-height: 320px;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border-left: 1px solid var(--line);
+}
+.hero-visual img {
+  max-width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.dim-mark {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--line);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+}
+h1 {
+  font-size: 42px;
+  font-weight: 700;
+  margin: 0 0 16px;
+  line-height: 1.1;
+}
+.subtitle {
+  font-size: 16px;
+  margin: 0 0 24px;
+}
+.pill {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--line);
+  font-weight: bold;
+}
+.pill.off {
+  background: var(--line);
+  color: #fff;
+}
+.pill.wait {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.section-title {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: bold;
+  padding: 12px 16px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.table-wrap {
+  width: 100%;
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+th, td {
+  border: 1px solid var(--line);
+  padding: 16px 20px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  font-family: var(--mono);
+  font-weight: bold;
+  background: var(--bg);
+  border-top: none;
+}
+td {
+  line-height: 1.6;
+}
+table tr td:first-child, table tr th:first-child {
+  border-left: none;
+  font-family: var(--mono);
+  width: 70px;
+  text-align: center;
+  font-weight: bold;
+}
+table tr td:last-child, table tr th:last-child {
+  border-right: none;
+  width: 140px;
+  vertical-align: middle;
+}
+table td a {
+  color: var(--line);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  font-weight: bold;
+}
+table td a:hover {
+  color: var(--red);
+  text-decoration-color: var(--red);
+}
+
+.action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  font-family: var(--mono);
+  font-size: 13px;
+  text-decoration: none;
+  background: #fff;
+  color: var(--line) !important;
+  border: 1px solid var(--line);
+  padding: 0 16px;
+  transition: all 0.2s;
+  width: 100%;
+  font-weight: bold;
+}
+.action-link:hover {
+  background: var(--red);
+  color: #fff !important;
+  border-color: var(--red);
+  text-decoration: none;
+}
+
+.layout-row {
+  display: flex;
+  flex-wrap: wrap;
+  background: #fff;
+}
+.col-half {
+  flex: 1 1 360px;
+  display: flex;
+  flex-direction: column;
+}
+.p-content {
+  padding: 24px;
+}
+.p-content h4 {
+  font-family: var(--mono);
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+.p-content p {
+  margin: 0 0 20px;
+}
+pre {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border-radius: 0;
+}
+code {
+  font-family: var(--mono);
+  background: var(--bg);
+  padding: 2px 4px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+}
+pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+.copy {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-top: none;
+  background: var(--bg);
+  color: var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  transition: all 0.2s;
+  min-height: 44px;
+}
+.copy:hover {
+  background: var(--line);
+  color: #fff;
+}
+
+.kpi-table {
+  display: flex;
+  flex-direction: column;
+}
+.kpi-row {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+}
+.kpi-row:last-child {
+  border-bottom: none;
+}
+.kpi-label {
+  flex: 1;
+  padding: 12px 16px;
+  border-right: 1px solid var(--line);
+  font-size: 14px;
+  font-weight: bold;
+}
+.kpi-val {
+  flex: 0 0 140px;
+  padding: 12px 16px;
+  font-family: var(--mono);
+  font-weight: bold;
+  text-align: right;
+  color: var(--red);
+}
+
+.static-notice {
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+.notice-head {
+  font-family: var(--mono);
+  font-weight: bold;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--red);
+  background: #fff;
+}
+.notice-body {
+  padding: 24px;
+  font-size: 14px;
+  background: #fff;
+}
+.notice-body p {
+  margin: 0 0 16px;
+}
+.notice-body p:last-child {
+  margin: 0;
+}
+.vid-wrap {
+  margin-top: 20px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  padding: 12px;
+}
+video {
+  width: 100%;
+  display: block;
+  border: 1px solid var(--line);
+}
+.caption {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding-top: 12px;
+  color: var(--line);
+  text-align: center;
+}
+
+.sheet-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  font-family: var(--mono);
+  font-size: 13px;
+  background: #fff;
+}
+.sheet-footer > div {
+  padding: 12px 16px;
+  border-right: 1px solid var(--line);
+}
+.sheet-footer > div:last-child {
+  border-right: none;
+}
+
+@media (max-width: 800px) {
+  .hero-visual {
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+  .col-half.border-right {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 640px) {
+  body { padding: 10px; }
+  .sheet-header, .sheet-footer { grid-template-columns: 1fr; }
+  .sheet-header > div, .sheet-footer > div {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .sheet-header > div:last-child, .sheet-footer > div:last-child {
+    border-bottom: none;
+  }
+  
+  .table-wrap { border-bottom: none; }
+  table, thead, tbody, th, td, tr { display: block; }
+  thead { display: none; }
+  table tr {
+    border-bottom: 1px solid var(--line);
+    border-top: none;
+    margin-bottom: 0;
+  }
+  table tr:first-child { border-top: none; }
+  table tr:last-child { border-bottom: none; }
+  th, td {
+    border: none;
+    padding: 12px 16px;
+  }
+  table td { border-bottom: 1px dashed rgba(23,23,26,0.2); }
+  table td:last-child { border-bottom: none; padding-top: 8px; }
+  
+  table tr td:first-child {
+    width: auto;
+    text-align: left;
+    padding-bottom: 8px;
+  }
+  table tr td:first-child::before { content: "NO. "; }
+  
+  .tb-arms td:nth-of-type(2)::before { content: "致動器: "; font-family: var(--mono); font-size: 12px; display: block; color: #555; margin-bottom: 2px; }
+  .tb-arms td:nth-of-type(3)::before { content: "規格: "; font-family: var(--mono); font-size: 12px; display: block; color: #555; margin-bottom: 2px; }
+  .tb-arms td:nth-of-type(4)::before { content: "說明: "; font-family: var(--mono); font-size: 12px; display: block; color: #555; margin-bottom: 2px; }
+  
+  .tb-tools td:nth-of-type(2)::before { content: "模組: "; font-family: var(--mono); font-size: 12px; display: block; color: #555; margin-bottom: 2px; }
+  .tb-tools td:nth-of-type(3)::before { content: "說明: "; font-family: var(--mono); font-size: 12px; display: block; color: #555; margin-bottom: 2px; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="frame">
+  
+  <header class="sheet-header">
+    <div>DWG BY: 趙珩宇</div>
+    <div>ORG: 建國中學生活科技</div>
+    <div>SHEET: 01 / 01</div>
+    <div><a href="#nav" style="color:var(--line);text-decoration:none;">SCALE: NTS</a></div>
+  </header>
 
-<h1>SG90-Arm</h1>
-<p class="sub">5 軸伺服機械手臂 · text-to-CAD → URDF → 物理模擬 → Arduino 韌體
-&nbsp;<span id="backend" class="pill wait">後端檢查中…</span></p>
+  <div class="hero">
+    <div class="hero-info">
+      <h1>SG90-Arm</h1>
+      <p class="subtitle">5 軸伺服機械手臂<br>text-to-CAD → URDF → 物理模擬 → Arduino 韌體</p>
+      <div class="status-wrap">
+        <span id="backend" class="pill wait">後端檢查中…</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="dim-mark" style="top:24px; left:24px;">
+        <svg width="40" height="10"><path d="M0 5 L40 5 M0 0 L0 10 M40 0 L40 10" stroke="#17171a" stroke-width="1" fill="none"/></svg>
+        <span>202 mm</span>
+      </div>
+      <div class="dim-mark" style="bottom:24px; right:24px; flex-direction:row-reverse;">
+        <svg width="40" height="10"><path d="M0 5 L40 5 M0 0 L0 10 M40 0 L40 10" stroke="#17171a" stroke-width="1" fill="none"/></svg>
+        <span>5 AXIS</span>
+      </div>
+      <img src="renders/dwg_threeview.png" alt="SG90-Arm 三視圖">
+    </div>
+  </div>
 
-<div class="kpi">
-  <div><b>8</b><span>3D 列印零件</span></div>
-  <div><b>5</b><span>SG90 伺服馬達</span></div>
-  <div><b>203 g</b><span>整機質量</span></div>
-  <div><b>44.7%</b><span>可達範圍最壞姿態堵轉佔用</span></div>
-  <div><b>567</b><span>驗證檢查（全過）</span></div>
-  <div><b>65</b><span>記錄在案的失敗</span></div>
-</div>
+  <div id="nav" class="section-title">分區 A：實體機構 (VARIANTS)</div>
+  <div class="table-wrap">
+    <table class="tb-arms">
+      <thead>
+        <tr>
+          <th>NO.</th>
+          <th>致動器</th>
+          <th>規格</th>
+          <th>說明</th>
+          <th>存取</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>01</td>
+          <td><a href="arm-sg90.html">SG90-Arm</a></td>
+          <td>202 mm / 酬載 4 g</td>
+          <td>第一支：5 軸微型伺服。幾何量測、伺服訊號鏈模型、扭矩包絡、v2 機構重繪與製作前調查。</td>
+          <td><a href="arm-sg90.html" class="action-link">VIEW ↗</a></td>
+        </tr>
+        <tr>
+          <td>02</td>
+          <td><a href="arm-nema17.html">NEMA17-Arm</a></td>
+          <td>255 mm / GT2 3:1</td>
+          <td>第二支：42 型步進、遠端傳動。失步是永久的——A1–A5 全流程與那四個「會跑、會印數字」的錯模型。</td>
+          <td><a href="arm-nema17.html" class="action-link">VIEW ↗</a></td>
+        </tr>
+        <tr>
+          <td>03</td>
+          <td><a href="arm-ft5425bl.html">FT5425BL-Arm</a></td>
+          <td>190 mm / 酬載 100 g</td>
+          <td>第三支：標準舵機、直接驅動。伸距由連續額定而非堵轉決定。</td>
+          <td><a href="arm-ft5425bl.html" class="action-link">VIEW ↗</a></td>
+        </tr>
+        <tr>
+          <td>04</td>
+          <td><a href="arm-sts3215.html">STS3215-Arm</a></td>
+          <td>212 mm / 酬載 100 g</td>
+          <td>第四支：匯流排舵機、有回授。四支裡唯一報得出真實位置的——閉環驗證從這裡開始。</td>
+          <td><a href="arm-sts3215.html" class="action-link">VIEW ↗</a></td>
+        </tr>
+        <tr>
+          <td>05</td>
+          <td><a href="arm-dm4310.html">DM-J4310-Arm</a></td>
+          <td>173 mm / 酬載 500 g</td>
+          <td>第五支：準直驅、力矩回授。CAN 協定層完成；CAD 因法蘭安裝方式不同而另需一套結構。</td>
+          <td><a href="arm-dm4310.html" class="action-link">VIEW ↗</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-<div class="cards">
-  <a class="card" href="playground.html"><span class="bar b1"></span>
-    <span class="ic">⌨️</span>
-    <h2>Arduino 沙盒</h2>
-    <p>寫 <code>servo.write()</code> 控制手臂。邊打字邊看 3D 運動學預覽，
-       一鍵送去 MuJoCo 跑真實物理，可匯出 <code>.ino</code> 燒錄。</p>
-    <span class="go">開啟 →</span></a>
+  <div class="section-title">分區 B：工具與報告 (MODULES)</div>
+  <div class="table-wrap">
+    <table class="tb-tools">
+      <thead>
+        <tr>
+          <th>REF.</th>
+          <th>模組</th>
+          <th>說明</th>
+          <th>存取</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>M1</td>
+          <td><a href="playground.html">Arduino 沙盒</a></td>
+          <td>寫 <code>servo.write()</code> 控制手臂。邊打字邊看 3D 運動學預覽，一鍵送去 MuJoCo 跑真實物理，可匯出 <code>.ino</code> 燒錄。</td>
+          <td><a href="playground.html" class="action-link">EXEC ↗</a></td>
+        </tr>
+        <tr>
+          <td>M2</td>
+          <td><a href="compare.html">正向 vs 逆向運動學</a></td>
+          <td>同一支手臂、同一組物理、同一個任務，兩種思考方式並排：左寫關節角度，右寫末端座標，疊在同一個視圖比軌跡。</td>
+          <td><a href="compare.html" class="action-link">EXEC ↗</a></td>
+        </tr>
+        <tr>
+          <td>M3</td>
+          <td><a href="report.html#vv">驗證系統</a></td>
+          <td>35 層測試（幾何／解析解／不變量／蛻變／差異／收斂／性質／回歸／可組裝／可列印／網頁／靜態發布）共 567 項，外加變異測試驗證這套測試本身有效。</td>
+          <td><a href="report.html#vv" class="action-link">READ ↗</a></td>
+        </tr>
+        <tr>
+          <td>M4</td>
+          <td><a href="feasibility.html">可行性報告</a></td>
+          <td>外部方案調查與待確認決策：步進發步率、舵機軌跡規劃、扭矩資料來源、以及要不要換成有回授的匯流排舵機。</td>
+          <td><a href="feasibility.html" class="action-link">READ ↗</a></td>
+        </tr>
+        <tr>
+          <td>M5</td>
+          <td><a href="report.html">專案記錄頁</a></td>
+          <td>完整過程：SG90 幾何量測、手臂設計、模擬環境調查、扭矩分析、模擬影片，以及 65 項失敗紀錄與已知限制。</td>
+          <td><a href="report.html" class="action-link">READ ↗</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-  <a class="card" href="compare.html"><span class="bar b3"></span>
-    <span class="ic">⇄</span>
-    <h2>正向 vs 逆向運動學</h2>
-    <p>同一支手臂、同一組物理、同一個任務，兩種思考方式並排：
-       左寫關節角度，右寫末端座標，疊在同一個視圖比軌跡。</p>
-    <span class="go">開啟 →</span></a>
-
-  <a class="card" href="report.html#vv"><span class="bar b2" style="background:#d29922"></span>
-    <span class="ic">🔬</span>
-    <h2>驗證系統</h2>
-    <p>35 層測試（幾何／解析解／不變量／蛻變／差異／收斂／性質／回歸／可組裝／可列印／網頁／靜態發布）共 567 項，
-       外加變異測試驗證這套測試本身有效。</p>
-    <span class="go">看報告 →</span></a>
-  <a class="card" href="feasibility.html"><span class="bar b2" style="background:#4f9cf9"></span>
-    <h3>可行性報告</h3>
-    <p>外部方案調查與待確認決策：步進發步率、舵機軌跡規劃、
-       扭矩資料來源、以及要不要換成有回授的匯流排舵機。</p>
-  </a>
-  <a class="card" href="arm-sg90.html"><span class="bar b1"></span>
-    <h3>SG90-Arm</h3>
-    <p>第一支：5 軸微型伺服、202 mm、酬載 4 g。幾何量測、伺服訊號鏈模型、
-       扭矩包絡、v2 機構重繪與製作前調查。</p>
-  </a>
-  <a class="card" href="arm-nema17.html"><span class="bar b2"></span>
-    <h3>NEMA17-Arm</h3>
-    <p>第二支：42 型步進、遠端 GT2 3:1、255 mm。失步是永久的——
-       A1–A5 全流程與那四個「會跑、會印數字」的錯模型。</p>
-  </a>
-  <a class="card" href="arm-ft5425bl.html"><span class="bar b3"></span>
-    <h3>FT5425BL-Arm</h3>
-    <p>第三支：標準舵機、直接驅動、190 mm、酬載 100 g。
-       伸距由連續額定而非堵轉決定。</p>
-  </a>
-  <a class="card" href="arm-sts3215.html"><span class="bar b2" style="background:#3fb950"></span>
-    <h3>STS3215-Arm</h3>
-    <p>第四支：匯流排舵機、<strong>有回授</strong>、212 mm、酬載 100 g。
-       四支裡唯一報得出真實位置的——閉環驗證從這裡開始。</p>
-  </a>
-  <a class="card" href="arm-dm4310.html"><span class="bar b3" style="background:#a371f7"></span>
-    <h3>DM-J4310-Arm</h3>
-    <p>第五支：準直驅、<strong>力矩回授</strong>、173 mm、酬載 500 g。
-       CAN 協定層完成；CAD 因法蘭安裝方式不同而另需一套結構。</p>
-  </a>
-
-  <a class="card" href="report.html"><span class="bar b2"></span>
-    <span class="ic">📓</span>
-    <h2>專案記錄頁</h2>
-    <p>完整過程：SG90 幾何量測、手臂設計、模擬環境調查、扭矩分析、
-       模擬影片，以及 65 項失敗紀錄與已知限制。</p>
-    <span class="go">開啟 →</span></a>
-</div>
-
-
-<h3>手機 / 平板上的操作</h3>
-<p class="note">兩個互動頁在窄螢幕會自動改成上下堆疊（3D 視圖在上、編輯器在下）。
-3D 視圖單指拖曳可旋轉、雙指縮放。程式碼編輯在手機上可用但不好打字，
-建議手機看模擬、電腦寫程式。</p>
-
-<h3>啟動與停止</h3>
-<pre><code># 啟動（前景）
+  <div class="layout-row">
+    <div class="col-half border-right">
+      <div class="section-title border-bottom">分區 C：操作指南 (INSTRUCTIONS)</div>
+      <div class="p-content">
+        <h4>手機 / 平板上的操作</h4>
+        <p>兩個互動頁在窄螢幕會自動改成上下堆疊（3D 視圖在上、編輯器在下）。3D 視圖單指拖曳可旋轉、雙指縮放。程式碼編輯在手機上可用但不好打字，建議手機看模擬、電腦寫程式。</p>
+        
+        <h4>啟動與停止</h4>
+        <div style="position:relative">
+          <pre><code id="code1"># 啟動（前景）
 cd ~/3d/servo-arm/sim &amp;&amp; ../.venv/bin/python serve_playground.py
 
 # 只綁本機，不對 Tailscale 開放
 ../.venv/bin/python serve_playground.py --no-tailscale
 
 # 遠端再加一層密碼
-../.venv/bin/python serve_playground.py --auth
-</code></pre>
+../.venv/bin/python serve_playground.py --auth</code></pre>
+          <button class="copy" data-t="code1">複製程式碼</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-half">
+      <div class="section-title border-bottom">標題欄：專案規格 (TITLE BLOCK)</div>
+      <div class="kpi-table">
+        <div class="kpi-row"><div class="kpi-label">3D 列印零件</div><div class="kpi-val">8</div></div>
+        <div class="kpi-row"><div class="kpi-label">伺服馬達 (SG90)</div><div class="kpi-val">5</div></div>
+        <div class="kpi-row"><div class="kpi-label">整機重量</div><div class="kpi-val">203 g</div></div>
+        <div class="kpi-row"><div class="kpi-label">最壞姿態堵轉佔用</div><div class="kpi-val">44.7%</div></div>
+        <div class="kpi-row"><div class="kpi-label">驗證檢查 (全過)</div><div class="kpi-val">567</div></div>
+        <div class="kpi-row"><div class="kpi-label">記錄在案的失敗</div><div class="kpi-val">65</div></div>
+      </div>
 
-
-<div style="max-width:900px;margin:18px auto;padding:14px 16px;border:1px solid #30363d;
-     border-radius:8px;background:#161b22;color:#c9d1d9;font-size:13px;line-height:1.7">
-  <b style="color:#d29922">這是靜態發布版</b>
-  可用：Arduino 程式碼編譯、時間軸、3D 運動學預覽、匯出 .ino、以及完整的專案記錄。<br>
-  需要本機伺服器：「送去 MuJoCo 跑物理」——真實物理是在本機跑 MuJoCo，
-  沒有辦法放在靜態主機上。下方影片是本機實跑錄下來的結果，不是動畫。
-  <div style="margin-top:10px">
-    <video controls muted loop playsinline style="max-width:100%;border-radius:6px"
-           src="renders/mujoco_run.mp4"></video>
+      <div class="static-notice border-top mt-auto">
+        <div class="notice-head">NOTICE: 這是靜態發布版</div>
+        <div class="notice-body">
+          <p>可用：Arduino 程式碼編譯、時間軸、3D 運動學預覽、匯出 <code>.ino</code>、以及完整的專案記錄。</p>
+          <p>需要本機伺服器：「送去 MuJoCo 跑物理」——真實物理是在本機跑 MuJoCo，沒有辦法放在靜態主機上。下方影片是本機實跑錄下來的結果，不是動畫。</p>
+          <div class="vid-wrap">
+            <video controls muted loop playsinline src="renders/mujoco_run.mp4"></video>
+            <div class="caption">EXEC: cd ~/3d/servo-arm/sim &amp;&amp; ../.venv/bin/python serve_playground.py</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div style="margin-top:8px;color:#8b949e">
-    要跑真實物理：<code>cd ~/3d/servo-arm/sim &amp;&amp; ../.venv/bin/python serve_playground.py</code>
-  </div>
-</div>
-<footer>
-本頁與兩個互動系統都由 <code>sim/make_playground.py</code> 從 CAD 幾何生成 ·
-所有數值來自本機實際量測與模擬
-</footer>
+
+  <footer class="sheet-footer border-top">
+    <div>NOTES: 本頁與兩個互動系統都由 sim/make_playground.py 從 CAD 幾何生成</div>
+    <div>DATA: 所有數值來自本機實際量測與模擬</div>
+  </footer>
 
 </div>
+
 <script>
 (function () {
   var b = document.getElementById("backend");
@@ -170,17 +601,13 @@ cd ~/3d/servo-arm/sim &amp;&amp; ../.venv/bin/python serve_playground.py
     b.className = "pill off";
     b.textContent = "靜態版本 · 物理後端需在本機執行";
   }
-  /* #authmode lives inside the "從哪裡連" table, which this build strips -- so
-     it must be guarded.  Writing to it unconditionally threw
-     "Cannot set properties of null" and T11 caught it on the next run.  The
-     static-build explanation is in STATIC_NOTE, which always exists. */
 })();
 document.querySelectorAll(".copy").forEach(btn => {
   btn.onclick = async () => {
     const t = document.getElementById(btn.dataset.t).textContent;
     try { await navigator.clipboard.writeText(t); btn.textContent = "已複製"; }
     catch { btn.textContent = "複製失敗"; }
-    setTimeout(() => btn.textContent = "複製", 1400);
+    setTimeout(() => btn.textContent = "複製程式碼", 1400);
   };
 });
 </script>
