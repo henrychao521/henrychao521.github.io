@@ -18,7 +18,7 @@ function renderFeaturedProjects() {
     const cover = NO_COVER.has(name) ? '' : (m.cover || `/assets/covers/${name}.jpg`);
     const blurb = m.blurb ? truncate(m.blurb, 46) : '';
     const visual = cover
-      ? `<img src="${cover}" alt="${m.title} 的操作畫面" loading="lazy">`
+      ? `<picture><source type="image/webp" srcset="${cover.replace(/\.jpg$/, '.webp')}"><img src="${cover}" width="800" height="500" alt="${m.title} 的操作畫面" loading="lazy" decoding="async"></picture>`
       : `<div class="text-tile"><b>${m.title}</b><span>${blurb}</span></div>`;
     return `
       <a class="${span}" href="${url}" target="_blank" rel="noopener">
