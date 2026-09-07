@@ -31,7 +31,52 @@ ALWAYS_FIELDS = ["title", "date", "excerpt"]
 OPTIONAL_FIELDS = [
     "author", "cover", "categories", "tags",
     "repo", "level", "hours", "category", "subtitle",
+    "order",  # 同一天多篇時的排序（小的在前），articles.html 讀這個
 ]
+SITE = "https://henrychao521.github.io"
+TEMPLATE = ROOT / "post.html"
+
+
+def _esc(s: str) -> str:
+    return (str(s).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace('"', "&quot;"))
+
+
+def write_shell(name: str, entry: dict) -> None:
+    """為每篇文章產一個靜態 HTML 殼：/posts/<name>/<slug>.html
+
+    內文仍由 post.html 的前端程式渲染，但 <head> 的 title / description / og:*
+    在建置時就填好——社群平台（LINE、FB）的爬蟲不跑 JS，分享 post.html?slug=
+    只會看到「載入中」。殼以 post.html 為模板，改 post.html 就會反映到所有殼。
+    """
+    tpl = TEMPLATE.read_text(encoding="utf-8")
+    slug, title = entry["slug"], entry.get("title") or slug
+    desc = (entry.get("excerpt") or "").replace("\n", " ").strip()
+    if len(desc) > 150:
+        desc = desc[:150] + "…"
+    url = f"{SITE}/posts/{name}/{slug}.html"
+    cover = entry.get("cover") or "/assets/photos/parts-spinner-960.jpg"
+    if cover.startswith("/"):
+        cover = SITE + cover
+    meta = "\n".join([
+        f'<meta name="description" content="{_esc(desc)}">',
+        f'<link rel="canonical" href="{url}">',
+        f'<meta property="og:type" content="article">',
+        f'<meta property="og:title" content="{_esc(title)}">',
+        f'<meta property="og:description" content="{_esc(desc)}">',
+        f'<meta property="og:url" content="{url}">',
+        f'<meta property="og:image" content="{_esc(cover)}">',
+        f'<meta name="twitter:card" content="summary_large_image">',
+    ])
+    html = tpl.replace(
+        "<title id=\"page-title\">文章 — 趙珩宇｜生活科技教室</title>",
+        f"<title id=\"page-title\">{_esc(title)} — 趙珩宇｜生活科技教室</title>", 1)
+    assert "<!--POST-META-->" in html and "<!--POST-SLUG-->" in html, "post.html 模板缺標記"
+    html = html.replace("<!--POST-META-->", meta, 1)
+    html = html.replace(
+        "<!--POST-SLUG-->",
+        f'<script>window.POST_SLUG = "{slug}"; window.POST_COLLECTION = "{name}";</script>', 1)
+    (ROOT / "posts" / name / f"{slug}.html").write_text(html, encoding="utf-8")
 
 FM_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
 
@@ -101,9 +146,18 @@ def build_collection(name: str) -> int:
                 entry[f] = fm[f]
 
         entries.append(entry)
+        write_shell(name, entry)
+
+    # 舊殼（文章改名或刪除）清掉，免得留下沒人連的孤兒頁
+    keep = {e["slug"] for e in entries}
+    for html_file in posts_dir.glob("*.html"):
+        if html_file.stem not in keep:
+            html_file.unlink()
+            print(f"  🗑  移除過期殼 {html_file.name}")
 
     # 按 date 倒序
-    entries.sort(key=lambda e: e.get("date") or "", reverse=True)
+    entries.sort(key=lambda e: (e.get("date") or "", -int(e.get("order") or 999)),
+                 reverse=True)
 
     out = posts_dir / "index.json"
     out.write_text(

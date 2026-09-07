@@ -2,7 +2,6 @@
 
 const WP_API = 'https://public-api.wordpress.com/wp/v2/sites/livingtech.education';
 const GH_USER = 'henrychao521';
-const GH_API = 'https://api.github.com';
 
 /** Fetch JSON with simple cache (sessionStorage 30 min) */
 async function fetchJSON(url, cacheKey, ttlMs = 30 * 60 * 1000) {
@@ -27,6 +26,10 @@ async function fetchJSON(url, cacheKey, ttlMs = 30 * 60 * 1000) {
 
 /** Format ISO date to "2026年5月10日" */
 function formatDate(iso) {
+  // 純日期字串（2026-08-31）直接切，不經 Date：new Date('2026-08-31') 會當 UTC 解析，
+  // 在 UTC 以西的時區會顯示成前一天。
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso));
+  if (m && !/T\d/.test(iso)) return `${m[1]}/${m[2]}/${m[3]}`;
   const d = new Date(iso);
   return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
 }
@@ -70,13 +73,6 @@ async function fetchWPCategories() {
   return fetchJSON(`${WP_API}/categories?per_page=50&_fields=id,name,count,slug`, 'wp:categories', 24*60*60*1000);
 }
 
-// ─────────────── GitHub API helpers ───────────────
-
-/** Fetch all repos for the user */
-async function fetchGHRepos() {
-  return fetchJSON(`${GH_API}/users/${GH_USER}/repos?per_page=100&sort=updated`, 'gh:repos', 60*60*1000);
-}
-
 // ─────────────── Project metadata (manual annotations) ───────────────
 // 只標注「目前公開」的 repo；私有 repo 不會出現在 /users/:user/repos 回應裡。
 // demo: 線上體驗網址；title/blurb: 中文展示文案（比 repo description 完整）
@@ -102,8 +98,8 @@ const PROJECT_META = {
   'livingtech-tools': {
     theme: 'teaching', featured: true, emoji: '🛠️',
     title: '國中生活科技互動教具系列',
-    blurb: '線鋸機 🪚・電烙鐵 🔥・麵包板 🔌・3D 印表機 🖨️・手工具・機構・能源・液壓手臂⋯ — 19 個互動教具（認識→安全→步驟→模擬→應用）＋教師後台班級進度匯整，依翰林版六冊國中生活科技課本擴充，對應 108 課綱。',
-    tags: ['19 個互動教具', 'Canvas 模擬器', '教師後台', '108 課綱'],
+    blurb: '線鋸機・電烙鐵・麵包板・3D 印表機・手工具・機構・能源・液壓手臂⋯ 二十多個互動教具（認識→安全→步驟→模擬→應用）＋教師後台班級進度匯整，依翰林版六冊國中生活科技課本擴充，對應 108 課綱。',
+    tags: ['20+ 個互動教具', 'Canvas 模擬器', '教師後台', '108 課綱'],
     demo: 'https://henrychao521.github.io/livingtech-tools/',
     gradient: 'from-emerald-500 via-teal-500 to-cyan-500',
   },
@@ -141,9 +137,9 @@ const PROJECT_META = {
   },
   'ai-physics-demos': {
     theme: 'aiworks', featured: true, emoji: '🔬',
-    title: '物理模擬：繞射・摩爾紋・光譜・無影燈',
-    blurb: '與 AI 協作的物理／光學互動：3D 光譜干涉、繞射成像（可拖曳擋板）、摩爾紋（雙色／彩虹拍頻）、「干涉×摩爾＝同一種疊加」整合教學、外科無影燈光學，以及 RC 氣墊船工程模擬。純前端、可離線課堂演示，手機可用。',
-    tags: ['繞射・摩爾紋・光譜', '外科無影燈', 'RC 氣墊船工程', '純前端 / Canvas'],
+    title: '國高中物理互動模擬平台',
+    blurb: '力學、熱學、波動、光學、電磁、近代物理七館共 57 個自建互動模擬，每頁附「即時代入計算公式」面板，數值都經程式驗證（守恆律、克卜勒、Snell、法拉第、氫光譜）；另含繞射、摩爾紋、3D 光譜干涉、外科無影燈與 RC 氣墊船。純前端、可離線課堂演示，手機可用。',
+    tags: ['57 個物理模擬', '七館分類', '即時公式面板', '純前端 / Canvas'],
     demo: 'https://henrychao521.github.io/ai-physics-demos/',
     gradient: 'from-fuchsia-500 via-rose-500 to-orange-500',
   },
@@ -190,7 +186,7 @@ const PROJECT_META = {
   'henrychao521.github.io': {
     theme: 'misc', featured: false, emoji: '🦦',
     title: '本站原始碼',
-    blurb: '這個作品站本身——純靜態 + Tailwind，即時拉取 GitHub / WordPress API。',
+    blurb: '這個作品站本身——純靜態 HTML/CSS/JS，文章存 Markdown，即時拉取 livingtech.education 文章。',
   },
   'henrychao521':     { theme: 'misc', featured: false, emoji: '👤', title: 'GitHub 個人簡介' },
   'gpt-ai-assistant': { theme: 'misc', featured: false, emoji: '💬', title: 'GPT AI Assistant（fork）' },
@@ -223,36 +219,3 @@ const THEME_NAMES = {
   maker:    '🔧 手作硬體專案',
   misc:     '📦 其他',
 };
-
-const THEME_COLORS = {
-  twin:     'border-cyan-200 hover:border-cyan-400',
-  teaching: 'border-emerald-200 hover:border-emerald-400',
-  sim:      'border-sky-200 hover:border-sky-400',
-  aiworks:  'border-fuchsia-200 hover:border-fuchsia-400',
-  platform: 'border-violet-200 hover:border-violet-400',
-  film:     'border-amber-200 hover:border-amber-400',
-  maker:    'border-teal-200 hover:border-teal-400',
-  misc:     'border-slate-200 hover:border-slate-300',
-};
-
-/** GitHub API 失敗（rate limit 等）時的離線備援資料 */
-const REPO_FALLBACK = [
-  { name: 'x5-roomtour-viewer',     language: 'JavaScript', pushed_at: '2026-06-14', stargazers_count: 0, html_url: 'https://github.com/henrychao521/x5-roomtour-viewer', description: 'X5 RoomTour — Insta360 X5 → 3D 高斯潑濺真實空間數位孿生（可走動 / 量測 / 即時人流）' },
-  { name: 'pc13110-platform',       language: 'HTML',       pushed_at: '2026-06-11', stargazers_count: 0, html_url: 'https://github.com/henrychao521/pc13110-platform',       description: 'PC13110 工程設計學習平台 — 對應普通型高中生活科技教科書的互動學習平台' },
-  { name: 'shadowless-lamp-sim',    language: 'HTML',       pushed_at: '2026-06-01', stargazers_count: 0, html_url: 'https://github.com/henrychao521/shadowless-lamp-sim',    description: '外科手術無影燈光學模擬器 — Three.js + IESSpotLight 真實光錐疊加' },
-  { name: 'ai-physics-demos',       language: 'HTML',       pushed_at: '2026-06-14', stargazers_count: 0, html_url: 'https://github.com/henrychao521/ai-physics-demos',       description: 'AI 協作互動作品集 — 繞射/摩爾紋/光譜干涉/無影燈/氣墊船/房市，純前端互動' },
-  { name: 'living-portal',          language: 'Python',     pushed_at: '2026-05-29', stargazers_count: 0, html_url: 'https://github.com/henrychao521/living-portal',          description: 'Henry Living Tech Portal — 整合台鐵即時地圖、北台灣水文監測、台北即時看板的統一入口' },
-  { name: 'taiwan-engineering-geo', language: 'JavaScript', pushed_at: '2026-05-20', stargazers_count: 0, html_url: 'https://github.com/henrychao521/taiwan-engineering-geo', description: '200 個台灣工程地景的互動學習活動：看實景或衛星空照圖、在地圖上點出位置' },
-  { name: 'livingtech-tools',       language: 'JavaScript', pushed_at: '2026-05-16', stargazers_count: 0, html_url: 'https://github.com/henrychao521/livingtech-tools',       description: '數位線鋸機互動教學平台｜對應 108 課綱國中生活科技' },
-  { name: 'henrychao521.github.io', language: 'HTML',       pushed_at: '2026-06-12', stargazers_count: 0, html_url: 'https://github.com/henrychao521/henrychao521.github.io', description: '🦦 趙珩宇 Henry × LivingTech — 個人作品站' },
-];
-
-/** Fetch repos with graceful fallback（rate-limit 時仍可渲染） */
-async function fetchGHReposSafe() {
-  try {
-    return await fetchGHRepos();
-  } catch (e) {
-    console.warn('GitHub API 失敗，使用備援資料：', e.message);
-    return REPO_FALLBACK;
-  }
-}

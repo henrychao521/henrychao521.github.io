@@ -97,8 +97,10 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
 <div id="wrap">
 <nav>
   <h1>SG90-Arm · 專案總覽</h1>
-  <p class="sub">四支手臂 × 驗證系統</p>
+  <p class="sub">五支手臂 × 驗證系統</p>
   <div class="grp">頁面</div>
+  <a href="index.html">← 入口頁</a>
+  <a href="https://henrychao521.github.io/">站首頁</a>
   <span class="cur" style="display:block;padding:5px 20px;color:var(--accent);font-weight:600;font-size:13px">▸ 專案總覽與驗證系統</span>
   <a href="arm-sg90.html">SG90-Arm</a>
   <a href="arm-nema17.html">NEMA17-Arm</a>
@@ -119,7 +121,7 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <a href="#ecosystem">相鄰領域調查：CAD→URDF、模仿學習、sim-to-real、text-to-CAD</a>
   <a href="#actuators">四支手臂的致動器資料：查證與三個被推翻的數字</a>
   <a href="#external">外部 AI 報告的評估：哪些成立、哪些不適用</a>
-  <a href="#compare4">四支手臂對照</a>
+  <a href="#compare4">五支手臂對照</a>
   <a href="#limits">已知限制</a>
   <a href="#files">檔案與重現方式</a>
   <a href="#refs">引用來源</a>
@@ -140,8 +142,8 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <div><b>5</b><span>SG90 伺服馬達</span></div>
   <div><b>127.9 cm³</b><span>列印體積 / 整機 203 g</span></div>
   <div><b>44.7%</b><span>可達範圍最壞姿態的堵轉扭矩佔用</span></div>
-  <div><b>204/205</b><span>驗證檢查（1 項如實失敗）</span></div>
-  <div><b>34</b><span>過程中抓到並修正的錯誤</span></div>
+  <div><b>567/567</b><span>驗證檢查（4 項跳過）</span></div>
+  <div><b>66</b><span>過程中抓到並修正的錯誤</span></div>
 </div>
 
 <div class="card win">
@@ -566,7 +568,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 <p><strong>結論</strong>：接觸衝量的峰值本來就對時步敏感，把 j5 的峰值力矩報到 4 位數是假精度。
 因此 <code>run_mujoco.py</code> 現在同時輸出 <strong>99 百分位力矩</strong>——它在所有關節上都對時步不敏感，
 是可以照著報的數字。</p>
-<p class="small">注意：<a href="#torque">扭矩包絡分析</a>的堵轉佔比是<strong>靜態</strong>計算
+<p class="small">注意：<a href="arm-sg90.html#torque">扭矩包絡分析</a>的堵轉佔比是<strong>靜態</strong>計算
 （<code>qfrc_bias</code>），與時步無關，不受這一項影響。</p>
 
 <h2 id="mutation">變異測試：這套測試真的有效嗎？</h2>
@@ -599,7 +601,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 ../.venv/bin/python mutation_check.py     # 驗證套件本身有效</code></pre>
 
 <h2 id="failures">失敗紀錄</h2>
-<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="#torque">扭矩包絡</a>那節；<strong>#35–#43 是做 NEMA 17 步進模擬與韌體時挖出的</strong>，記在 <a href="#nema17">NEMA 17 手臂</a>那節；<strong>#44–#47 是查證致動器資料時挖出的</strong>，記在 <a href="#actuators">致動器資料查證</a>那節；<strong>#48–#52 是第三支手臂上挖出的</strong>（#48 還是回頭關於第一支手臂的），記在 <a href="#ft5425bl">FT5425BL 手臂</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
+<p class="lead">前 22 項。#23–#33 由驗證系統挖出，記在<a href="#vv">上一節</a>；#34 是替第二支手臂做扭矩預算時挖出的，記在<a href="arm-sg90.html#torque">扭矩包絡</a>那節；<strong>#35–#43 是做 NEMA 17 步進模擬與韌體時挖出的</strong>，記在 <a href="arm-nema17.html#nema17">NEMA 17 手臂</a>那節；<strong>#44–#47 是查證致動器資料時挖出的</strong>，記在 <a href="#actuators">致動器資料查證</a>那節；<strong>#48–#52 是第三支手臂上挖出的</strong>（#48 還是回頭關於第一支手臂的），記在 <a href="arm-ft5425bl.html#ft5425bl">FT5425BL 手臂</a>那節——其中四個是連續的錯模型，每個都「會跑、會印出合理的數字」。標 <span class="tag silent">靜默</span> 的是<strong>不會報錯</strong>的錯誤——
 工具鏈照樣產出看起來完全正常的結果，只有量測才抓得到。這類佔了一半以上。</p>
 
 <div class="card fail">
@@ -626,7 +628,7 @@ j4 12.96°→<strong>8.70°</strong>、j5 10.27°→<strong>8.68°</strong>。
 <div class="card fail">
 <h4>#3 J5 掛在不存在的面上 <span class="tag silent">靜默</span> <span class="tag fixed">已修</span></h4>
 <p>腕座的板材在 X ∈ [6, 10]，但 J5 用 s=+1 時耳片座應在 X &lt; −6.8。<strong>兩顆鎖孔全部空切。</strong></p>
-<p>這個錯誤逼出了整個專案最重要的結構規則：<strong>關節手性必須交替</strong>（見<a href="#design">設計章節</a>）。
+<p>這個錯誤逼出了整個專案最重要的結構規則：<strong>關節手性必須交替</strong>（見<a href="arm-sg90.html#design">設計章節</a>）。
 一開始我以為只要調整某個數字，實際上是拓樸層級的約束。</p>
 </div>
 
@@ -1090,7 +1092,7 @@ T1（解析解對照）、T4（差異測試）、T7（黃金回歸）都要重�
 <p>本專案 v2 從 v1 的「等寬平板」變成「看起來像設計過的手臂」，靠的正是
 <strong>放樣（loft）的錐形斷面 + 圓角矩形輪廓 + 全外露輪廓圓角</strong>——
 也就是 Text2CAD-Bench 指出模型會崩掉的那一類特徵。</p>
-<p>換句話說：<a href="#v2">v2 重繪</a>之所以必須手寫 build123d 而不是叫模型生成，
+<p>換句話說：<a href="arm-sg90.html#v2">v2 重繪</a>之所以必須手寫 build123d 而不是叫模型生成，
 不是我偏好手寫，而是<strong>這一類特徵目前就在能力邊界外</strong>。
 這也解釋了為什麼 v1 那種「方塊拼起來」的結果，恰好是生成式 CAD 最擅長的形狀。</p>
 </div>
@@ -1329,35 +1331,38 @@ M3 加負載相關   τ = Kv·θ̇ + Kc + Kl·|τm − τe|</pre>
 「慣量從實體算」這些寫進顯眼的位置，所以外部讀者合理地假設沒做。
 <strong>那是這個頁面的問題，不是那份報告的問題。</strong></p>
 
-<h2 id="compare4">四支手臂對照</h2>
-<p class="lead">同一個題目做四遍，換四種致動器。比較的不是哪支比較好——是<strong>不同致動器把哪些問題推到設計的哪一層</strong>。下表每個數字都由 <code>tools/make_comparison.py</code> 在建置時從程式碼與 <code>results.json</code> 讀出，不是手打的。</p>
+<h2 id="compare4">五支手臂對照</h2>
+<p class="lead">同一個題目做五遍，換五種致動器。比較的不是哪支比較好——是<strong>不同致動器把哪些問題推到設計的哪一層</strong>。下表每個數字都由 <code>tools/make_comparison.py</code> 在建置時從程式碼與 <code>results.json</code> 讀出，不是手打的。</p>
 <table>
 <tr><th style="width:16%">手臂</th><th>致動器</th><th class="num">保持扭矩</th><th>依據</th><th class="num">伸距</th><th class="num">酬載</th><th>回授</th></tr>
 <tr><td><a href="arm-sg90.html">SG90-Arm</a></td><td>SG90 微型舵機<br><span style="color:var(--dim);font-size:12px">9 g · 直驅</span></td><td class="num">0.06 N·m</td><td style="color:var(--warn)">額定（未驗證）</td><td class="num">202 mm</td><td class="num">4 g</td><td style="color:var(--dim)">無</td></tr>
 <tr><td><a href="arm-nema17.html">NEMA17-Arm</a></td><td>NEMA 17 (42 型步進) L=40<br><span style="color:var(--dim);font-size:12px">280 g · 遠端 GT2 3:1</span></td><td class="num">0.45 N·m</td><td style="color:var(--ok)">連續</td><td class="num">255 mm</td><td class="num">598 g</td><td style="color:var(--dim)">無</td></tr>
-<tr><td><a href="arm-ft5425bl.html">FT5425BL-Arm</a></td><td>Feetech FT5425BL（標準尺寸無<br><span style="color:var(--dim);font-size:12px">68 g · 直驅</span></td><td class="num">0.93 N·m</td><td style="color:var(--warn)">額定（未驗證）</td><td class="num">190 mm</td><td class="num">100 g</td><td style="color:var(--dim)">無</td></tr>
-<tr><td><a href="arm-sts3215.html">STS3215-Arm</a></td><td>Feetech STS3215/ST3215<br><span style="color:var(--dim);font-size:12px">55 g · 直驅</span></td><td class="num">1.00 N·m</td><td style="color:var(--ok)">額定</td><td class="num">212 mm</td><td class="num">100 g</td><td style="color:var(--ok)">position／velocity／load／voltage／current／temperature</td></tr>
+<tr><td><a href="arm-ft5425bl.html">FT5425BL-Arm</a></td><td>Feetech FT5425BL<br><span style="color:var(--dim);font-size:12px">68 g · 直驅</span></td><td class="num">0.93 N·m</td><td style="color:var(--warn)">額定（未驗證）</td><td class="num">190 mm</td><td class="num">100 g</td><td style="color:var(--dim)">無</td></tr>
+<tr><td><a href="arm-sts3215.html">STS3215-Arm</a></td><td>Feetech STS3215/ST3215-C047<br><span style="color:var(--dim);font-size:12px">55 g · 直驅</span></td><td class="num">1.00 N·m</td><td style="color:var(--ok)">額定</td><td class="num">212 mm</td><td class="num">100 g</td><td style="color:var(--ok)">position／velocity／load／voltage／current／temperature</td></tr>
+<tr><td><a href="arm-dm4310.html">DM-J4310-Arm</a></td><td>DAMIAO DM-J4310-2EC V1.1<br><span style="color:var(--dim);font-size:12px">325 g · 直驅（內建 10:1）</span></td><td class="num">3.00 N·m</td><td style="color:var(--ok)">額定</td><td class="num">173 mm</td><td class="num">500 g</td><td style="color:var(--ok)">position／velocity／torque</td></tr>
 </table>
 <h3>每支手臂把問題推到哪一層</h3>
 <table><tr><th style="width:18%">手臂</th><th>這支特有的失效模式</th></tr>
 <tr><td>SG90-Arm</td><td>第一支。開環，全部的驗證只能拿模型比模型</td></tr>
 <tr><td>NEMA17-Arm</td><td>失步是永久的；A4 為此連錯四個會跑會印數字的模型</td></tr>
 <tr><td>FT5425BL-Arm</td><td>已被 STS3215 取代：無回授、額定扭矩只能用 1/3 法則推</td></tr>
-<tr><td>STS3215-Arm</td><td>唯一有回授的；韌體可以讀回來確認動作到位</td></tr>
+<tr><td>STS3215-Arm</td><td>第一支有回授的；韌體可以讀回來確認動作到位</td></tr>
+<tr><td>DM-J4310-Arm</td><td>力矩回授：可以做力控，但 CAN 率、慣性、摩擦每一項都會把模擬推離真機</td></tr>
 </table>
 <h3>驗證能力的階梯</h3>
-<p>這是四支手臂最實質的差別，也是換掉 FT5425BL 的唯一理由：</p>
-<table><tr><th style="width:22%">能做到的驗證</th><th class="num">SG90</th><th class="num">NEMA17</th><th class="num">FT5425BL</th><th class="num">STS3215</th></tr>
-<tr><td>模型內部自洽（T0–T11）</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--ok)">✓</td></tr>
-<tr><td>與獨立實作對照</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--ok)">✓ AccelStepper 移植</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--ok)">✓ 原廠協定範例</td></tr>
-<tr><td>與原廠文件的位元組對照</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--ok)">✓ 10/10</td></tr>
-<tr><td>機器回報自己的位置</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--ok)">✓</td></tr>
-<tr><td>韌體可驗證動作是否到位</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--ok)">✓</td></tr>
-<tr><td>與實體量測比對</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--warn)">△ 第三方單一樣本</td></tr>
-<tr><td>在我們的台子上驗證（validation）</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td></tr>
+<p>這是五支手臂最實質的差別，也是換掉 FT5425BL 的唯一理由：</p>
+<table><tr><th style="width:22%">能做到的驗證</th><th class="num">SG90</th><th class="num">NEMA17</th><th class="num">FT5425BL</th><th class="num">STS3215</th><th class="num">DM-J4310</th></tr>
+<tr><td>模型內部自洽（T0–T11）</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--ok)">✓</td></tr>
+<tr><td>與獨立實作對照</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--ok)">✓ AccelStepper 移植</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--ok)">✓ 原廠協定範例</td><td class="num" style="color:var(--dim)">—</td></tr>
+<tr><td>與原廠文件的位元組對照</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--dim)">—</td><td class="num" style="color:var(--ok)">✓ 10/10</td><td class="num" style="color:var(--dim)">—</td></tr>
+<tr><td>機器回報自己的位置</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--ok)">✓</td></tr>
+<tr><td>機器回報自己的力矩</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--warn)">△ 只有負載估計</td><td class="num" style="color:var(--ok)">✓</td></tr>
+<tr><td>韌體可驗證動作是否到位</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--ok)">✓</td><td class="num" style="color:var(--dim)">—</td></tr>
+<tr><td>與實體量測比對</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--warn)">△ 第三方單一樣本</td><td class="num" style="color:var(--dim)">✗</td></tr>
+<tr><td>在我們的台子上驗證（validation）</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td><td class="num" style="color:var(--dim)">✗</td></tr>
 </table>
-<p><strong>最後一列四支都是 ✗</strong>，而那一列才是 validation。這個專案做的全部是 verification——沒有任何一個數字量過我們自己的實體硬體。</p>
-<p style="color:var(--dim);font-size:13px">目前全套 465/465 項通過。</p>
+<p><strong>最後一列五支都是 ✗</strong>，而那一列才是 validation。這個專案做的全部是 verification——沒有任何一個數字量過我們自己的實體硬體。</p>
+<p style="color:var(--dim);font-size:13px">目前全套 567/567 項通過。</p>
 <div class="card fail">
 <h4>#58 產生這張對照表時，資料自己揭穿了 #48 只改到一半 <span class="tag silent">靜默</span> <span class="tag fixed">已修正</span></h4>
 <p>對照表第一版印出 <strong>SG90　0.18 N·m　依據：連續</strong>。
@@ -1501,7 +1506,9 @@ node test_ik.js         &amp;&amp; ../.venv/bin/python test_ik_parity.py</code><
 </main>
 </div>
 <script>
-const links=[...document.querySelectorAll('nav a')];
+// 只追蹤本頁的 #錨點：拆頁後導覽裡還有跨頁連結與站首頁的絕對網址，
+// 把 'https://…' 丟進 querySelector 會直接拋例外（T11 抓到的）。
+const links=[...document.querySelectorAll('nav a')].filter(a=>(a.getAttribute('href')||'').startsWith('#'));
 const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
 const obs=new IntersectionObserver(es=>{
   es.forEach(e=>{

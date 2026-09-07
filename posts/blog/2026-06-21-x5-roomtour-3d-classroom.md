@@ -10,6 +10,7 @@ level: "⭐⭐⭐ 進階"
 hours: "閱讀約 10 分鐘"
 excerpt: "拿一支 Insta360 X5 在教室繞一圈，就能重建成可在瀏覽器第一人稱走動的照片級 3D 空間。這篇完整拆解整條 pipeline：360° 影片 → COLMAP 求相機位姿 → Brush 3D 高斯潑濺 → PlayCanvas + WebXR 即時渲染，全程 Apple Silicon 本機、無需 NVIDIA／CUDA。"
 draft: false
+order: 1
 ---
 
 把真實的家政生科教室，變成可以在瀏覽器裡「走進去」的 3D 空間——桌椅、櫃子、牆上的時鐘都在原來的位置，用滑鼠加鍵盤就能像玩第一人稱遊戲一樣走來走去。

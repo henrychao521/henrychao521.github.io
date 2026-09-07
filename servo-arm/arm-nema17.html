@@ -99,6 +99,8 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <h1>NEMA17-Arm</h1>
   <p class="sub">42 型步進 · 遠端 GT2 3:1 · 255 mm</p>
   <div class="grp">頁面</div>
+  <a href="index.html">← 入口頁</a>
+  <a href="https://henrychao521.github.io/">站首頁</a>
   <a href="report.html">專案總覽與驗證系統</a>
   <a href="arm-sg90.html">SG90-Arm</a>
   <span class="cur" style="display:block;padding:5px 20px;color:var(--accent);font-weight:600;font-size:13px">▸ NEMA17-Arm</span>
@@ -349,7 +351,9 @@ T7 黃金回歸<strong>18/18 全過</strong>。但實際上酬載舉高變了 0.
 </main>
 </div>
 <script>
-const links=[...document.querySelectorAll('nav a')];
+// 只追蹤本頁的 #錨點：拆頁後導覽裡還有跨頁連結與站首頁的絕對網址，
+// 把 'https://…' 丟進 querySelector 會直接拋例外（T11 抓到的）。
+const links=[...document.querySelectorAll('nav a')].filter(a=>(a.getAttribute('href')||'').startsWith('#'));
 const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
 const obs=new IntersectionObserver(es=>{
   es.forEach(e=>{

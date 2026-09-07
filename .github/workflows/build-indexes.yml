@@ -5,7 +5,7 @@ name: Build Post Indexes
 #   - 手動觸發（從 GitHub Actions 頁面點 "Run workflow"）
 #
 # 行為：
-#   掃 posts/ 重建 index.json，如有變動則 commit 回 main。
+#   掃 posts/ 重建 index.json 與每篇的靜態殼 posts/<collection>/<slug>.html，如有變動則 commit 回 main。
 #   commit 訊息含 [skip ci] 避免無限迴圈。
 on:
   push:
@@ -13,6 +13,7 @@ on:
     paths:
       - 'posts/**/*.md'
       - 'scripts/build-indexes.py'
+      - 'post.html'
   workflow_dispatch:
 
 permissions:
@@ -47,7 +48,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add posts/maker/index.json posts/blog/index.json 2>/dev/null || true
+          git add posts/maker/index.json posts/blog/index.json posts/maker/*.html posts/blog/*.html 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "✓ index.json 沒有變動，不做 commit"

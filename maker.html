@@ -51,7 +51,7 @@
   </section>
 
   <section>
-    <h2 class="b-h2">3.2　最新 Maker 教學文<small>用 <a href="/admin/">後台</a> 寫的技術深度文</small></h2>
+    <h2 class="b-h2">3.2　最新 Maker 教學文<small>站內原生的技術深度文</small></h2>
     <div id="local-posts" class="toc">
       <div class="b-loading">載入中</div>
     </div>
@@ -86,45 +86,48 @@
 
 <script>
 const CATALOG = [
-  { title: '16×16 LED 中文跑馬燈', repo: 'xiao-esp32s3-led-matrix', private: true, level: 1, hours: '2–4 小時',
+  { title: '16×16 LED 中文跑馬燈', search: { q: 'LED' }, repo: 'xiao-esp32s3-led-matrix', private: true, level: 1, hours: '2–4 小時',
     hardware: ['Seeed XIAO ESP32S3', 'WS2812B 16×16（4×8×8）', '5V 10A 變壓器'],
     description: '用 ESP32S3 驅動 256 顆 RGB LED，從中文跑馬燈到貪吃蛇遊戲，6 個版本逐步演進。',
     skills: ['Arduino IDE', 'WS2812B 控制', 'WiFi AP', 'HTML 設定介面'], cost: 'NT$ 600' },
-  { title: 'ESP32-CAM 遙控車', repo: 'esp32-arduino-sketches', private: true, level: 2, hours: '4–6 小時',
+  { title: 'ESP32-CAM 遙控車', search: { q: '遙控車' }, repo: 'esp32-arduino-sketches', private: true, level: 2, hours: '4–6 小時',
     hardware: ['XIAO ESP32S3 Sense', 'L298N 馬達驅動', '齒輪馬達 ×2', '18650 電池'],
     description: '車身串流即時影像，雙馬達遙控，用瀏覽器當搖桿。延伸 OTA 韌體更新。',
     skills: ['MJPEG 串流', 'PWM 馬達控制', 'AsyncWebServer', 'OTA 更新'], cost: 'NT$ 1,200' },
-  { title: '全息投影 3D 模型互動', repo: 'off-axis-pi', private: true, level: 2, hours: '3–5 小時',
+  { title: '全息投影 3D 模型互動', search: { cat: 2131, label: '3D' }, repo: 'off-axis-pi', private: true, level: 2, hours: '3–5 小時',
     hardware: ['筆電或 Pi 加螢幕', 'Webcam', '透明玻璃（選用）'],
     description: '瀏覽器端純前端、雙手手勢控制 3D 模型旋轉縮放平移。零後端、純 JS。',
     skills: ['MediaPipe Hands', 'Three.js', '指數插值平滑'], cost: '0（用現有設備）' },
-  { title: '運動骨架辨識', repo: 'sports-skeleton-analysis', private: true, level: 1, hours: '1–2 小時',
+  { title: '運動骨架辨識', search: { q: '骨架' }, repo: 'sports-skeleton-analysis', private: true, level: 1, hours: '1–2 小時',
     hardware: ['筆電', 'Webcam'],
     description: '用 YOLOv8-pose 偵測人體骨架，依關節角度分類深蹲、伏地挺身、開合跳。',
     skills: ['YOLOv8-pose', 'OpenCV', 'numpy 角度計算'], cost: '0' },
-  { title: '握筆姿勢即時分析', repo: 'grip-system', private: true, level: 3, hours: '6–10 小時',
+  { title: '握筆姿勢即時分析', search: { cat: 14067, label: 'AI' }, repo: 'grip-system', private: true, level: 3, hours: '6–10 小時',
     hardware: ['筆電或 Mac', 'Webcam', 'NT$10 硬幣（校正用）', '自製筆'],
     description: 'MediaPipe 加 YOLO 自訓筆尖偵測，用硬幣做絕對校正。FastAPI、React、自寫 aiortc WebRTC。',
     skills: ['MediaPipe Hand', 'YOLO 訓練', 'FastAPI', 'WebRTC', 'React'], cost: 'NT$ 100' },
-  { title: 'Pi5 本地 LLM 對話機器人', repo: 'moltbot', private: true, level: 2, hours: '3–4 小時（不含模型下載）',
+  { title: 'Pi5 本地 LLM 對話機器人', search: { q: 'Raspberry' }, repo: 'moltbot', private: true, level: 2, hours: '3–4 小時（不含模型下載）',
     hardware: ['Raspberry Pi 5 8GB', 'NVMe SSD', '主動式散熱器'],
     description: '在 Pi5 上跑 Llama 3.1 TAIDE 8B Q4，用 LM Studio 或 Ollama 提供 OpenAI 相容介面。',
     skills: ['Linux', 'systemd service', 'Ollama', 'Docker'], cost: 'NT$ 4,000 以上（Pi5 8G）' },
-  { title: 'Mac 多攝影機 AI 監控', repo: 'camera-hub-mac', private: true, level: 3, hours: '8–12 小時',
+  { title: 'Mac 多攝影機 AI 監控', search: { q: '監控' }, repo: 'camera-hub-mac', private: true, level: 3, hours: '8–12 小時',
     hardware: ['Mac（M 系列）', 'ESP32-CAM 數台', 'WiFi 路由器'],
     description: 'YOLO 與 VLM（Qwen-VL）雙引擎，動作觸發加 AI 描述，Telegram 即時推播。',
     skills: ['YOLOv8', 'VLM', 'Flask', 'Telegram Bot', 'SORT tracker'], cost: 'NT$ 1,500（不含 Mac）' },
-  { title: '學生學習歷程平台', repo: 'student-portfolio-v3', private: true, level: 1, hours: '1–2 小時',
+  { title: '學生學習歷程平台', search: { q: '學習歷程' }, repo: 'student-portfolio-v3', private: true, level: 1, hours: '1–2 小時',
     hardware: ['任意瀏覽器'],
     description: '純前端、SHA-256 密碼雜湊、稽核日誌雜湊鏈（類區塊鏈）。資安教學示範。',
     skills: ['Web Crypto API', 'LocalStorage', 'Service Layer Pattern'], cost: '0' },
-  { title: '台北即時資訊看板', repo: 'taipei-dashboard', private: true, level: 1, hours: '2–3 小時',
+  { title: '台北即時資訊看板', search: { q: 'Raspberry' }, repo: 'taipei-dashboard', private: true, level: 1, hours: '2–3 小時',
     hardware: ['Pi 4 加螢幕', 'Tailscale（選用）'],
     description: '天氣、地震、119 派遣、新聞的全螢幕儀表板，Flask 加 RSS。',
     skills: ['Flask', 'systemd', 'RSS 與 API 聚合'], cost: 'NT$ 1,500（Pi 4）' },
 ];
 
 const LEVEL_NAME = { 1: '入門', 2: '中階', 3: '進階' };
+// 教案標題整句丟去 WordPress 全文搜尋一定找不到（實測 0 篇），
+// 改為每個教案自己指定「原站真的搜得到」的關鍵字或分類 id。
+const searchURL = sr => sr.cat ? `/articles.html?cat=${sr.cat}` : `/articles.html?q=${encodeURIComponent(sr.q)}`;
 let activeLevel = 'all';
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -148,7 +151,7 @@ function render() {
           ${item.private
             ? `<span title="程式碼未公開，課程使用時提供">程式碼於課程中提供</span>`
             : `<a href="https://github.com/henrychao521/${esc(item.repo)}" target="_blank" rel="noopener">GitHub</a>`}
-          <a href="/articles.html?q=${encodeURIComponent(item.title)}">找相關教學文</a>
+          ${item.search ? `<a href="${searchURL(item.search)}">找相關教學文（${esc(item.search.label || item.search.q)}）</a>` : ''}
         </div>
       </span>
       <span class="level">${LEVEL_NAME[item.level]}</span>
@@ -169,7 +172,7 @@ render();
 // 站內 Maker 教學文（posts/maker/index.json）
 async function loadLocalPosts() {
   const container = document.getElementById('local-posts');
-  const empty = `<div class="b-empty">目前還沒有文章。到 <a href="/admin/">後台</a> 寫第一篇。</div>`;
+  const empty = `<div class="b-empty">目前還沒有文章。</div>`;
   try {
     const res = await fetch('/posts/maker/index.json?_=' + Date.now());
     if (!res.ok) throw new Error('No posts yet');
@@ -177,7 +180,7 @@ async function loadLocalPosts() {
     if (!Array.isArray(posts) || posts.length === 0) { container.innerHTML = empty; return; }
     posts.sort((a, b) => new Date(b.date) - new Date(a.date));
     container.innerHTML = posts.map((p, i) => `
-      <a href="/post.html?slug=${encodeURIComponent(p.slug)}" class="toc-row">
+      <a href="/posts/maker/${encodeURIComponent(p.slug)}.html" class="toc-row">
         <span class="n">3.2.${i + 1}</span>
         <span>
           <span class="t">${esc(p.title)}</span>

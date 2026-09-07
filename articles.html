@@ -253,7 +253,7 @@ document.getElementById('search-btn').onclick = () => {
   updateURL();
   loadPosts();
 };
-searchInput.addEventListener('keypress', e => {
+searchInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('search-btn').click();
 });
 document.getElementById('reset-btn').onclick = () => {
@@ -282,58 +282,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!res.ok) throw new Error('no index');
     const posts = await res.json();
     if (!Array.isArray(posts) || posts.length === 0) { sec.style.display = 'none'; return; }
-    const FEATURED_ORDER = [
-      '2026-08-31-monthly-report',
-      '2026-08-31-servo-arm-five-actuators',
-      '2026-08-31-meshtastic-hardware-rebuild',
-      '2026-08-31-gamewatch-esp32-reverse',
-      '2026-08-31-pibook-audio-pipeline',
-      '2026-08-31-pi5-pocket-workstation',
-      '2026-08-31-livingtech-b-platform',
-      '2026-08-31-st-node-analysis',
-      '2026-08-31-ambient-notes-part2',
-      '2026-07-23-meshtastic-family-mesh',
-      '2026-07-14-pcb-grader-solder-ai',
-      '2026-07-08-lattice-hinge-designer',
-      '2026-06-26-ai-auto-project-video',
-      '2026-06-21-x5-roomtour-3d-classroom',
-      '2026-06-21-pc13110-engineering-platform',
-      '2026-06-21-physics-interactive-sims',
-      '2026-06-21-taiwan-engineering-geo',
-      '2026-06-21-living-tech-portal',
-      '2026-06-21-shadowless-lamp-sim',
-      '2026-06-21-livingtech-tools-digital-jigs',
-      '2026-06-21-taiwan-housing-data'
-    ];
-    const rank = s => { const i = FEATURED_ORDER.indexOf(s); return i === -1 ? 999 : i; };
-    posts.sort((a, b) => (rank(a.slug) - rank(b.slug)) || (new Date(b.date) - new Date(a.date)));
-    const DIAGRAM = {
-      '2026-08-31-monthly-report':                '/assets/blog/cover-2026-08-monthly.jpg',
-      '2026-08-31-servo-arm-five-actuators':       '/assets/blog/cover-servo-arm.jpg',
-      '2026-08-31-meshtastic-hardware-rebuild':    '/assets/blog/cover-mesh-rebuild.jpg',
-      '2026-08-31-gamewatch-esp32-reverse':        '/assets/blog/cover-gw-esp32.jpg',
-      '2026-08-31-pibook-audio-pipeline':          '/assets/blog/cover-pibook-audio.jpg',
-      '2026-08-31-pi5-pocket-workstation':         '/assets/blog/cover-pi5-pocket.jpg',
-      '2026-08-31-livingtech-b-platform':          '/assets/blog/cover-livingtech-b.jpg',
-      '2026-08-31-st-node-analysis':               '/assets/blog/cover-st-node.jpg',
-      '2026-08-31-ambient-notes-part2':            '/assets/blog/cover-ambient-notes-2.jpg',
-      '2026-07-23-meshtastic-family-mesh':        '/assets/blog/diagram-meshtastic-mesh.svg',
-      '2026-07-14-pcb-grader-solder-ai':          '/assets/blog/diagram-pcb-grader.svg',
-      '2026-07-08-lattice-hinge-designer':        '/assets/blog/diagram-lattice-hinge.svg',
-      '2026-06-21-x5-roomtour-3d-classroom':      '/assets/blog/diagram-x5-pipeline.svg',
-      '2026-06-21-pc13110-engineering-platform':  '/assets/blog/diagram-pc13110.svg',
-      '2026-06-21-physics-interactive-sims':      '/assets/blog/diagram-physics.svg',
-      '2026-06-21-taiwan-engineering-geo':        '/assets/blog/diagram-geo.svg',
-      '2026-06-21-living-tech-portal':            '/assets/blog/diagram-portal.svg',
-      '2026-06-21-shadowless-lamp-sim':           '/assets/blog/diagram-lamp.svg',
-      '2026-06-21-livingtech-tools-digital-jigs': '/assets/blog/diagram-livingtech-tools.svg',
-      '2026-06-21-taiwan-housing-data':           '/assets/blog/diagram-housing.svg'
-    };
+    // 排序：日期新→舊；同一天的用 frontmatter 的 order（小的在前）。
+    // 圖：frontmatter 的 cover。兩者都由 scripts/build-indexes.py 寫進 index.json，
+    // 新文章只要在自己的 .md 裡宣告，不必再回來改這頁。
+    posts.sort((a, b) => (new Date(b.date) - new Date(a.date)) || ((a.order || 999) - (b.order || 999)));
     const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
     container.innerHTML = posts.map((p, i) => {
-      const fig = DIAGRAM[p.slug] || p.cover || '';
+      const fig = p.cover || '';
       return `
-      <a href="/post.html?slug=${encodeURIComponent(p.slug)}" class="toc-row ${fig ? 'has-fig' : ''}">
+      <a href="/posts/blog/${encodeURIComponent(p.slug)}.html" class="toc-row ${fig ? 'has-fig' : ''}">
         <span class="n">2.1.${i + 1}</span>
         <span>
           <span class="t">${esc(p.title)}</span>

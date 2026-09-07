@@ -99,6 +99,8 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <h1>DM-J4310-Arm</h1>
   <p class="sub">準直驅 · 力矩回授 · 173 mm · 酬載 500 g</p>
   <div class="grp">頁面</div>
+  <a href="index.html">← 入口頁</a>
+  <a href="https://henrychao521.github.io/">站首頁</a>
   <a href="report.html">專案總覽與驗證系統</a>
   <a href="arm-sg90.html">SG90-Arm</a>
   <a href="arm-nema17.html">NEMA17-Arm</a>
@@ -109,7 +111,7 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <a href="#dm4310">第五支：DM-J4310 準直驅（C1 決策、C5 CAN 協定）</a>
 </nav><main><p style="margin-bottom:1.6rem;color:var(--dim);font-size:13px">← 回<a href="report.html" style="color:var(--accent)">專案總覽與驗證系統</a></p><h2 id="dm4310">第五支：DM-J4310 準直驅（C1 決策、C5 CAN 協定）</h2>
 <p class="lead">四顆致動器裡唯一會<strong>回報力矩</strong>的。
-那是<a href="#compare4">驗證階梯</a>上比位置回授高一階的格子：
+那是<a href="report.html#compare4">驗證階梯</a>上比位置回授高一階的格子：
 機器回報它<strong>產生的力</strong>，而不只是它在哪裡。</p>
 
 <h3>C1：遠端驅動買到 +69% 伸距，仍然被拒絕</h3>
@@ -270,7 +272,7 @@ FT5425BL 的孔在 −36.25／+13.25，遠得多，所以從來不會撞。</p>
 base_link 539.9 g、shoulder 373.8 g、upper_arm 362.2 g、forearm 27.9 g，合計 1303.8 g——
 其中 <strong>975 g 是三顆模組本身</strong>，印出來的塑膠只有 329 g。這支手臂的重量幾乎就是致動器的重量。</p>
 
-<div class="fail">
+<div class="card fail">
 <h4>失敗 #63：j3 的行程掃出來是 [+5°, −5°]，寬度是負的</h4>
 <p>關節極限用碰撞掃描量。j3 回報下限 +5°、上限 −5°——一個<strong>負寬度</strong>的關節。
 負寬度不是量測誤差，是量測到了一個不存在的東西。</p>
@@ -298,7 +300,7 @@ part = Pos(0, -FLANGE_SEP, 0) * _bracket(Z_J3, Z_TIP, width)</code></pre>
 <p>所以 MJCF 用的是 <code>motor</code> 致動器（純力矩輸入），不是 <code>position</code>——
 把阻抗律交給 MuJoCo 的位置伺服，正好會藏掉這支手臂唯一值得看的東西。</p>
 
-<div class="fail">
+<div class="card fail">
 <h4>失敗 #64：j3 用 233% 額定扭矩「靜止」在距目標 0.14° 的地方</h4>
 <p>第一次跑，j3 的 RMS 力矩是 6.991 N·m —— 額定的 233%，而且 98.7% 的時間貼在 ±7 N·m 峰值上。
 這個關節的重力負載是 0.011 N·m。同時「尾段振盪」在 Kp=20、60、200、500 四個值下
@@ -315,7 +317,7 @@ Kd·v = 2 × 3.52 = 7.04 N·m，整個 −7 都是阻尼項在追自己造成的
 會變舊的是設定點，不是回授。我把整條律都跑在 CAN 率上了。修正後 j3 從 233% 降到 8.3%，尾段振盪 0.0000°。</p>
 </div>
 
-<div class="fail">
+<div class="card fail">
 <h4>失敗 #65：修好之後，掃描每一格都通過——那是另一種空的通過</h4>
 <p>修完 Kd 問題，Kp 從 20 掃到 500、CAN 率從 1000 掃到 200，<strong>每一格都「穩定」，
 而且大多是 0.000°</strong>。上一個 bug 是每格都相同的壞值，這個是每格都相同的好值，
@@ -378,7 +380,9 @@ Kd = 1.99 尾段振盪 0.0074°，Kd = 4.77 尾段 0.2287° 且力矩飽和到 6
 </main>
 </div>
 <script>
-const links=[...document.querySelectorAll('nav a')];
+// 只追蹤本頁的 #錨點：拆頁後導覽裡還有跨頁連結與站首頁的絕對網址，
+// 把 'https://…' 丟進 querySelector 會直接拋例外（T11 抓到的）。
+const links=[...document.querySelectorAll('nav a')].filter(a=>(a.getAttribute('href')||'').startsWith('#'));
 const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
 const obs=new IntersectionObserver(es=>{
   es.forEach(e=>{

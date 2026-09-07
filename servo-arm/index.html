@@ -480,14 +480,14 @@ video {
           <td>04</td>
           <td><a href="arm-sts3215.html">STS3215-Arm</a></td>
           <td>212 mm / 酬載 100 g</td>
-          <td>第四支：匯流排舵機、有回授。四支裡唯一報得出真實位置的——閉環驗證從這裡開始。</td>
+          <td>第四支：匯流排舵機、有位置回授。五支裡第一支報得出真實位置的——閉環驗證從這裡開始。</td>
           <td><a href="arm-sts3215.html" class="action-link">VIEW ↗</a></td>
         </tr>
         <tr>
           <td>05</td>
           <td><a href="arm-dm4310.html">DM-J4310-Arm</a></td>
           <td>173 mm / 酬載 500 g</td>
-          <td>第五支：準直驅、力矩回授。CAN 協定層完成；CAD 因法蘭安裝方式不同而另需一套結構。</td>
+          <td>第五支：準直驅、力矩回授。CAN 協定層、CAD、URDF/MJCF 與力矩控制模擬皆完成；法蘭安裝方式不同，結構是另一套。</td>
           <td><a href="arm-dm4310.html" class="action-link">VIEW ↗</a></td>
         </tr>
       </tbody>
@@ -521,7 +521,7 @@ video {
         <tr>
           <td>M3</td>
           <td><a href="report.html#vv">驗證系統</a></td>
-          <td>35 層測試（幾何／解析解／不變量／蛻變／差異／收斂／性質／回歸／可組裝／可列印／網頁／靜態發布）共 567 項，外加變異測試驗證這套測試本身有效。</td>
+          <td>12 層測試（幾何／解析解／不變量／蛻變／差異／收斂／性質／回歸／可組裝／可列印／網頁／靜態發布）共 567 項，外加變異測試驗證這套測試本身有效。</td>
           <td><a href="report.html#vv" class="action-link">READ ↗</a></td>
         </tr>
         <tr>
@@ -533,7 +533,7 @@ video {
         <tr>
           <td>M5</td>
           <td><a href="report.html">專案記錄頁</a></td>
-          <td>完整過程：SG90 幾何量測、手臂設計、模擬環境調查、扭矩分析、模擬影片，以及 65 項失敗紀錄與已知限制。</td>
+          <td>完整過程：SG90 幾何量測、手臂設計、模擬環境調查、扭矩分析、模擬影片，以及 66 項失敗紀錄與已知限制。</td>
           <td><a href="report.html" class="action-link">READ ↗</a></td>
         </tr>
       </tbody>
@@ -545,7 +545,7 @@ video {
       <div class="section-title border-bottom">分區 C：操作指南 (INSTRUCTIONS)</div>
       <div class="p-content">
         <h4>手機 / 平板上的操作</h4>
-        <p>兩個互動頁在窄螢幕會自動改成上下堆疊（3D 視圖在上、編輯器在下）。3D 視圖單指拖曳可旋轉、雙指縮放。程式碼編輯在手機上可用但不好打字，建議手機看模擬、電腦寫程式。</p>
+        <p>兩個互動頁在窄螢幕會自動改成上下堆疊（編輯器在上、3D 視圖在下）。3D 視圖單指拖曳可旋轉、雙指縮放。程式碼編輯在手機上可用但不好打字，建議手機看模擬、電腦寫程式。</p>
         
         <h4>啟動與停止</h4>
         <div style="position:relative">
@@ -570,7 +570,7 @@ cd ~/3d/servo-arm/sim &amp;&amp; ../.venv/bin/python serve_playground.py
         <div class="kpi-row"><div class="kpi-label">整機重量</div><div class="kpi-val">203 g</div></div>
         <div class="kpi-row"><div class="kpi-label">最壞姿態堵轉佔用</div><div class="kpi-val">44.7%</div></div>
         <div class="kpi-row"><div class="kpi-label">驗證檢查 (全過)</div><div class="kpi-val">567</div></div>
-        <div class="kpi-row"><div class="kpi-label">記錄在案的失敗</div><div class="kpi-val">65</div></div>
+        <div class="kpi-row"><div class="kpi-label">記錄在案的失敗</div><div class="kpi-val">66</div></div>
       </div>
 
       <div class="static-notice border-top mt-auto">

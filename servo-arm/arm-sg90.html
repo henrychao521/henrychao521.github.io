@@ -99,6 +99,8 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <h1>SG90-Arm</h1>
   <p class="sub">5 軸微型伺服 · 202 mm · 酬載 4 g</p>
   <div class="grp">頁面</div>
+  <a href="index.html">← 入口頁</a>
+  <a href="https://henrychao521.github.io/">站首頁</a>
   <a href="report.html">專案總覽與驗證系統</a>
   <span class="cur" style="display:block;padding:5px 20px;color:var(--accent);font-weight:600;font-size:13px">▸ SG90-Arm</span>
   <a href="arm-nema17.html">NEMA17-Arm</a>
@@ -167,7 +169,7 @@ s = −1 : 本體朝 +X，舵盤面在 xs − 6.0（連桿材料在 X &lt; 此�
 <p>一個連桿若要<strong>同時</strong>鎖上關節 <em>j</em> 的舵盤、又承載關節 <em>j+1</em> 的伺服，
 就必須滿足 <code>horn_side(s_j) == seat_side(s_{j+1})</code>，而這<strong>只有在符號交替時成立</strong>。
 搞錯的話，鎖孔會切在空氣中——幾何仍然輸出成一個合法的單一實體，完全沒有錯誤訊息。
-我第一版就是在 J5 上犯了這個錯（見<a href="#failures">失敗 #3</a>）。</p>
+我第一版就是在 J5 上犯了這個錯（見<a href="report.html#failures">失敗 #3</a>）。</p>
 </div>
 
 <figure>
@@ -296,7 +298,7 @@ sketch.write(deg)
 <tr><td>j5_gripper</td><td class="num">10.27°</td><td class="num">2.02°</td><td class="num">0.0773 N·m</td><td class="num">43.8%</td><td class="num">0.0%</td></tr>
 </table>
 <p><strong>酬載：最大舉高 +50.0 mm，水平搬運 73.9 mm → GRASP_SUCCEEDED</strong></p>
-<p style="color:var(--warn)"><strong>後續更正（見 <a href="#external">#54</a>）</strong>：
+<p style="color:var(--warn)"><strong>後續更正（見 <a href="report.html#external">#54</a>）</strong>：
 這個舉高是<strong>零關節摩擦下的上界，不是值</strong>。MJCF 的
 <code>frictionloss</code> 未設＝0，而塑膠齒輪舵機有實際的靜摩擦。
 把它掃過 0–25% 堵轉扭矩後舉高是 <strong>43.5–49.6 mm</strong>；
@@ -366,7 +368,7 @@ sketch.write(deg)
 重現：<code>sim/torque_worst_case.py</code>。</p>
 </div>
 
-<p><strong>後續更正（見 <a href="#ft5425bl">#48</a>）</strong>：下面這個「50% 堵轉」的標準，
+<p><strong>後續更正（見 <a href="arm-ft5425bl.html#ft5425bl">#48</a>）</strong>：下面這個「50% 堵轉」的標準，
 在拿到 FT5425BL 同時標示堵轉與額定的資料之後才看得出來——它<strong>本身就在連續工況之外</strong>
 （44.7% 堵轉 ≈ 134% 連續額定）。第一支手臂撐得住是因為動件只有 70 g、酬載 4 g，
 不是因為這個標準保守。第三、四支手臂改以連續額定為基準。</p>
@@ -472,7 +474,7 @@ sketch.write(deg)
 </table>
 
 <div class="card fail">
-<h4>#28 「數圓柱面」的普查法在 v2 失效 <span class="tag fixed">已修</span></h4>
+<h4>#53 「數圓柱面」的普查法在 v2 失效 <span class="tag fixed">已修</span></h4>
 <p>v1 沒有圓角，所以每個圓柱面都是孔，數面等於數孔。v2 到處都是 <code>RectangleRounded</code>，
 一個半徑 1.5 的圓角和一個 Ø3 銷孔在「半徑」上完全一樣。</p>
 <p>而且 v2 的多壁結構讓<strong>一個孔穿過兩道壁會產生兩個圓柱面</strong>，
@@ -494,7 +496,7 @@ sketch.write(deg)
 <h3>全螺絲組裝與工程圖</h3>
 <p>把所有緊固件都畫出來、組裝、再出三視圖與爆炸圖，原本的目的是讓 VLM 判讀。
 結論是<strong>看圖不夠</strong>——真正的組裝缺陷全部是「數字」而不是「輪廓」，
-所以這批圖之後才有了 T8 可組裝性那一層（見<a href="#vv">驗證章節</a>）。
+所以這批圖之後才有了 T8 可組裝性那一層（見<a href="report.html#vv">驗證章節</a>）。
 圖仍然保留，因為它們是人工複核最快的入口。</p>
 
 <figure>
@@ -559,7 +561,7 @@ sketch.write(deg)
 原始碼註解裡那句「~34 deg, rounded to 30 for the model」就是錯誤來源：
 那次四捨五入沒留下任何痕跡，因為 30° 仍涵蓋 IK 要的 +118°，
 於是模擬與韌體<strong>一致地</strong>跑在一個沒人裝得出來的組態上。
-連帶重新基準化 T7，並因此發現黃金基準本身也有問題（見 <a href="#nema17">#40</a>）。</p>
+連帶重新基準化 T7，並因此發現黃金基準本身也有問題（見 <a href="arm-nema17.html#nema17">#40</a>）。</p>
 <p><strong>為什麼原本的測試沒抓到</strong>：測試檢查的是「行程寬度＝180°」與「索引角與極限一致」，
 兩者在 30° 下都成立。<strong>當時沒有任何一項知道花鍵是離散的</strong>。</p>
 <p><strong>已經補上了</strong>：T2 新增「舵盤索引角必須是整齒」，常數 <code>SPLINE_TEETH = 21</code>
@@ -570,7 +572,7 @@ sketch.write(deg)
 
 <div class="card fail">
 <h4>Blocker 2：耳片壁厚已在下限，而 SG90 是被大量翻製的零件</h4>
-<p><a href="#ecosystem">T10 那節</a>算出耳片螺孔的壁厚上限是 1.10 mm，是 SG90 的幾何決定的。
+<p><a href="report.html#ecosystem">T10 那節</a>算出耳片螺孔的壁厚上限是 1.10 mm，是 SG90 的幾何決定的。
 問題是 SG90 <strong>沒有單一製造商</strong>：它由中國數百家小廠翻製，
 「尺寸、速度、扭矩、軸的大小會依來源甚至批次大幅變動」，
 資料表寫 22.5 mm 的寬度<strong>實測有約 0.3 mm 的浮動</strong>，
@@ -612,7 +614,7 @@ Arduino 的穩壓器承受不了，會 brownout 或直接燒。需要：</p>
 <li>粗一點的線 + 電源端加電容，降低電壓跌落</li>
 </ul>
 <p class="small">注意這裡的 0.5–0.7 A 是社群與資料表的引用值。
-依<a href="#ecosystem">前一節</a>的邏輯，這正是本專案會堅持實測的數字 ——
+依<a href="report.html#ecosystem">前一節</a>的邏輯，這正是本專案會堅持實測的數字 ——
 而量它需要的 INA219 也正好是補 validation 缺口要用的那一顆。</p>
 
 <h3>組裝順序：伺服要先歸中再上機</h3>
@@ -622,7 +624,7 @@ Arduino 的穩壓器承受不了，會 brownout 或直接燒。需要：</p>
   否則關節的行程會有一半被機構極限吃掉</li>
 <li>裝舵盤時若卡不進去、或裝進去孔不在正交方向，把它拔起來轉約 45° 再試</li>
 <li><strong>j4 的舵盤裝在 +2 齒（34.29°）</strong>，不是中位（見 Blocker 1）</li>
-<li>依 <a href="#vv">T8</a> 推導出的裝配順序組裝：<strong>先把伺服鎖上托架，再套上一節連桿的叉臂</strong>。
+<li>依 <a href="report.html#vv">T8</a> 推導出的裝配順序組裝：<strong>先把伺服鎖上托架，再套上一節連桿的叉臂</strong>。
   T8 就是依這個順序判定起子路徑的，所以順序反了會有 9 根螺絲鎖不到</li>
 </ol>
 
@@ -662,7 +664,7 @@ Arduino 的穩壓器承受不了，會 brownout 或直接燒。需要：</p>
 <tr><td><a href="https://loginov-rocks.medium.com/calibrate-4-dof-robot-arm-mearm-for-inverse-kinematics-part-2-16698b674694">MeArm IK 校正</a></td>
   <td>同樣是 SG90 手臂，記錄了實機角度與模型角度對不上時怎麼校</td></tr>
 <tr><td><a href="https://github.com/AntoBrandi/Arduino-Bot">Arduinobot</a></td>
-  <td>韌體與 ROS 2 介面的參考切法（見<a href="#ros">ROS 節</a>）</td></tr>
+  <td>韌體與 ROS 2 介面的參考切法（見<a href="report.html#ros">ROS 節</a>）</td></tr>
 </table>
 
 <div class="card note">
@@ -676,7 +678,9 @@ Arduino 的穩壓器承受不了，會 brownout 或直接燒。需要：</p>
 </main>
 </div>
 <script>
-const links=[...document.querySelectorAll('nav a')];
+// 只追蹤本頁的 #錨點：拆頁後導覽裡還有跨頁連結與站首頁的絕對網址，
+// 把 'https://…' 丟進 querySelector 會直接拋例外（T11 抓到的）。
+const links=[...document.querySelectorAll('nav a')].filter(a=>(a.getAttribute('href')||'').startsWith('#'));
 const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
 const obs=new IntersectionObserver(es=>{
   es.forEach(e=>{

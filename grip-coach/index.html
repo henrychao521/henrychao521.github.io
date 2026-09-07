@@ -1,336 +1,261 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-
 <head>
-    <meta charset="UTF-8">
-    <title>AI 握筆姿勢教練 (CodePen 版)</title>
-    <!-- 引入 MediaPipe 函式庫 -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 握筆姿勢教練 — 趙珩宇｜生活科技教室</title>
+<meta name="description" content="用 webcam 與 MediaPipe Hands 在瀏覽器即時辨識握筆姿勢：拇指包食指、握太低、握太鬆，影像不離開你的電腦。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='80' height='80' fill='%231c1917'/><rect x='24' y='24' width='52' height='52' fill='%23ffe36a'/></svg>">
+<!-- MediaPipe legacy Hands：版本鎖定，locateFile 也用同一個版本，避免 jsDelivr 解析到不相容的新版 -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+<style>
+  :root { --ink:#1c1917; --muted:#57534e; --bg:#efe6d6; --note:#ffe36a; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; line-height:1.6; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 16px 18px 40px; }
+  .top { display:flex; justify-content:space-between; align-items:center; gap:12px; min-height:48px; border-bottom:2px solid var(--ink); margin-bottom:18px; }
+  .top a { color:inherit; text-decoration:none; font-weight:700; min-height:44px; display:inline-flex; align-items:center; }
+  h1 { font-size: clamp(22px, 5vw, 30px); margin: 0 0 6px; font-weight: 900; }
+  .lede { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
 
-    <style>
-        /* CSS 樣式區 (請複製到 CodePen CSS 區塊) */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-            background: #f0f2f5;
-            padding: 20px;
-        }
+  /* 影像區：寬度跟著容器，長寬比由實際串流決定（loadedmetadata 時設定） */
+  .stage { position: relative; width: 100%; max-width: 640px; aspect-ratio: 4 / 3; margin: 0 auto; background: #111; border: 3px solid var(--ink); overflow: hidden; }
+  .stage video, .stage canvas { position:absolute; inset:0; width:100%; height:100%; transform: scaleX(-1); }
+  .stage video { object-fit: cover; }
+  .verdict { position:absolute; left:0; right:0; bottom:0; padding:8px 12px; background:rgba(0,0,0,.55); color:#fff; font-weight:900; font-size:18px; text-align:center; }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            color: #1f2937;
-            margin-bottom: 10px;
-        }
-
-        .video-container {
-            position: relative;
-            width: 640px;
-            height: 480px;
-            margin: 0 auto;
-            background: black;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        /* 鏡頭與畫布重疊與水平翻轉 */
-        video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 640px;
-            height: 480px;
-            transform: scaleX(-1);
-        }
-
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 640px;
-            height: 480px;
-            transform: scaleX(-1);
-        }
-
-        .feedback-overlay {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 24px;
-            font-weight: bold;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .controls {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            max-width: 640px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        button {
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            font-size: 14px;
-        }
-
-        button:hover {
-            opacity: 0.8;
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        .btn-correct {
-            background-color: #10b981;
-            grid-column: span 3;
-            font-size: 16px;
-        }
-
-        .btn-error {
-            background-color: #ef4444;
-        }
-
-        .btn-download {
-            background-color: #3b82f6;
-            grid-column: span 3;
-            margin-top: 10px;
-        }
-
-        #status {
-            margin-top: 15px;
-            color: #6b7280;
-            font-size: 14px;
-            min-height: 20px;
-        }
-
-        .loader {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
+  .advice { max-width:640px; margin:14px auto 0; padding:12px 16px; border-left:5px solid #94a3b8; background:#fff8e8; font-size:15px; }
+  .controls { max-width:640px; margin:14px auto 0; display:flex; gap:10px; flex-wrap:wrap; }
+  button { font:inherit; cursor:pointer; min-height:44px; padding:8px 18px; border:2px solid var(--ink); background:#fff8e8; font-weight:700; }
+  button:hover { background: var(--note); }
+  button:disabled { opacity:.5; cursor:default; }
+  .status { max-width:640px; margin:10px auto 0; font-size:13px; color:var(--muted); font-family:"IBM Plex Mono",Menlo,monospace; min-height:1.4em; }
+  .status.err { color:#9f1239; }
+  .hidden { display:none !important; }
+  .howto { max-width:640px; margin:28px auto 0; font-size:14px; color:var(--muted); }
+  .howto b { color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+</style>
 </head>
-
 <body>
-    <!-- HTML 結構區 (請複製到 CodePen HTML 區塊) -->
-    <div class="container">
-        <h2>🖐️ AI 握筆教練 (CodePen 版)</h2>
-        <div id="loading">載入 AI 模型中，請稍候... <div class="loader"></div>
-        </div>
+<div class="wrap">
+  <div class="top">
+    <a href="/">← 趙珩宇｜生活科技教室</a>
+    <a href="/maker.html" style="font-weight:500">Maker 教案</a>
+  </div>
 
-        <div class="video-container" id="video-wrapper" style="display:none;">
-            <video id="input_video"></video>
-            <canvas id="output_canvas"></canvas>
-            <div id="feedback-text" class="feedback-overlay">偵測中...</div>
-        </div>
+  <h1>AI 握筆姿勢教練</h1>
+  <p class="lede">開啟相機，把握筆的手放進畫面，會即時判斷「拇指包食指」「握太低」「握太鬆」並給修正建議。影像只在你的瀏覽器裡處理，不會上傳。</p>
 
-        <div id="advice" style="max-width:640px;margin:14px auto 0;padding:12px 16px;border-radius:12px;border-left:5px solid #10b981;background:#f8fafc;color:#334155;font-size:15px;line-height:1.7;text-align:left;">把手放進鏡頭，我會即時判斷你的握姿並給修正建議。</div>
+  <div class="stage" id="stage">
+    <video id="input_video" muted playsinline autoplay aria-label="相機畫面（鏡像）"></video>
+    <canvas id="output_canvas" aria-hidden="true"></canvas>
+    <div id="feedback-text" class="verdict" role="status" aria-live="polite">尚未啟動相機</div>
+  </div>
 
-        <div class="controls" id="controls" style="display:none;">
-            <!-- CodePen 無法存到 Google Drive，改為下載圖片 -->
-            <button class="btn-download" onclick="capture('Snapshot')">📸 拍照並下載截圖</button>
-        </div>
+  <div id="advice" class="advice" aria-live="polite">按「開啟相機」開始。第一次會請你允許相機權限。</div>
 
-        <div id="status">準備就緒</div>
-    </div>
+  <div class="controls">
+    <button id="btn-start">開啟相機</button>
+    <button id="btn-capture" disabled>拍照並下載截圖</button>
+  </div>
+  <div id="status" class="status" role="status" aria-live="polite"></div>
 
-    <script>
-        // JS 程式碼區 (請複製到 CodePen JS 區塊)
-        const videoElement = document.getElementById('input_video');
-        const canvasElement = document.getElementById('output_canvas');
-        const canvasCtx = canvasElement.getContext('2d');
-        const statusDiv = document.getElementById('status');
-        const feedbackDiv = document.getElementById('feedback-text');
-        const adviceDiv = document.getElementById('advice');
+  <div class="howto">
+    <b>判斷方式</b>：MediaPipe Hands 只看得到手的 21 個關鍵點，看不到筆。三個判斷都是用「拇指尖、食指第二關節、食指尖、中指尖、手腕」之間的相對距離推算，並以手掌長度正規化，所以手離鏡頭遠近不影響結果。連續 10 幀取多數決，避免判斷閃爍。
+  </div>
+</div>
 
-        // --- 握姿分析邏輯 (JavaScript 版) ---
-        function analyzeGrip(landmarks) {
-            const thumbTip = landmarks[4];
-            const indexPip = landmarks[6];
-            const indexTip = landmarks[8];
-            const middleTip = landmarks[12];
-            const wrist = landmarks[0];
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const video = $('input_video'), canvas = $('output_canvas'), stage = $('stage');
+  const feedback = $('feedback-text'), advice = $('advice'), status = $('status');
+  const btnStart = $('btn-start'), btnCapture = $('btn-capture');
+  const ctx = canvas.getContext('2d');
+  const CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/';
 
-            // 1. 包指檢查 (Thumb Wrap)
-            const thumbWrapDist = Math.hypot(thumbTip.x - indexPip.x, thumbTip.y - indexPip.y);
+  let stream = null, hands = null, running = false, lastVerdict = null;
+  const history = [];   // 最近 N 幀的判斷，取多數決
+  const N = 10;
 
-            // 2. 握太低檢查 (Too Low)
-            const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+  function say(msg, isErr) { status.textContent = msg; status.classList.toggle('err', !!isErr); }
+  function setAdvice(text, color) { advice.textContent = text; advice.style.borderLeftColor = color || '#94a3b8'; }
 
-            // 3. 太鬆檢查 (Loose)
-            const handSize = Math.hypot(wrist.x - middleTip.x, wrist.y - middleTip.y);
-            const pinchRatio = (handSize > 0) ? (pinchDist / handSize) : 1.0;
+  // ── 握姿判斷：全部距離除以手掌長度（手腕→中指尖），與鏡頭距離無關 ──
+  function analyzeGrip(lm) {
+    const thumbTip = lm[4], indexPip = lm[6], indexTip = lm[8], middleTip = lm[12], wrist = lm[0];
+    const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+    const handSize = dist(wrist, middleTip);
+    if (!(handSize > 1e-6)) return null;
+    const thumbWrap = dist(thumbTip, indexPip) / handSize;
+    const pinch = dist(thumbTip, indexTip) / handSize;
+    const RED = '#ef4444', AMBER = '#f59e0b', GREEN = '#10b981';
 
-            const RED = "#ef4444", AMBER = "#f59e0b", GREEN = "#10b981";
+    if (thumbWrap < 0.22) {
+      const isOver = thumbTip.y < indexPip.y - 0.02 * handSize;
+      return isOver
+        ? { key: 'over', status: '❌ 拇指包食指', color: RED, advice: '拇指尖跨到食指上方了。請把拇指移到食指的「側邊」，不要壓在食指上。' }
+        : { key: 'under', status: '❌ 大拇指內包', color: RED, advice: '拇指縮在食指下方／內側。讓拇指自然往外側伸出，和食指之間形成圓圓的「虎口」。' };
+    }
+    if (pinch < 0.18) {
+      return { key: 'low', status: '❌ 握太低', color: RED, advice: '拇指和食指太靠近、握得太低。請往上握一點，指尖離筆尖約 1.5 公分以上。' };
+    }
+    if (pinch >= 0.42) {
+      return { key: 'loose', status: '⚠️ 握太鬆', color: AMBER, advice: '握筆太鬆，筆容易晃。用拇指、食指、中指三個點，輕輕但穩穩地抓住筆桿。' };
+    }
+    return { key: 'ok', status: '✅ 正確握姿', color: GREEN, advice: '很好！維持拇指、食指、中指的「三指三角」握法，繼續保持。' };
+  }
 
-            if (thumbWrapDist < 0.05) {
-                // 包指再細分：拇指尖在食指 PIP「上方」(y 較小) = 包食指；否則 = 內包
-                const isOver = thumbTip.y < (indexPip.y - 0.005);
-                if (isOver) {
-                    return { status: "❌ 拇指包食指", color: RED,
-                        advice: "您的拇指尖跨越在食指上方。請把拇指移到食指的「側邊」，不要壓在食指上方。" };
-                }
-                return { status: "❌ 大拇指內包", color: RED,
-                    advice: "您的拇指縮在食指下方／內側。請讓拇指自然往外側伸出，和食指之間形成圓圓的「虎口」。" };
-            } else if (pinchDist < 0.04) {
-                return { status: "❌ 握太低", color: RED,
-                    advice: "拇指和食指太靠近、握得太低。請往上握，指尖距離筆尖約 1.5 公分以上。" };
-            } else if (pinchRatio >= 0.3) {
-                return { status: "⚠️ 握太鬆", color: AMBER,
-                    advice: "握筆太鬆，筆容易晃動。請用拇指、食指、中指三個點，輕輕但穩穩地抓住筆桿。" };
-            }
-            return { status: "✅ 正確握姿", color: GREEN,
-                advice: "很好！維持拇指、食指、中指的穩定「三指三角」握法，繼續保持。" };
+  function majority(items) {
+    const count = {};
+    let best = null, bestN = 0;
+    for (const it of items) { count[it.key] = (count[it.key] || 0) + 1; if (count[it.key] > bestN) { bestN = count[it.key]; best = it; } }
+    return best;
+  }
+
+  function onResults(results) {
+    ctx.save();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const list = results.multiHandLandmarks || [];
+    if (list.length) {
+      const lm = list[0];
+      drawConnectors(ctx, lm, HAND_CONNECTIONS, { color: 'rgba(0,230,118,0.8)', lineWidth: 2 });
+      drawLandmarks(ctx, lm, { color: '#FF3B3B', lineWidth: 1, radius: 3 });
+      const a = analyzeGrip(lm);
+      if (a) {
+        history.push(a); if (history.length > N) history.shift();
+        const v = majority(history);
+        lastVerdict = v;
+        feedback.textContent = v.status; feedback.style.color = v.color;
+        setAdvice(v.advice, v.color);
+        ctx.strokeStyle = v.color; ctx.lineWidth = 6; ctx.strokeRect(0, 0, canvas.width, canvas.height);
+      }
+    } else {
+      history.length = 0; lastVerdict = null;
+      feedback.textContent = '🖐️ 請將握筆的手放入鏡頭'; feedback.style.color = '#fff';
+      setAdvice('請把握筆的手完整放進畫面，手掌朝向鏡頭。');
+    }
+    ctx.restore();
+  }
+
+  // 畫布的實際像素跟串流一致（再乘 DPR），線條才不會被拉成橢圓或糊掉
+  function fitCanvas() {
+    const w = video.videoWidth, h = video.videoHeight;
+    if (!w || !h) return;
+    stage.style.aspectRatio = `${w} / ${h}`;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+  }
+
+  const CAMERA_ERR = {
+    NotAllowedError: '你拒絕了相機權限。請在網址列的相機圖示允許後，再按一次「開啟相機」。',
+    NotFoundError: '找不到相機裝置。',
+    NotReadableError: '相機正被其他程式使用中，請關掉它再試。',
+    OverconstrainedError: '相機不支援要求的解析度。',
+    SecurityError: '這個頁面必須用 https 或 localhost 開啟才能用相機。',
+  };
+
+  async function getStream() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw Object.assign(new Error('unsupported'), { name: 'SecurityError' });
+    }
+    try {
+      return await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false });
+    } catch (e) {
+      // 只有在「限制條件不合」或「找不到符合的相機」時才放寬重試；權限被拒不重問
+      if (e.name === 'OverconstrainedError' || e.name === 'NotFoundError') {
+        return await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      }
+      throw e;
+    }
+  }
+
+  async function loadModel() {
+    if (hands) return;
+    if (typeof Hands === 'undefined') throw new Error('AI 模型程式庫載入失敗，請確認網路能連到 cdn.jsdelivr.net 後重新整理。');
+    say('載入 AI 模型中…');
+    hands = new Hands({ locateFile: f => CDN + f });
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+    hands.onResults(onResults);
+    await hands.initialize();
+  }
+
+  async function start() {
+    btnStart.disabled = true;
+    try {
+      await loadModel();
+      say('開啟相機中…');
+      stream = await getStream();
+      video.srcObject = stream;
+      await new Promise(r => video.onloadedmetadata = r);
+      await video.play();
+      fitCanvas();
+      running = true;
+      btnCapture.disabled = false;
+      btnStart.textContent = '關閉相機'; btnStart.disabled = false;
+      say('相機已開啟。');
+      feedback.textContent = '偵測中…';
+      const pump = async () => {
+        if (!running) return;
+        if (video.readyState >= 2) {
+          try { await hands.send({ image: video }); }
+          catch (e) { say('AI 推論失敗：' + (e.message || e), true); }
         }
+        requestAnimationFrame(pump);
+      };
+      pump();
+    } catch (e) {
+      stop(true);
+      const msg = CAMERA_ERR[e && e.name] || (e && e.message) || String(e);
+      say(msg, true);
+      setAdvice('沒有畫面時的檢查順序：相機權限 → 是否有其他程式佔用 → 網路能否連到 CDN。', '#ef4444');
+    }
+  }
 
-        function onResults(results) {
-            canvasCtx.save();
-            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+  function stop(silent) {
+    running = false;
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    video.srcObject = null;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    history.length = 0; lastVerdict = null;
+    btnCapture.disabled = true;
+    btnStart.textContent = '開啟相機'; btnStart.disabled = false;
+    if (!silent) { say('相機已關閉。'); feedback.textContent = '尚未啟動相機'; feedback.style.color = '#fff'; setAdvice('按「開啟相機」開始。'); }
+  }
 
-            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-                for (const landmarks of results.multiHandLandmarks) {
-                    drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS,
-                        { color: 'rgba(0,230,118,0.65)', lineWidth: 1.5 });
-                    drawLandmarks(canvasCtx, landmarks, { color: '#FF3B3B', lineWidth: 1, radius: 2 });
+  btnStart.addEventListener('click', () => running ? stop() : start());
 
-                    // 執行分析
-                    const analysis = analyzeGrip(landmarks);
-                    feedbackDiv.textContent = analysis.status;
-                    feedbackDiv.style.color = analysis.color;
-                    adviceDiv.textContent = analysis.advice;
-                    adviceDiv.style.borderLeftColor = analysis.color;
+  // 切到背景時釋放相機（iOS Safari 會把畫面凍住），回來再自動接上
+  let pausedByHide = false;
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && running) { pausedByHide = true; stop(true); say('已暫停（頁面在背景）。'); }
+    else if (!document.hidden && pausedByHide) { pausedByHide = false; start(); }
+  });
+  window.addEventListener('resize', fitCanvas);
 
-                    // 畫出外框顏色（細）
-                    canvasCtx.strokeStyle = analysis.color;
-                    canvasCtx.lineWidth = 3;
-                    canvasCtx.strokeRect(0, 0, canvasElement.width, canvasElement.height);
-                }
-            } else {
-                feedbackDiv.textContent = "🖐️ 請將手放入鏡頭";
-                feedbackDiv.style.color = "white";
-                adviceDiv.textContent = "請將握筆的手完整放入鏡頭。";
-                adviceDiv.style.borderLeftColor = "#94a3b8";
-            }
-            canvasCtx.restore();
-        }
-
-        const hands = new Hands({
-            locateFile: (file) => {
-                return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-            }
-        });
-
-        hands.setOptions({
-            maxNumHands: 1,
-            modelComplexity: 1,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5
-        });
-
-        hands.onResults(onResults);
-
-        // 自行取得相機串流（放寬限制，避免 Mac 前鏡頭 OverconstrainedError）
-        async function startCamera() {
-            videoElement.muted = true;
-            videoElement.setAttribute('playsinline', '');
-            videoElement.autoplay = true;
-            let stream;
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
-                    audio: false
-                });
-            } catch (e) {
-                // 後備：最寬鬆條件，相容各種鏡頭
-                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-            }
-            videoElement.srcObject = stream;
-            await videoElement.play();
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('video-wrapper').style.display = 'block';
-            document.getElementById('controls').style.display = 'grid';
-            const pump = async () => {
-                if (videoElement.readyState >= 2) {
-                    try { await hands.send({ image: videoElement }); } catch (_) {}
-                }
-                requestAnimationFrame(pump);
-            };
-            pump();
-        }
-
-        startCamera().catch(err => {
-            statusDiv.textContent = "無法啟動相機（請在網址列允許相機權限後重新整理）：" + err;
-        });
-
-        // 拍照並下載功能 (CodePen 專用)
-        window.capture = function (label) {
-            statusDiv.textContent = "截圖下載中...";
-
-            // 建立暫存畫布來合併影像與骨架 (簡單版只截圖原始影像)
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = 640;
-            tempCanvas.height = 480;
-            const ctx = tempCanvas.getContext('2d');
-
-            // 繪製視訊
-            ctx.drawImage(videoElement, 0, 0, 640, 480);
-
-            // (選擇性) 繪製骨架 Canvas 到截圖上
-            ctx.drawImage(canvasElement, 0, 0, 640, 480);
-
-            // 下載機制
-            const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.9);
-            const link = document.createElement('a');
-            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-            link.download = `handpose_${label}_${timestamp}.jpg`;
-            link.href = dataUrl;
-            link.click();
-
-            statusDiv.textContent = "已下載截圖！";
-            setTimeout(() => { statusDiv.textContent = "準備就緒"; }, 2000);
-        }
-    </script>
+  // 截圖：所見即所得（鏡像後的畫面＋骨架），用 blob 而不是 data: URL，iOS 才會真的下載
+  btnCapture.addEventListener('click', () => {
+    if (!running || !video.videoWidth) return;
+    const w = video.videoWidth, h = video.videoHeight;
+    const out = document.createElement('canvas'); out.width = w; out.height = h;
+    const c = out.getContext('2d');
+    c.translate(w, 0); c.scale(-1, 1);
+    c.drawImage(video, 0, 0, w, h);
+    c.drawImage(canvas, 0, 0, w, h);
+    const label = lastVerdict ? lastVerdict.key : 'nohand';
+    out.toBlob(blob => {
+      if (!blob) { say('截圖失敗。', true); return; }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `grip_${label}_${new Date().toISOString().replace(/[:.]/g, '-')}.jpg`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      say('已下載截圖。');
+    }, 'image/jpeg', 0.9);
+  });
+})();
+</script>
 </body>
-
 </html>

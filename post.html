@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="page-title">載入中 — 趙珩宇｜生活科技教室</title>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<title id="page-title">文章 — 趙珩宇｜生活科技教室</title>
+<!--POST-META-->
+<script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/lib/marked.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,7 +30,7 @@
 <div id="error-state" class="hidden b-errorbox">
   <h2 id="error-title">找不到文章</h2>
   <p id="error-message">請確認連結是否正確。</p>
-  <a href="/maker.html">回 Maker 教案</a>
+  <a href="/articles.html">回教學文章</a>　<a href="/maker.html">回 Maker 教案</a>
 </div>
 
 <article id="article" class="hidden">
@@ -85,10 +86,15 @@
   </div>
 </footer>
 
+<!--POST-SLUG-->
 <script src="/assets/js/shared.js"></script>
 <script>
+// 兩種進入方式：
+//  1. /posts/<collection>/<slug>.html —— scripts/build-indexes.py 用本檔當模板為每篇產生的靜態殼，
+//     <head> 已預填 title / description / og:*，社群分享預覽才拿得到內容；window.POST_* 由殼提供。
+//  2. /post.html?slug=... —— 舊連結相容，讀到內容後把網址換成靜態殼的位址。
 async function loadPost() {
-  const slug = getQuery('slug');
+  const slug = window.POST_SLUG || getQuery('slug');
   if (!slug) { document.getElementById('error-state').classList.remove('hidden'); return; }
   if (!/^[a-z0-9\-]+$/i.test(slug)) {
     document.getElementById('error-title').textContent = '無效的文章代碼';
@@ -97,9 +103,16 @@ async function loadPost() {
   }
 
   try {
-    let url = `/posts/maker/${slug}.md`;
-    let res = await fetch(url);
-    if (!res.ok) { url = `/posts/blog/${slug}.md`; res = await fetch(url); }
+    let url, res;
+    if (window.POST_COLLECTION) {
+      url = `/posts/${window.POST_COLLECTION}/${slug}.md`;
+      res = await fetch(url);
+    } else {
+      // blog 文章多，先試 blog 就不會每篇都先吃一個 404
+      url = `/posts/blog/${slug}.md`;
+      res = await fetch(url);
+      if (!res.ok) { url = `/posts/maker/${slug}.md`; res = await fetch(url); }
+    }
     if (!res.ok) throw new Error('找不到此文章');
 
     const raw = await res.text();
@@ -142,6 +155,12 @@ async function loadPost() {
       `https://github.com/henrychao521/henrychao521.github.io/edit/main${url}`;
 
     document.getElementById('article').classList.remove('hidden');
+
+    // 舊式 ?slug= 進來的，換成靜態殼的網址（分享時才有預覽）
+    if (!window.POST_SLUG && location.pathname.endsWith('/post.html')) {
+      const shell = url.replace(/\.md$/, '.html');
+      history.replaceState({}, '', shell);
+    }
   } catch (e) {
     document.getElementById('error-message').textContent = e.message;
     document.getElementById('error-state').classList.remove('hidden');

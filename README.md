@@ -2,7 +2,7 @@
 
 🦦 **趙珩宇 Henry × LivingTech** 個人作品站
 
-整合 GitHub 公開專案（6 個，其中 5 個可線上體驗） + 600+ 篇 [livingtech.education](https://livingtech.education) 教學文章，
+整合 13 個可線上體驗的公開專案 + 兩百多篇 [livingtech.education](https://livingtech.education) 教學文章，
 並提供 WordPress 級的 **Decap CMS 後台** 寫新文章。
 
 🌐 **線上：** https://henrychao521.github.io
@@ -13,20 +13,22 @@
 
 | 頁面 | 內容 |
 |------|------|
-| `/` (`index.html`) | 首頁：5 個精選作品（含線上 demo）+ 最新 6 篇文章 |
-| `/projects.html` | 公開 repo 展示（互動教學 / 模擬器 / 即時平台） |
-| `/articles.html` | livingtech.education 文章鏡像（搜尋 + 分類） |
-| `/maker.html` | Maker 教案 catalog（含難度、課時、硬體清單） |
-| `/admin/` | Decap CMS 寫作後台（GitHub OAuth 登入） |
+| `/` (`index.html`) | 首頁：教室實拍拼貼、13 個線上作品（`assets/js/shared.js` 的 `PROJECT_META`）、最新 6 篇 livingtech.education 文章、研習紀錄 |
+| `/articles.html` | 站內專案手記（`posts/blog/`）＋ livingtech.education 文章鏡像（搜尋＋分類） |
+| `/maker.html` | Maker 教案目次（難度、課時、硬體清單）＋ 站內 Maker 教學文（`posts/maker/`） |
+| `/posts/<collection>/<slug>.html` | 每篇文章的靜態殼：由 `scripts/build-indexes.py` 以 `post.html` 為模板產生，`<head>` 預填 og/description，社群分享才有預覽；內文由前端讀同名 `.md` 渲染 |
+| `/post.html?slug=…` | 舊連結相容，讀到內容後自動換成上面的靜態殼網址 |
+| `/servo-arm/` | 機械手臂五種致動器紀錄站（頁面由私人 repo `servo-arm` 的 `tools/build_static.py` + `tools/split_pages.py` 產生後複製過來） |
+| `/grip-coach/` | AI 握筆姿勢教練（MediaPipe Hands，純前端） |
+| `/admin/` | Decap CMS 寫作後台。**只在本機 `./dev.sh` 模式可用**；線上沒有 OAuth proxy，故不對外連結、robots 也擋掉 |
 
 ## 技術 stack
 
-- 純靜態 HTML + Tailwind CSS（CDN）
-- Vanilla JS（fetch WordPress.com REST API + GitHub API）
-- Decap CMS v3（`/admin/`）
+- 純靜態 HTML + 自寫 CSS（`assets/css/site.css`，首頁「工坊」與內頁「教科書」兩套皮膚）
+- Vanilla JS（fetch WordPress.com REST API）
+- 文章：Markdown + YAML frontmatter；`posts/*/index.json` 與靜態殼由 GitHub Action 自動重建
+- Decap CMS v3（`/admin/`，本機模式）
 - GitHub Pages 部署（main branch 自動）
-
-> 之後若內容變多可平滑升級到 Astro / Next.js。
 
 ## 本機開發
 

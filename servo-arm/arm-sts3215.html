@@ -99,6 +99,8 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
   <h1>STS3215-Arm</h1>
   <p class="sub">匯流排舵機 · 有回授 · 212 mm · 酬載 100 g</p>
   <div class="grp">頁面</div>
+  <a href="index.html">← 入口頁</a>
+  <a href="https://henrychao521.github.io/">站首頁</a>
   <a href="report.html">專案總覽與驗證系統</a>
   <a href="arm-sg90.html">SG90-Arm</a>
   <a href="arm-nema17.html">NEMA17-Arm</a>
@@ -111,7 +113,7 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
 <p class="lead">前三支手臂都是<strong>開環</strong>——韌體只知道自己下了什麼指令。
 所以這個專案的每一層檢查，都是<strong>拿一個模型去比另一個模型</strong>，
 整套可以自洽地描述一台不存在的機器。
-<a href="#external">#54 的 <code>frictionloss=0</code></a> 就是活生生的例子：
+<a href="report.html#external">#54 的 <code>frictionloss=0</code></a> 就是活生生的例子：
 零摩擦是自洽的，只是不真實，12 層測試沒有一條抓得到。</p>
 
 <h3>為什麼換掉 FT5425BL</h3>
@@ -122,7 +124,7 @@ hr{border:0;border-top:1px solid var(--line);margin:30px 0}
 <tr><td>額定扭矩</td><td style="color:var(--warn)">9.5 kg·cm，單一經銷商推得</td>
     <td style="color:var(--ok)"><strong>10 kg·cm，原廠公布</strong></td></tr>
 <tr><td>編碼器</td><td>—</td><td>12-bit 磁編碼，0.0879°/計數</td></tr>
-<tr><td>本體</td><td>45.2×37.4×24.7 mm（含包絡 62.6）</td><td>45.2×37.8×24.7 mm</td></tr>
+<tr><td>本體</td><td>40.6×20.0×30.9 mm（含包絡 62.6×34.9×20.0）</td><td>45.2×37.8×24.7 mm</td></tr>
 <tr><td>質量</td><td>67.6 g</td><td><strong>55 g</strong></td></tr>
 <tr><td>花鍵</td><td>25T</td><td>25T（<strong>相同</strong>，舵盤介面沿用）</td></tr>
 <tr><td>伸距（100 g、70% 額定）</td><td>190 mm</td><td><strong>212 mm</strong></td></tr>
@@ -178,7 +180,7 @@ FT5425BL 那支的紀錄<strong>保留為被取代的設計</strong>——
 </table>
 <p><strong>0.87 與 0.879 幾乎相等</strong>。這支持一個具體結論：
 這顆舵機的「虛隙」<strong>主要是韌體死區而不是齒隙</strong>——
-所以它可以被<strong>精確建模</strong>，不必像 <a href="#external">#55</a> 那樣
+所以它可以被<strong>精確建模</strong>，不必像 <a href="report.html#external">#55</a> 那樣
 因為沒有實測參數而留成缺口。</p>
 <p><strong>但這仍然不是 validation</strong>：樣本數 1，量的不是我們的手臂、
 不在我們的台子上。它比另外三支手臂高一階，如此而已。
@@ -216,7 +218,7 @@ FT5425BL 那支的紀錄<strong>保留為被取代的設計</strong>——
 <p>連桿更長卻更輕，不是同一支手臂的小擾動——舵機輕了 12.6 g、連桿長了 22 mm，
 對肩關節的慣量一個往下一個往上。</p>
 
-<div class="fail">
+<div class="card fail">
 <h4>失敗 #66：FT5425BL 的連桿慣性過期了十天，而 T0 一路回報 32/32</h4>
 <p>把產生器改成可注入之後，重跑 FT5425BL 應該得到<strong>逐位元組相同</strong>的輸出——
 畢竟只是換了取值來源。結果 <code>git diff</code> 顯示質量與慣性都變了，
@@ -252,7 +254,9 @@ ok = worst_m &lt; 1e-12 and worst_i &lt; 1e-15         # 容差是 JSON 的往�
 </main>
 </div>
 <script>
-const links=[...document.querySelectorAll('nav a')];
+// 只追蹤本頁的 #錨點：拆頁後導覽裡還有跨頁連結與站首頁的絕對網址，
+// 把 'https://…' 丟進 querySelector 會直接拋例外（T11 抓到的）。
+const links=[...document.querySelectorAll('nav a')].filter(a=>(a.getAttribute('href')||'').startsWith('#'));
 const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
 const obs=new IntersectionObserver(es=>{
   es.forEach(e=>{

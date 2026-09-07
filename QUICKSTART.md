@@ -5,7 +5,7 @@
 ## 第一次跑（裝套件）
 
 ```bash
-cd /Volumes/Work/henrychao521.github.io
+cd ~/3d/henrychao521.github.io
 
 # 確認有 Node 18+（你已有 v24，OK）
 node --version
