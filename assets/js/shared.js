@@ -127,6 +127,14 @@ const PROJECT_META = {
     demo: 'https://henrychao521.github.io/emt-course-site/',
     gradient: 'from-red-600 via-rose-600 to-orange-500',
   },
+  'taiwan-housing-dashboard': {
+    theme: 'teaching', featured: true, emoji: '🏘️',
+    title: '全台房市價量儀表板（實價登錄真實資料）',
+    blurb: '用內政部實價登錄開放資料，自己重新計算 2012 年起 22 縣市與臺北 12 區的成屋住宅單價中位數與交易筆數，公寓／大樓／透天分開看，附 95% 信賴區間與「初值」標示。每個數字都能點開看來自哪些原始檔、排除了哪些交易；每一步計算都附研究依據，並可疊上內政部、臺北市、聯徵、央行等官方資料對照。資料識讀教學工具，不是投資建議。',
+    tags: ['實價登錄 2012–', '可追溯到原始檔', '方法附研究依據', '官方資料對照'],
+    demo: 'https://henrychao521.github.io/taiwan-housing-dashboard/',
+    gradient: 'from-teal-600 via-cyan-700 to-slate-800',
+  },
   'coding-dojo': {
     theme: 'teaching', featured: true, emoji: '🥋',
     title: '程式練功房 — 瀏覽器內寫 Python',
@@ -214,6 +222,7 @@ const FEATURED_ORDER = [
   'lattice-hinge-designer',
   'taiwan-engineering-geo',
   'emt-course-site',
+  'taiwan-housing-dashboard',
   'living-portal',
   'project-lab-film',
 ];
