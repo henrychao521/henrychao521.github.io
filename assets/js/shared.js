@@ -87,6 +87,14 @@ const PROJECT_META = {
     cover: '/assets/covers/x5-roomtour.jpg',
     gradient: 'from-cyan-500 via-blue-600 to-indigo-700',
   },
+  'home-econ-3dgs-sunlight': {
+    theme: 'twin', featured: true, emoji: '🕰️',
+    title: '家政 3DGS 光線時光機',
+    blurb: '在真實場景的 3D 高斯潑濺上改天色：拖時間拉桿看一天中陽光從窗戶照進來的角度與明暗，可切換日期、天氣（晴、多雲、陰）與窗戶方位。拖曳轉視角、WASD 走動，瀏覽器直接開。',
+    tags: ['3D 高斯潑濺', '日照模擬', '日期／天氣／窗向', '瀏覽器即開'],
+    demo: 'https://henrychao521.github.io/home-econ-3dgs-sunlight/',
+    gradient: 'from-amber-400 via-orange-500 to-indigo-700',
+  },
   'pc13110-platform': {
     theme: 'teaching', featured: true, emoji: '📐',
     title: '高中生活科技工程設計學習平台',
@@ -111,6 +119,14 @@ const PROJECT_META = {
     demo: 'https://henrychao521.github.io/taiwan-engineering-geo/',
     gradient: 'from-lime-500 via-green-500 to-emerald-600',
   },
+  'emt-course-site': {
+    theme: 'teaching', featured: true, emoji: '🚑',
+    title: '從工場安全到 EMT-1：初級救護技術員課程介紹',
+    blurb: '給高中生的 EMT-1 課程介紹與工場傷害第一時間處置：法源與三級救護技術員、哪裡上課、56 小時課程單元，割傷、燙傷、夾壓傷、異物入眼、觸電、CPR＋AED 的「做什麼／不要做什麼／何時叫 119」。只引用法規、衛福部、消防署等權威原文，每句附出處；9 張操作示意圖、98 題多模型出題並逐題查證的隨機題庫。',
+    tags: ['只引用權威原文', '9 張操作示意圖', '98 題查證題庫', '純前端 / 可離線'],
+    demo: 'https://henrychao521.github.io/emt-course-site/',
+    gradient: 'from-red-600 via-rose-600 to-orange-500',
+  },
   'coding-dojo': {
     theme: 'teaching', featured: true, emoji: '🥋',
     title: '程式練功房 — 瀏覽器內寫 Python',
@@ -130,7 +146,7 @@ const PROJECT_META = {
   'shadowless-lamp-sim': {
     theme: 'sim', featured: true, emoji: '🔦',
     title: '外科手術無影燈光學模擬器',
-    blurb: '互動式光學教具：拖曳燈具與遮擋物，即時看見多顆 LED 如何「稀釋」陰影、達成無影。2D 幾何剖面 + 3D 物理熱圖雙視圖，對照 IEC 60601-2-41 醫療標準；內建光路逆行演示與課堂快速場景。手機可用、可離線安裝。',
+    blurb: '互動式光學教具：拖曳燈具與遮擋物，即時看見多顆 LED 如何「稀釋」陰影、達成無影。2D 幾何剖面 + 3D 物理熱圖雙視圖，對照 IEC 60601-2-41 標準與市售手術燈的殘餘照度區間；內建光路逆行演示與課堂快速場景。手機可用、可離線安裝。',
     tags: ['2D／3D 雙視圖', 'IEC 60601 標準', '光路逆行演示', '手機 / PWA 離線'],
     demo: 'https://henrychao521.github.io/shadowless-lamp-sim/',
     gradient: 'from-sky-600 via-blue-700 to-indigo-700',
@@ -138,18 +154,10 @@ const PROJECT_META = {
   'ai-physics-demos': {
     theme: 'aiworks', featured: true, emoji: '🔬',
     title: '國高中物理互動模擬平台',
-    blurb: '力學、熱學、波動、光學、電磁、近代物理七館共 57 個自建互動模擬，每頁附「即時代入計算公式」面板，數值都經程式驗證（守恆律、克卜勒、Snell、法拉第、氫光譜）；另含繞射、摩爾紋、3D 光譜干涉、外科無影燈與 RC 氣墊船。純前端、可離線課堂演示，手機可用。',
-    tags: ['57 個物理模擬', '七館分類', '即時公式面板', '純前端 / Canvas'],
+    blurb: '力學、熱學、波動、光學、電磁、近代物理七館共 56 個自建互動模擬，每頁附「即時代入計算公式」面板與 108 課綱國中／高中程度標籤；每頁都實際跑模擬、用獨立計算對帳動畫、讀數與圖表。另含繞射、摩爾紋、3D 光譜干涉、外科無影燈與 RC 氣墊船。全站零外部相依、可離線課堂演示，手機可用。',
+    tags: ['56 個物理模擬', '課綱程度標籤', '即時公式面板', '可離線 / Canvas'],
     demo: 'https://henrychao521.github.io/ai-physics-demos/',
     gradient: 'from-fuchsia-500 via-rose-500 to-orange-500',
-  },
-  'ai-physics-data': {
-    theme: 'aiworks', featured: true, emoji: '📊',
-    title: '資料蒐集：全台房市數據系統',
-    blurb: '與 AI 協作的資料視覺化：34 個縣市／行政區、44 季價量連續軌跡與跨週期對比的互動儀表板（Chart.js）。可切換觀測區域、任選兩個時點比較買氣與當季政策背景。',
-    tags: ['34 區 × 44 季', 'Chart.js 互動圖表', '跨週期對比', '資料視覺化'],
-    demo: 'https://henrychao521.github.io/ai-physics-demos/housing/',
-    gradient: 'from-sky-500 via-blue-600 to-indigo-700',
   },
   'grip-coach': {
     theme: 'aiworks', featured: true, emoji: '🖐️',
@@ -195,16 +203,17 @@ const PROJECT_META = {
 /** 精選專案在首頁/專案頁的固定排序 */
 const FEATURED_ORDER = [
   'x5-roomtour-viewer',
+  'home-econ-3dgs-sunlight',
   'pc13110-platform',
   'livingtech-tools',
   'coding-dojo',
   'ai-physics-demos',
-  'ai-physics-data',
   'grip-coach',
   'esp32-camera-display',
   'shadowless-lamp-sim',
   'lattice-hinge-designer',
   'taiwan-engineering-geo',
+  'emt-course-site',
   'living-portal',
   'project-lab-film',
 ];
