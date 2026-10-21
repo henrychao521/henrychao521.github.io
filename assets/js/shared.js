@@ -135,6 +135,14 @@ const PROJECT_META = {
     demo: 'https://henrychao521.github.io/taiwan-housing-dashboard/',
     gradient: 'from-teal-600 via-cyan-700 to-slate-800',
   },
+  'xindian-flood-sim': {
+    theme: 'sim', featured: true, emoji: '🌊',
+    title: '臺北市河川淹水模擬器（由新店溪出發）',
+    blurb: '從新店溪出發，把淡水河、基隆河、景美溪沿岸 7 個河段都做成互動淹水模擬：調整洪水規模、潮位、雨量與疏散門開關，看哪座水門先被漫過、堤內哪裡會淹。內政部 20 m 實測地形、臺北市 3D 建物、二維淺水波水流、雨水下水道與抽水站排水，3D 動態呈現。教學用簡化模型，不是官方淹水預報。',
+    tags: ['7 個河段', '20 m 實測地形＋3D 建物', '二維水流模擬', '疏散門與抽水站'],
+    demo: 'https://henrychao521.github.io/xindian-flood-sim/overview/',
+    gradient: 'from-sky-600 via-cyan-700 to-blue-900',
+  },
   'coding-dojo': {
     theme: 'teaching', featured: true, emoji: '🥋',
     title: '程式練功房 — 瀏覽器內寫 Python',
@@ -223,6 +231,7 @@ const FEATURED_ORDER = [
   'taiwan-engineering-geo',
   'emt-course-site',
   'taiwan-housing-dashboard',
+  'xindian-flood-sim',
   'living-portal',
   'project-lab-film',
 ];
