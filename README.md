@@ -2,7 +2,7 @@
 
 🦦 **趙珩宇 Henry × LivingTech** 個人作品站
 
-整合 13 個可線上體驗的公開專案 + 兩百多篇 [livingtech.education](https://livingtech.education) 教學文章，
+整合 16 個可線上體驗的公開專案 + 兩百多篇 [livingtech.education](https://livingtech.education) 教學文章，
 並提供 WordPress 級的 **Decap CMS 後台** 寫新文章。
 
 🌐 **線上：** https://henrychao521.github.io
@@ -13,7 +13,7 @@
 
 | 頁面 | 內容 |
 |------|------|
-| `/` (`index.html`) | 首頁：教室實拍拼貼、13 個線上作品（`assets/js/shared.js` 的 `PROJECT_META`）、最新 6 篇 livingtech.education 文章、研習紀錄 |
+| `/` (`index.html`) | 首頁：教室實拍拼貼、16 個線上作品（`assets/js/shared.js` 的 `PROJECT_META`）、最新 6 篇 livingtech.education 文章、研習紀錄 |
 | `/articles.html` | 站內專案手記（`posts/blog/`）＋ livingtech.education 文章鏡像（搜尋＋分類） |
 | `/maker.html` | Maker 教案目次（難度、課時、硬體清單）＋ 站內 Maker 教學文（`posts/maker/`） |
 | `/posts/<collection>/<slug>.html` | 每篇文章的靜態殼：由 `scripts/build-indexes.py` 以 `post.html` 為模板產生，`<head>` 預填 og/description，社群分享才有預覽；內文由前端讀同名 `.md` 渲染 |
