@@ -8,7 +8,7 @@ tags: [教學遊戲, 工程設計, 地理, 跨域, Leaflet, Haversine]
 repo: "taiwan-engineering-geo"
 level: "⭐⭐ 中階"
 hours: "閱讀約 9 分鐘"
-excerpt: "看一張工程地景的衛星空照圖，在地圖上點出你猜的位置，越近分數越高——揭曉後再認識它的結構與設計決策。這篇拆解整個遊戲怎麼運作：Leaflet 互動地圖、Haversine 球面距離計分、200 個工程景點與 151 條維基延伸，全程純前端、用 localStorage 保存進度，並對應到 108 課綱的工程與設計、跨域整合。"
+excerpt: "看一張工程地景的衛星空照圖，在地圖上點出你猜的位置，越近分數越高，揭曉後再認識它的結構與設計決策。這篇拆解整個遊戲：Leaflet 互動地圖、Haversine 球面距離計分、200 個工程景點與 151 條維基延伸，純前端、用 localStorage 保存進度。"
 draft: false
 order: 4
 ---

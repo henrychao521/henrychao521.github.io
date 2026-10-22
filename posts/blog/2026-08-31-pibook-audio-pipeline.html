@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[完整教學] 讓監控主機學會「聽」：一個 83% 的判定其實來自別的房間 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="家裡那台跑人形偵測的樹莓派監控主機，這個月加裝了耳朵：錄音、轉逐字稿、辨識貓叫與警報聲，再拿影像交叉驗證。第一個決定就決定了成敗——樹莓派自己跑語音辨識，一分鐘的錄音要花 231 秒，還會把原本的安全監控拖垮。這篇拆解「運算該放哪一邊」的判斷依據、多標籤分類為什麼不能用多選一的方式做，以及一個很微妙…">
+<meta name="description" content="家裡那台跑人形偵測的樹莓派監控主機，這個月加裝了耳朵：錄音、轉逐字稿、辨識貓叫與警報聲，再拿影像交叉驗證。樹莓派自己跑語音辨識，一分鐘的錄音要花 231 秒。這篇拆解運算該放哪一邊的判斷依據、多標籤分類怎麼做，以及 2139 筆有人的判定裡有 1770 筆來自其他房間的鏡頭。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-08-31-pibook-audio-pipeline.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[完整教學] 讓監控主機學會「聽」：一個 83% 的判定其實來自別的房間">
-<meta property="og:description" content="家裡那台跑人形偵測的樹莓派監控主機，這個月加裝了耳朵：錄音、轉逐字稿、辨識貓叫與警報聲，再拿影像交叉驗證。第一個決定就決定了成敗——樹莓派自己跑語音辨識，一分鐘的錄音要花 231 秒，還會把原本的安全監控拖垮。這篇拆解「運算該放哪一邊」的判斷依據、多標籤分類為什麼不能用多選一的方式做，以及一個很微妙…">
+<meta property="og:description" content="家裡那台跑人形偵測的樹莓派監控主機，這個月加裝了耳朵：錄音、轉逐字稿、辨識貓叫與警報聲，再拿影像交叉驗證。樹莓派自己跑語音辨識，一分鐘的錄音要花 231 秒。這篇拆解運算該放哪一邊的判斷依據、多標籤分類怎麼做，以及 2139 筆有人的判定裡有 1770 筆來自其他房間的鏡頭。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-08-31-pibook-audio-pipeline.html">
 <meta property="og:image" content="https://henrychao521.github.io/assets/blog/cover-pibook-audio.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

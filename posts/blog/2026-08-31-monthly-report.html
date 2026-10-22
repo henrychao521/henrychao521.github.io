@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[每月專案] 八月做了十件事，其中三件是「原本以為是程式的錯」 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="這個月做了十條線：一支機械手臂換五種馬達重做五次、一顆拖了一個月的定位模組懸案、把任天堂掌機改成外接螢幕、讓監控主機學會聽聲音、一整本教科書變成會自動回報進度的互動平台。其中有三件事，我一開始都以為是自己程式寫錯——最後發現分別是模組故障、接線接反、以及一個「只進不出」的假指標。這篇把每一件的原理和…">
+<meta name="description" content="這個月做了十條線：一支機械手臂換五種馬達重做五次、一顆拖了一個月的定位模組懸案、把任天堂掌機改成外接螢幕、讓監控主機學會聽聲音、一整本教科書變成互動平台。其中有三件事我一開始都以為是程式寫錯，最後發現分別是模組故障、接線接反，以及一個只進不出的假指標。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-08-31-monthly-report.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[每月專案] 八月做了十件事，其中三件是「原本以為是程式的錯」">
-<meta property="og:description" content="這個月做了十條線：一支機械手臂換五種馬達重做五次、一顆拖了一個月的定位模組懸案、把任天堂掌機改成外接螢幕、讓監控主機學會聽聲音、一整本教科書變成會自動回報進度的互動平台。其中有三件事，我一開始都以為是自己程式寫錯——最後發現分別是模組故障、接線接反、以及一個「只進不出」的假指標。這篇把每一件的原理和…">
+<meta property="og:description" content="這個月做了十條線：一支機械手臂換五種馬達重做五次、一顆拖了一個月的定位模組懸案、把任天堂掌機改成外接螢幕、讓監控主機學會聽聲音、一整本教科書變成互動平台。其中有三件事我一開始都以為是程式寫錯，最後發現分別是模組故障、接線接反，以及一個只進不出的假指標。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-08-31-monthly-report.html">
 <meta property="og:image" content="https://henrychao521.github.io/assets/blog/cover-2026-08-monthly.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

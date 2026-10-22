@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

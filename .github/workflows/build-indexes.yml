@@ -48,10 +48,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add posts/maker/index.json posts/blog/index.json posts/maker/*.html posts/blog/*.html 2>/dev/null || true
+          # -A 才會 stage 被腳本刪掉的過期殼（glob 只會撿到還存在的檔案）
+          git add -A posts/maker posts/blog
 
           if git diff --cached --quiet; then
-            echo "✓ index.json 沒有變動，不做 commit"
+            echo "✓ index.json 與文章殼沒有變動，不做 commit"
             exit 0
           fi
 

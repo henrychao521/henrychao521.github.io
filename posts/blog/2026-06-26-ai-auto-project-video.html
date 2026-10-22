@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[完整教學] 讓 AI 自己生成專案分享影片：盤點、錄製、配音、剪輯全自動 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="我丟了一句話給 AI：把我近兩個月做的線上專案，自己跑起來、錄畫面、寫腳本、配音、剪成一支介紹影片。結果它真的做到了——而且連這篇文章和製作歷程網頁都是它生成的。這篇完整拆解整條全自動 pipeline：用無頭瀏覽器把網站「真的跑起來」錄製真實互動、edge-tts 台灣口語配音、因為 ffmpeg…">
+<meta name="description" content="我丟了一句話給 AI：把我近兩個月做的線上專案，自己跑起來、錄畫面、寫腳本、配音、剪成一支介紹影片。結果它真的做到了，連這篇文章都是它生成的。這篇拆解整條全自動 pipeline：無頭瀏覽器錄製真實互動、edge-tts 台灣口語配音、PIL 逐格疊字幕，以及踩過的五個雷。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-06-26-ai-auto-project-video.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[完整教學] 讓 AI 自己生成專案分享影片：盤點、錄製、配音、剪輯全自動">
-<meta property="og:description" content="我丟了一句話給 AI：把我近兩個月做的線上專案，自己跑起來、錄畫面、寫腳本、配音、剪成一支介紹影片。結果它真的做到了——而且連這篇文章和製作歷程網頁都是它生成的。這篇完整拆解整條全自動 pipeline：用無頭瀏覽器把網站「真的跑起來」錄製真實互動、edge-tts 台灣口語配音、因為 ffmpeg…">
+<meta property="og:description" content="我丟了一句話給 AI：把我近兩個月做的線上專案，自己跑起來、錄畫面、寫腳本、配音、剪成一支介紹影片。結果它真的做到了，連這篇文章都是它生成的。這篇拆解整條全自動 pipeline：無頭瀏覽器錄製真實互動、edge-tts 台灣口語配音、PIL 逐格疊字幕，以及踩過的五個雷。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-06-26-ai-auto-project-video.html">
-<meta property="og:image" content="https://henrychao521.github.io/assets/blog/diagram-ai-video.svg">
+<meta property="og:image" content="https://henrychao521.github.io/assets/covers/project-lab-film.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/lib/marked.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

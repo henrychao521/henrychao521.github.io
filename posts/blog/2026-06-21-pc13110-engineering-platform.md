@@ -8,7 +8,7 @@ tags: [108課綱, 工程設計, 遊戲化學習, 互動教材, localStorage, Can
 repo: "pc13110-platform"
 level: "⭐⭐ 中階"
 hours: "閱讀約 9 分鐘"
-excerpt: "把高中生活科技『工程設計』整章，重寫成一個純前端、零後端、可直接掛 GitHub Pages 的學習平台：先在像素大廳捏一個自己的工程師角色，走進 tile-based 的工程實驗室，用 WASD 移動、走到傳送門按 E 進入章節闖關，完成度與 8 項成就全部存在瀏覽器 localStorage。五大主題、27 個互動模組，對應工程設計流程七階段。這篇拆解大廳怎麼動、進度怎麼存、成就怎麼解。"
+excerpt: "把高中生活科技『工程設計』整章，重寫成純前端、可直接掛 GitHub Pages 的學習平台：先在像素大廳捏一個工程師角色，走進 tile-based 的實驗室闖關，完成度與 8 項成就全部存在瀏覽器 localStorage。這篇拆解大廳怎麼動、進度怎麼存、成就怎麼解。"
 draft: false
 order: 2
 ---

@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[完整教學] 為什麼手術燈幾乎沒有影子？ — 從零拆解無影燈光學模擬器 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="外科手術無影燈不是『消滅』影子，而是用很多顆燈從不同角度同時補光，把深本影『稀釋』成幾乎看不見的淡半影。這篇把整個互動模擬器拆給你看：純前端 Canvas 2D 幾何光線投射怎麼算照度、線段相交怎麼判斷遮擋、用『未被遮擋的光源比例』如何呈現本影與半影，並對照 IEC 60601-2-41 醫療標準，…">
+<meta name="description" content="外科手術無影燈不是『消滅』影子，而是用很多顆燈從不同角度同時補光，把深本影『稀釋』成幾乎看不見的淡半影。這篇拆解整個互動模擬器：Canvas 2D 光線投射怎麼算照度、線段相交怎麼判斷遮擋，並對照 IEC 60601-2-41 醫療標準與 108 課綱。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-06-21-shadowless-lamp-sim.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[完整教學] 為什麼手術燈幾乎沒有影子？ — 從零拆解無影燈光學模擬器">
-<meta property="og:description" content="外科手術無影燈不是『消滅』影子，而是用很多顆燈從不同角度同時補光，把深本影『稀釋』成幾乎看不見的淡半影。這篇把整個互動模擬器拆給你看：純前端 Canvas 2D 幾何光線投射怎麼算照度、線段相交怎麼判斷遮擋、用『未被遮擋的光源比例』如何呈現本影與半影，並對照 IEC 60601-2-41 醫療標準，…">
+<meta property="og:description" content="外科手術無影燈不是『消滅』影子，而是用很多顆燈從不同角度同時補光，把深本影『稀釋』成幾乎看不見的淡半影。這篇拆解整個互動模擬器：Canvas 2D 光線投射怎麼算照度、線段相交怎麼判斷遮擋，並對照 IEC 60601-2-41 醫療標準與 108 課綱。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-06-21-shadowless-lamp-sim.html">
 <meta property="og:image" content="https://henrychao521.github.io/assets/blog/lamp-raytrace.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

@@ -2,13 +2,13 @@
 title: "[完整教學] 讓木板學會彎腰：格狀鉸鏈計算機，從公式推導到 3D 模擬與 DXF 佈線"
 date: 2026-07-08T09:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-lattice-hinge.svg"
+cover: "/assets/covers/lattice-hinge-designer.jpg"
 category: "專案分享"
 tags: [雷射切割, 格狀鉸鏈, 數位加工, 材料力學, AI協作, DXF]
 repo: "lattice-hinge-designer"
 level: "⭐⭐ 中階"
 hours: "閱讀約 9 分鐘"
-excerpt: "一片 3mm 合板硬邦邦、一折就斷；在上面雷射切出一排交錯細縫後，它卻能溫柔地彎成 90° 圓角。能彎幾度、圓多大、會不會斷——全部可以事先算出來。這篇拆解我和 AI 在一天八輪對話中做出來的格狀鉸鏈設計工具：Fenner 扭轉連桿公式怎麼用、五個「切下去才會發現」的雷怎麼被計算揪出來（包括一句『怎麼覺得會切斷』真的抓到會把板材切成兩半的 bug）、以及 3D 彎折模擬和 DXF 匯入佈線怎麼接進 Onshape 工作流。"
+excerpt: "一片 3mm 合板一折就斷；在上面雷射切出一排交錯細縫後，它卻能彎成 90° 圓角。能彎幾度、會不會斷，全部可以事先算出來。這篇拆解我和 AI 一天做出來的格狀鉸鏈設計工具：Fenner 扭轉連桿公式怎麼用、五個切下去才會發現的雷怎麼被算出來，以及 3D 模擬和 DXF 佈線怎麼接 Onshape。"
 draft: false
 ---
 

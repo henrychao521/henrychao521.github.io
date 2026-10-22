@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[專案分享] 沒有網路，也能和家人報平安：用 Meshtastic 幫全家織一張不會斷的通訊網 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="地震來了，你拿起手機——沒有訊號。基地台斷了、網路塞爆了，聯絡不上家人。這篇分享我用 Meshtastic 幫全家搭的一套「離線也能報平安」的通訊系統：一群低價無線電裝置自動組成網狀網路，不需基地台、不需網路，像會自動接力的對講機。含一支 6 分鐘動畫解說片（原理、歷史、硬體到我們的實作），以及自製…">
+<meta name="description" content="地震來了，你拿起手機，沒有訊號。基地台斷了、網路塞爆了，聯絡不上家人。這篇分享我用 Meshtastic 幫全家搭的一套離線也能報平安的通訊系統：一群低價無線電裝置自動組成網狀網路，像會自動接力的對講機。含一支 6 分鐘動畫解說片，以及配樂、字幕、GPS 查證踩過的雷。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-07-23-meshtastic-family-mesh.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[專案分享] 沒有網路，也能和家人報平安：用 Meshtastic 幫全家織一張不會斷的通訊網">
-<meta property="og:description" content="地震來了，你拿起手機——沒有訊號。基地台斷了、網路塞爆了，聯絡不上家人。這篇分享我用 Meshtastic 幫全家搭的一套「離線也能報平安」的通訊系統：一群低價無線電裝置自動組成網狀網路，不需基地台、不需網路，像會自動接力的對講機。含一支 6 分鐘動畫解說片（原理、歷史、硬體到我們的實作），以及自製…">
+<meta property="og:description" content="地震來了，你拿起手機，沒有訊號。基地台斷了、網路塞爆了，聯絡不上家人。這篇分享我用 Meshtastic 幫全家搭的一套離線也能報平安的通訊系統：一群低價無線電裝置自動組成網狀網路，像會自動接力的對講機。含一支 6 分鐘動畫解說片，以及配樂、字幕、GPS 查證踩過的雷。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-07-23-meshtastic-family-mesh.html">
-<meta property="og:image" content="https://henrychao521.github.io/assets/blog/diagram-meshtastic-mesh.svg">
+<meta property="og:image" content="https://henrychao521.github.io/assets/blog/cover-meshtastic-family.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/lib/marked.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

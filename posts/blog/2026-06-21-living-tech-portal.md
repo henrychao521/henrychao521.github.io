@@ -8,7 +8,7 @@ tags: [開放資料, FastAPI, CloudflareTunnel, Leaflet, 資料視覺化, API串
 repo: "living-portal"
 level: "⭐⭐ 中階"
 hours: "閱讀約 9 分鐘"
-excerpt: "天氣、地震、消防 119、台鐵高鐵即時位置、航機、YouBike、空品、太空站…台灣的即時開放資料散落在十幾個公開 API。這篇完整拆解我怎麼用一層 FastAPI 後端把它們聚合、正規化、加快取，經 Cloudflare Tunnel 對外，前端再用看板式 UI 加 Leaflet 地圖做成 18 個每分鐘自動刷新的即時面板——一個畫面看完全台，也順便當成開放資料的活教材。"
+excerpt: "天氣、地震、台鐵高鐵即時位置、YouBike、空品…台灣的即時開放資料散落在十幾個公開 API。這篇拆解我怎麼用 FastAPI 把它們聚合、正規化、加快取，前端再用看板式 UI 加 Leaflet 地圖做成 18 個每分鐘自動刷新的即時面板，一個畫面看完全台。"
 draft: false
 order: 5
 ---

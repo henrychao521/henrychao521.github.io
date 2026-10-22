@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[完整教學] PC13110：把工程設計課本變成可以走進去闖關的像素實驗室 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="把高中生活科技『工程設計』整章，重寫成一個純前端、零後端、可直接掛 GitHub Pages 的學習平台：先在像素大廳捏一個自己的工程師角色，走進 tile-based 的工程實驗室，用 WASD 移動、走到傳送門按 E 進入章節闖關，完成度與 8 項成就全部存在瀏覽器 localStorage。五…">
+<meta name="description" content="把高中生活科技『工程設計』整章，重寫成純前端、可直接掛 GitHub Pages 的學習平台：先在像素大廳捏一個工程師角色，走進 tile-based 的實驗室闖關，完成度與 8 項成就全部存在瀏覽器 localStorage。這篇拆解大廳怎麼動、進度怎麼存、成就怎麼解。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-06-21-pc13110-engineering-platform.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[完整教學] PC13110：把工程設計課本變成可以走進去闖關的像素實驗室">
-<meta property="og:description" content="把高中生活科技『工程設計』整章，重寫成一個純前端、零後端、可直接掛 GitHub Pages 的學習平台：先在像素大廳捏一個自己的工程師角色，走進 tile-based 的工程實驗室，用 WASD 移動、走到傳送門按 E 進入章節闖關，完成度與 8 項成就全部存在瀏覽器 localStorage。五…">
+<meta property="og:description" content="把高中生活科技『工程設計』整章，重寫成純前端、可直接掛 GitHub Pages 的學習平台：先在像素大廳捏一個工程師角色，走進 tile-based 的實驗室闖關，完成度與 8 項成就全部存在瀏覽器 localStorage。這篇拆解大廳怎麼動、進度怎麼存、成就怎麼解。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-06-21-pc13110-engineering-platform.html">
 <meta property="og:image" content="https://henrychao521.github.io/assets/blog/pc13110-lobby.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';
