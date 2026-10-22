@@ -187,7 +187,7 @@ async function loadLocalPosts() {
           <div class="d">${esc(p.excerpt)}</div>
           <div class="tags"><span>${esc(p.date)}</span>${p.level ? `<span>${esc(p.level)}</span>` : ''}${p.hours ? `<span>${esc(p.hours)}</span>` : ''}${(p.tags || []).slice(0, 4).map(t => `<span>${esc(t)}</span>`).join('')}</div>
         </span>
-        <span class="r">${p.repo ? esc(p.repo) : ''}</span>
+        <span class="r">${p.repo ? (p.repo_private ? `<span title="程式碼未公開，課程使用時提供">程式碼於課程中提供</span>` : esc(p.repo)) : ''}</span>
       </a>
     `).join('');
   } catch (e) {
