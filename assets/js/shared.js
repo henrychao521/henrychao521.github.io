@@ -143,6 +143,14 @@ const PROJECT_META = {
     demo: 'https://henrychao521.github.io/xindian-flood-sim/overview/',
     gradient: 'from-sky-600 via-cyan-700 to-blue-900',
   },
+  'camera-looks': {
+    theme: 'aiworks', featured: true, emoji: '📷',
+    title: '手邊相機配方本 — GR IV／GR IIIx／RX100 VII',
+    blurb: '三台相機可以直接在機身上設定的畫面配方，共 93 組，每組附原作者出處。參數名稱用相機設成繁體中文時畫面上的官方用語，並附英文選單名稱對照原文配方。配方由 Claude 與 Gemini 各自獨立蒐集，重疊部分逐項比對、只有一方找到的再逐頁核對原頁；官方參數依說明書核對。另附 GR IV 刷 LUTSmith 的檢查與還原清單。',
+    tags: ['93 組機內配方', '相機官方中文用語', 'Claude×Gemini 交叉核對', '刷機前檢查清單'],
+    demo: 'https://henrychao521.github.io/camera-looks/',
+    gradient: 'from-stone-800 via-amber-800 to-red-800',
+  },
   'terrain-gp': {
     theme: 'sim', featured: true, emoji: '🏎️',
     title: 'Terrain GP — 開著方程式賽車跑臺北街道',
@@ -227,6 +235,7 @@ const PROJECT_META = {
 /** 精選專案在首頁/專案頁的固定排序 */
 const FEATURED_ORDER = [
   'terrain-gp',
+  'camera-looks',
   'x5-roomtour-viewer',
   'home-econ-3dgs-sunlight',
   'pc13110-platform',
