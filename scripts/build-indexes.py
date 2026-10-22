@@ -35,6 +35,8 @@ OPTIONAL_FIELDS = [
 ]
 SITE = "https://henrychao521.github.io"
 TEMPLATE = ROOT / "post.html"
+DEFAULT_COVER = "/assets/photos/parts-spinner-960.jpg"  # 沒給 cover 或 cover 是 SVG 時的 og:image
+DESC_MAX = 150  # description / og:description 字數上限
 
 
 def _esc(s: str) -> str:
@@ -52,10 +54,21 @@ def write_shell(name: str, entry: dict) -> None:
     tpl = TEMPLATE.read_text(encoding="utf-8")
     slug, title = entry["slug"], entry.get("title") or slug
     desc = (entry.get("excerpt") or "").replace("\n", " ").strip()
-    if len(desc) > 150:
-        desc = desc[:150] + "…"
+    if len(desc) > DESC_MAX:
+        # 在 150 字內最後一個全形句號處截斷，讓 description 是完整句；
+        # 找不到句號才硬切加「…」
+        head = desc[:DESC_MAX]
+        cut = max(head.rfind(ch) for ch in "。！？")
+        desc = head[:cut + 1] if cut >= 0 else head + "…"
+        print(f"  ⚠️  {name}/{slug}: excerpt 超過 {DESC_MAX} 字，description 已截斷",
+              file=sys.stderr)
     url = f"{SITE}/posts/{name}/{slug}.html"
-    cover = entry.get("cover") or "/assets/photos/parts-spinner-960.jpg"
+    cover = entry.get("cover") or DEFAULT_COVER
+    if cover.lower().endswith(".svg"):
+        # LINE / FB 等社群爬蟲不渲染 SVG，og:image 退回預設 jpg
+        print(f"  ⚠️  {name}/{slug}: cover 是 SVG（{cover}），og:image 改用預設 {DEFAULT_COVER}",
+              file=sys.stderr)
+        cover = DEFAULT_COVER
     if cover.startswith("/"):
         cover = SITE + cover
     meta = "\n".join([

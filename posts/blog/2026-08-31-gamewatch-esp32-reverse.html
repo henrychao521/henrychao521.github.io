@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[硬體逆向] 把任天堂 Game &amp; Watch 改成外接螢幕：沒有接腳圖，怎麼把一顆晶片的腳位問出來 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="一台任天堂 Game &amp; Watch 復刻版，裡面是一顆頗有實力的 STM32H7。我想把它改成外接式的智慧顯示終端——但原廠沒有公開接腳圖，找到的規格書連結還下載失敗。這篇記錄怎麼靠拆解照片、電表通斷檔和社群資料互相佐證，把 21 支空閒腳位和 5 個燒錄測試點問出來；以及兩個「照直覺做就會燒晶片…">
+<meta name="description" content="一台任天堂 Game &amp; Watch 復刻版，裡面是一顆頗有實力的 STM32H7。我想把它改成外接式的智慧顯示終端，但原廠沒有公開接腳圖。這篇記錄怎麼靠拆解照片、電表通斷檔和社群資料互相佐證，把 21 支空閒腳位和 5 個燒錄測試點問出來，以及兩個照直覺做就會燒晶片的細節。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-08-31-gamewatch-esp32-reverse.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[硬體逆向] 把任天堂 Game &amp; Watch 改成外接螢幕：沒有接腳圖，怎麼把一顆晶片的腳位問出來">
-<meta property="og:description" content="一台任天堂 Game &amp; Watch 復刻版，裡面是一顆頗有實力的 STM32H7。我想把它改成外接式的智慧顯示終端——但原廠沒有公開接腳圖，找到的規格書連結還下載失敗。這篇記錄怎麼靠拆解照片、電表通斷檔和社群資料互相佐證，把 21 支空閒腳位和 5 個燒錄測試點問出來；以及兩個「照直覺做就會燒晶片…">
+<meta property="og:description" content="一台任天堂 Game &amp; Watch 復刻版，裡面是一顆頗有實力的 STM32H7。我想把它改成外接式的智慧顯示終端，但原廠沒有公開接腳圖。這篇記錄怎麼靠拆解照片、電表通斷檔和社群資料互相佐證，把 21 支空閒腳位和 5 個燒錄測試點問出來，以及兩個照直覺做就會燒晶片的細節。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-08-31-gamewatch-esp32-reverse.html">
 <meta property="og:image" content="https://henrychao521.github.io/assets/blog/cover-gw-esp32.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

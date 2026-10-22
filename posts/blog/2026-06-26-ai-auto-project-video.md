@@ -2,13 +2,13 @@
 title: "[完整教學] 讓 AI 自己生成專案分享影片：盤點、錄製、配音、剪輯全自動"
 date: 2026-06-26T20:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-ai-video.svg"
+cover: "/assets/covers/project-lab-film.jpg"
 category: "專案分享"
 tags: [AI協作, 影片自動化, CDP無頭瀏覽器, edge-tts, ffmpeg, 自動剪輯]
 repo: "project-lab-film"
 level: "⭐⭐⭐ 進階"
 hours: "閱讀約 10 分鐘"
-excerpt: "我丟了一句話給 AI：把我近兩個月做的線上專案，自己跑起來、錄畫面、寫腳本、配音、剪成一支介紹影片。結果它真的做到了——而且連這篇文章和製作歷程網頁都是它生成的。這篇完整拆解整條全自動 pipeline：用無頭瀏覽器把網站「真的跑起來」錄製真實互動、edge-tts 台灣口語配音、因為 ffmpeg 沒有字幕濾鏡而改用 PIL 逐格疊字幕，以及中途踩過又一一解掉的五個雷。"
+excerpt: "我丟了一句話給 AI：把我近兩個月做的線上專案，自己跑起來、錄畫面、寫腳本、配音、剪成一支介紹影片。結果它真的做到了，連這篇文章都是它生成的。這篇拆解整條全自動 pipeline：無頭瀏覽器錄製真實互動、edge-tts 台灣口語配音、PIL 逐格疊字幕，以及踩過的五個雷。"
 draft: false
 ---
 

@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[完整教學] Living Tech Portal：把全台即時開放資料聚合成一個監控儀表板 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="天氣、地震、消防 119、台鐵高鐵即時位置、航機、YouBike、空品、太空站…台灣的即時開放資料散落在十幾個公開 API。這篇完整拆解我怎麼用一層 FastAPI 後端把它們聚合、正規化、加快取，經 Cloudflare Tunnel 對外，前端再用看板式 UI 加 Leaflet 地圖做成 18…">
+<meta name="description" content="天氣、地震、台鐵高鐵即時位置、YouBike、空品…台灣的即時開放資料散落在十幾個公開 API。這篇拆解我怎麼用 FastAPI 把它們聚合、正規化、加快取，前端再用看板式 UI 加 Leaflet 地圖做成 18 個每分鐘自動刷新的即時面板，一個畫面看完全台。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-06-21-living-tech-portal.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[完整教學] Living Tech Portal：把全台即時開放資料聚合成一個監控儀表板">
-<meta property="og:description" content="天氣、地震、消防 119、台鐵高鐵即時位置、航機、YouBike、空品、太空站…台灣的即時開放資料散落在十幾個公開 API。這篇完整拆解我怎麼用一層 FastAPI 後端把它們聚合、正規化、加快取，經 Cloudflare Tunnel 對外，前端再用看板式 UI 加 Leaflet 地圖做成 18…">
+<meta property="og:description" content="天氣、地震、台鐵高鐵即時位置、YouBike、空品…台灣的即時開放資料散落在十幾個公開 API。這篇拆解我怎麼用 FastAPI 把它們聚合、正規化、加快取，前端再用看板式 UI 加 Leaflet 地圖做成 18 個每分鐘自動刷新的即時面板，一個畫面看完全台。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-06-21-living-tech-portal.html">
 <meta property="og:image" content="https://henrychao521.github.io/assets/blog/portal-dashboard.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

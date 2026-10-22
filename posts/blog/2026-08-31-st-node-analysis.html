@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[資料處理] 藏在網頁原始碼裡的資料庫：兩個學年度的學習節點，169 筆被悄悄重新編號 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="教育部委辦計畫兩個學年度各留了一個網站，列出資訊教育的學習節點——一個 854 筆、一個 494 筆。想比對兩版差異，看起來得一頁頁點開擷取。但其實資料就藏在網頁原始碼裡，用跳脫符號包成一大段文字，還原出來整個資料庫就到手了。這篇記錄這個技巧，以及比對後最該注意的一件事：286 筆代號沒變、39 筆…">
+<meta name="description" content="教育部委辦計畫兩個學年度各留了一個網站，列出資訊教育的學習節點，一個 854 筆、一個 494 筆。其實資料就藏在網頁原始碼裡，還原出來整個資料庫就到手了。這篇記錄這個技巧，以及比對後最該注意的一件事：169 筆內容一樣、代號卻被改掉了，如果有系統用舊代號串資料，升版會靜默斷掉。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-08-31-st-node-analysis.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[資料處理] 藏在網頁原始碼裡的資料庫：兩個學年度的學習節點，169 筆被悄悄重新編號">
-<meta property="og:description" content="教育部委辦計畫兩個學年度各留了一個網站，列出資訊教育的學習節點——一個 854 筆、一個 494 筆。想比對兩版差異，看起來得一頁頁點開擷取。但其實資料就藏在網頁原始碼裡，用跳脫符號包成一大段文字，還原出來整個資料庫就到手了。這篇記錄這個技巧，以及比對後最該注意的一件事：286 筆代號沒變、39 筆…">
+<meta property="og:description" content="教育部委辦計畫兩個學年度各留了一個網站，列出資訊教育的學習節點，一個 854 筆、一個 494 筆。其實資料就藏在網頁原始碼裡，還原出來整個資料庫就到手了。這篇記錄這個技巧，以及比對後最該注意的一件事：169 筆內容一樣、代號卻被改掉了，如果有系統用舊代號串資料，升版會靜默斷掉。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-08-31-st-node-analysis.html">
 <meta property="og:image" content="https://henrychao521.github.io/assets/blog/cover-st-node.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

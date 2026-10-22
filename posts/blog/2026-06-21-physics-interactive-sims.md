@@ -8,7 +8,7 @@ tags: [物理教學, 互動模擬, Canvas, 數值方法, 視覺化, AI協作]
 repo: "ai-physics-demos"
 level: "⭐⭐ 中階"
 hours: "閱讀約 12 分鐘"
-excerpt: "把國高中物理六大領域裡看不見的概念，做成 30 多個可即時調參數的互動模擬：拖一下滑桿，物理模型逐幀重算、Canvas 重繪、公式與數據同步更新。這篇完整拆解背後的技術——requestAnimationFrame 動畫迴圈、滑桿綁定物理參數、波疊加的解析式取樣與拋體的半隱式 Euler 積分，全程純前端、開網頁就能跑、手機平板也能玩。"
+excerpt: "把國高中物理六大領域裡看不見的概念，做成 30 多個可即時調參數的互動模擬：拖一下滑桿，物理模型逐幀重算、Canvas 重繪、公式與數據同步更新。這篇拆解背後的 requestAnimationFrame 動畫迴圈、波疊加的解析式取樣與拋體的半隱式 Euler 積分。"
 draft: false
 order: 3
 ---

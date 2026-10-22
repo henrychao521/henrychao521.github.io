@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[完整教學] 台灣工程地景：用猜謎地圖，把『工程』與『地理』縫回同一張圖 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="看一張工程地景的衛星空照圖，在地圖上點出你猜的位置，越近分數越高——揭曉後再認識它的結構與設計決策。這篇拆解整個遊戲怎麼運作：Leaflet 互動地圖、Haversine 球面距離計分、200 個工程景點與 151 條維基延伸，全程純前端、用 localStorage 保存進度，並對應到 108 課…">
+<meta name="description" content="看一張工程地景的衛星空照圖，在地圖上點出你猜的位置，越近分數越高，揭曉後再認識它的結構與設計決策。這篇拆解整個遊戲：Leaflet 互動地圖、Haversine 球面距離計分、200 個工程景點與 151 條維基延伸，純前端、用 localStorage 保存進度。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-06-21-taiwan-engineering-geo.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[完整教學] 台灣工程地景：用猜謎地圖，把『工程』與『地理』縫回同一張圖">
-<meta property="og:description" content="看一張工程地景的衛星空照圖，在地圖上點出你猜的位置，越近分數越高——揭曉後再認識它的結構與設計決策。這篇拆解整個遊戲怎麼運作：Leaflet 互動地圖、Haversine 球面距離計分、200 個工程景點與 151 條維基延伸，全程純前端、用 localStorage 保存進度，並對應到 108 課…">
+<meta property="og:description" content="看一張工程地景的衛星空照圖，在地圖上點出你猜的位置，越近分數越高，揭曉後再認識它的結構與設計決策。這篇拆解整個遊戲：Leaflet 互動地圖、Haversine 球面距離計分、200 個工程景點與 151 條維基延伸，純前端、用 localStorage 保存進度。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-06-21-taiwan-engineering-geo.html">
 <meta property="og:image" content="https://henrychao521.github.io/assets/blog/geo-landing.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

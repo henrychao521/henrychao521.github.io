@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[除錯紀錄] 我改了兩星期程式，最後發現是模組壞了：一顆 GPS 的懸案與兩條接反的線 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="隨身的離網通訊節點，衛星定位從七月底就再也沒成功過——螢幕上永遠是同一組座標。我改了兩星期的程式碼、換過天線、翻過韌體設定，最後解法很土：拿一顆新模組直接接電腦讀原始訊號，十秒內就看到衛星。這篇記錄兩個「以為是程式的錯」的除錯過程：一顆故障的定位模組，和兩條接反的序列線；以及一個不是誰寫錯、而是架構…">
+<meta name="description" content="隨身的離網通訊節點，衛星定位從七月底就再也沒成功過，螢幕上永遠是同一組座標。我改了兩星期的程式碼、換過天線、翻過韌體設定，最後拿一顆新模組直接接電腦讀原始訊號，十秒內就看到衛星。這篇記錄兩個以為是程式的錯的除錯過程：一顆故障的定位模組，和兩條接反的序列線。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-08-31-meshtastic-hardware-rebuild.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[除錯紀錄] 我改了兩星期程式，最後發現是模組壞了：一顆 GPS 的懸案與兩條接反的線">
-<meta property="og:description" content="隨身的離網通訊節點，衛星定位從七月底就再也沒成功過——螢幕上永遠是同一組座標。我改了兩星期的程式碼、換過天線、翻過韌體設定，最後解法很土：拿一顆新模組直接接電腦讀原始訊號，十秒內就看到衛星。這篇記錄兩個「以為是程式的錯」的除錯過程：一顆故障的定位模組，和兩條接反的序列線；以及一個不是誰寫錯、而是架構…">
+<meta property="og:description" content="隨身的離網通訊節點，衛星定位從七月底就再也沒成功過，螢幕上永遠是同一組座標。我改了兩星期的程式碼、換過天線、翻過韌體設定，最後拿一顆新模組直接接電腦讀原始訊號，十秒內就看到衛星。這篇記錄兩個以為是程式的錯的除錯過程：一顆故障的定位模組，和兩條接反的序列線。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-08-31-meshtastic-hardware-rebuild.html">
 <meta property="og:image" content="https://henrychao521.github.io/assets/blog/cover-mesh-rebuild.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

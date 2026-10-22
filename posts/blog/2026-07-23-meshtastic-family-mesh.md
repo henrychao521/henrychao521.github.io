@@ -2,12 +2,12 @@
 title: "[專案分享] 沒有網路，也能和家人報平安：用 Meshtastic 幫全家織一張不會斷的通訊網"
 date: 2026-07-23T09:00:00+08:00
 author: "Henry Chao"
-cover: "/assets/blog/diagram-meshtastic-mesh.svg"
+cover: "/assets/blog/cover-meshtastic-family.jpg"
 category: "專案分享"
 tags: [Meshtastic, LoRa, 離線通訊, 防災, 網狀網路, 開源硬體, 生活科技, AI協作]
 level: "⭐⭐ 中階"
 hours: "閱讀約 6 分鐘"
-excerpt: "地震來了，你拿起手機——沒有訊號。基地台斷了、網路塞爆了，聯絡不上家人。這篇分享我用 Meshtastic 幫全家搭的一套「離線也能報平安」的通訊系統：一群低價無線電裝置自動組成網狀網路，不需基地台、不需網路，像會自動接力的對講機。含一支 6 分鐘動畫解說片（原理、歷史、硬體到我們的實作），以及自製配樂、字幕、GPS 定位查證這些踩過的雷。"
+excerpt: "地震來了，你拿起手機，沒有訊號。基地台斷了、網路塞爆了，聯絡不上家人。這篇分享我用 Meshtastic 幫全家搭的一套離線也能報平安的通訊系統：一群低價無線電裝置自動組成網狀網路，像會自動接力的對講機。含一支 6 分鐘動畫解說片，以及配樂、字幕、GPS 查證踩過的雷。"
 draft: false
 ---
 

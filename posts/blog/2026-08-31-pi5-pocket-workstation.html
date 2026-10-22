@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[實作紀錄] 口袋裡的 AI 工作站：拔掉電源 63 秒後，它自己爬回線上 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="一台樹莓派 5 塞進包包，接上行動電源和 4G 網卡，用手機就能指揮它做事——程式跑在樹莓派上，檔案也留在那裡。這篇記錄怎麼把它做成「插電即用」：開機自動連網、自動開啟遠端控制、手機隨時接手。以及開機自啟為什麼做了三個版本才穩定，還有一次連我自己都被騙過去的假故障——系統莫名其妙重開機，查了半天發現…">
+<meta name="description" content="一台樹莓派 5 塞進包包，接上行動電源和 4G 網卡，用手機就能指揮它做事。這篇記錄怎麼把它做成插電即用：開機自動連網、自動開啟遠端控制、手機隨時接手。以及開機自啟為什麼做了三個版本才穩定，還有一次假故障：系統莫名重開機，查了半天發現是行動電源在低負載時自己關機。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-08-31-pi5-pocket-workstation.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[實作紀錄] 口袋裡的 AI 工作站：拔掉電源 63 秒後，它自己爬回線上">
-<meta property="og:description" content="一台樹莓派 5 塞進包包，接上行動電源和 4G 網卡，用手機就能指揮它做事——程式跑在樹莓派上，檔案也留在那裡。這篇記錄怎麼把它做成「插電即用」：開機自動連網、自動開啟遠端控制、手機隨時接手。以及開機自啟為什麼做了三個版本才穩定，還有一次連我自己都被騙過去的假故障——系統莫名其妙重開機，查了半天發現…">
+<meta property="og:description" content="一台樹莓派 5 塞進包包，接上行動電源和 4G 網卡，用手機就能指揮它做事。這篇記錄怎麼把它做成插電即用：開機自動連網、自動開啟遠端控制、手機隨時接手。以及開機自啟為什麼做了三個版本才穩定，還有一次假故障：系統莫名重開機，查了半天發現是行動電源在低負載時自己關機。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-08-31-pi5-pocket-workstation.html">
 <meta property="og:image" content="https://henrychao521.github.io/assets/blog/cover-pi5-pocket.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';

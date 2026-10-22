@@ -8,7 +8,7 @@ tags: [3D高斯潑濺, COLMAP, Brush, PlayCanvas, WebXR, 數位孿生]
 repo: "x5-roomtour-viewer"
 level: "⭐⭐⭐ 進階"
 hours: "閱讀約 10 分鐘"
-excerpt: "拿一支 Insta360 X5 在教室繞一圈，就能重建成可在瀏覽器第一人稱走動的照片級 3D 空間。這篇完整拆解整條 pipeline：360° 影片 → COLMAP 求相機位姿 → Brush 3D 高斯潑濺 → PlayCanvas + WebXR 即時渲染，全程 Apple Silicon 本機、無需 NVIDIA／CUDA。"
+excerpt: "拿一支 Insta360 X5 在教室繞一圈，就能重建成可在瀏覽器第一人稱走動的照片級 3D 空間。這篇拆解整條 pipeline：360° 影片、COLMAP 求相機位姿、Brush 高斯潑濺、PlayCanvas 與 WebXR 即時渲染，全程在 Apple Silicon 本機完成。"
 draft: false
 order: 1
 ---

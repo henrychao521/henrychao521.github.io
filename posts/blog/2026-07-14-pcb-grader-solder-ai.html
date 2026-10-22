@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">[完整教學] 讓 AI 幫學生的焊接電路板即時評分：從拍照到錯誤定位，一套本機、不外傳的檢測系統 — 趙珩宇｜生活科技教室</title>
-<meta name="description" content="學生焊完一塊自製 Arduino 洞洞板，老師得逐件用肉眼檢查接線、極性、焊點——費時、主觀，學生也等到發還才知道對錯。這篇拆解我和 AI 一起做的「焊接電路板 AI 檢測評分系統」：學生同時上傳正反面照片，本機視覺模型逐項判讀、規則引擎客觀計分，還能在照片上圈出「這裡還沒焊、那個焊點要補」。也誠實…">
+<meta name="description" content="學生焊完一塊 Arduino 洞洞板，老師得逐件用肉眼檢查接線、極性、焊點，費時又主觀。這篇拆解我和 AI 做的焊接電路板檢測評分系統：上傳正反面照片，本機視覺模型逐項判讀、規則引擎客觀計分，還能在照片上圈出該補的焊點。也記錄 301 張真實學生板實測後的關鍵轉折。">
 <link rel="canonical" href="https://henrychao521.github.io/posts/blog/2026-07-14-pcb-grader-solder-ai.html">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[完整教學] 讓 AI 幫學生的焊接電路板即時評分：從拍照到錯誤定位，一套本機、不外傳的檢測系統">
-<meta property="og:description" content="學生焊完一塊自製 Arduino 洞洞板，老師得逐件用肉眼檢查接線、極性、焊點——費時、主觀，學生也等到發還才知道對錯。這篇拆解我和 AI 一起做的「焊接電路板 AI 檢測評分系統」：學生同時上傳正反面照片，本機視覺模型逐項判讀、規則引擎客觀計分，還能在照片上圈出「這裡還沒焊、那個焊點要補」。也誠實…">
+<meta property="og:description" content="學生焊完一塊 Arduino 洞洞板，老師得逐件用肉眼檢查接線、極性、焊點，費時又主觀。這篇拆解我和 AI 做的焊接電路板檢測評分系統：上傳正反面照片，本機視覺模型逐項判讀、規則引擎客觀計分，還能在照片上圈出該補的焊點。也記錄 301 張真實學生板實測後的關鍵轉折。">
 <meta property="og:url" content="https://henrychao521.github.io/posts/blog/2026-07-14-pcb-grader-solder-ai.html">
-<meta property="og:image" content="https://henrychao521.github.io/assets/blog/diagram-pcb-grader.svg">
+<meta property="og:image" content="https://henrychao521.github.io/assets/blog/cover-pcb-grader.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/lib/marked.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
@@ -130,7 +130,10 @@ async function loadPost() {
     document.getElementById('article-date').textContent = frontmatter.date ? formatDate(frontmatter.date) : '';
     document.getElementById('article-author').textContent = frontmatter.author || '趙珩宇';
     document.getElementById('article-level').textContent = frontmatter.level || '';
-    document.getElementById('article-hours').textContent = frontmatter.hours ? `課時 ${frontmatter.hours}` : '';
+    // maker 教案的 hours 是課時（"3–5 hrs"），blog 的是「閱讀約 N 分鐘」，只有前者加「課時」前綴
+    const isBlog = url.includes('/posts/blog/');
+    document.getElementById('article-hours').textContent =
+      frontmatter.hours ? (isBlog ? String(frontmatter.hours) : `課時 ${frontmatter.hours}`) : '';
 
     if (frontmatter.categories) {
       document.getElementById('article-categories').innerHTML =
@@ -152,7 +155,6 @@ async function loadPost() {
 
     document.getElementById('article-body').innerHTML = marked.parse(body);
 
-    const isBlog = url.includes('/posts/blog/');
     const backLink = document.getElementById('back-link');
     if (backLink) {
       backLink.href = isBlog ? '/articles.html' : '/maker.html';
