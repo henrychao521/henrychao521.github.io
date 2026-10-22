@@ -143,6 +143,14 @@ const PROJECT_META = {
     demo: 'https://henrychao521.github.io/xindian-flood-sim/overview/',
     gradient: 'from-sky-600 via-cyan-700 to-blue-900',
   },
+  'terrain-gp': {
+    theme: 'sim', featured: true, emoji: '🏎️',
+    title: 'Terrain GP — 開著方程式賽車跑臺北街道',
+    blurb: '在真實的臺北街道上開賽車：路網、車道寬度、高架橋來自 OpenStreetMap，地形用內政部 DEM，建物用臺北市 3D 建物，行道樹照公園處的普查資料種在原位。新手模式有循跡、防鎖死、車身穩定與煞車輔助；路面上有自動算出的最佳行車線（綠加速、黃過彎、紅煞車），也可以跟電腦車比賽。手機、平板、電腦的瀏覽器都能直接玩。',
+    tags: ['真實臺北街道', '車輛物理＋新手輔助', '最佳行車線導引', '可跟電腦車比賽'],
+    demo: 'https://henrychao521.github.io/terrain-gp/',
+    gradient: 'from-red-600 via-rose-700 to-slate-900',
+  },
   'coding-dojo': {
     theme: 'teaching', featured: true, emoji: '🥋',
     title: '程式練功房 — 瀏覽器內寫 Python',
@@ -218,6 +226,7 @@ const PROJECT_META = {
 
 /** 精選專案在首頁/專案頁的固定排序 */
 const FEATURED_ORDER = [
+  'terrain-gp',
   'x5-roomtour-viewer',
   'home-econ-3dgs-sunlight',
   'pc13110-platform',
