@@ -31,6 +31,7 @@ ALWAYS_FIELDS = ["title", "date", "excerpt"]
 OPTIONAL_FIELDS = [
     "author", "cover", "categories", "tags",
     "repo", "level", "hours", "category", "subtitle",
+    "repo_private",  # repo 未公開：maker.html 列表顯示「程式碼於課程中提供」而不是 repo 名
     "order",  # 同一天多篇時的排序（小的在前），articles.html 讀這個
 ]
 SITE = "https://henrychao521.github.io"

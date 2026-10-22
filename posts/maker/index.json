@@ -20,7 +20,8 @@
     ],
     "repo": "grip-system",
     "level": "⭐⭐⭐ 進階",
-    "hours": "完整版需 6–10 hrs;最小可跑版 1 hr"
+    "hours": "完整版需 6–10 hrs;最小可跑版 1 hr",
+    "repo_private": true
   },
   {
     "slug": "2026-05-10-off-axis-pi-3d-gesture",
@@ -42,7 +43,8 @@
     ],
     "repo": "off-axis-pi",
     "level": "⭐⭐ 中階",
-    "hours": "3–5 hrs"
+    "hours": "3–5 hrs",
+    "repo_private": true
   },
   {
     "slug": "2026-05-10-camera-hub-mac-vlm",
@@ -67,7 +69,8 @@
     ],
     "repo": "camera-hub-mac",
     "level": "⭐⭐⭐ 進階",
-    "hours": "8–12 hrs"
+    "hours": "8–12 hrs",
+    "repo_private": true
   },
   {
     "slug": "2026-05-10-moltbot-pi5-local-llm",
@@ -89,7 +92,8 @@
     ],
     "repo": "moltbot",
     "level": "⭐⭐ 中階",
-    "hours": "3–4 hrs（不含模型下載）"
+    "hours": "3–4 hrs（不含模型下載）",
+    "repo_private": true
   },
   {
     "slug": "2026-05-10-sports-skeleton-pe-class",
@@ -111,7 +115,8 @@
     ],
     "repo": "sports-skeleton-analysis",
     "level": "⭐ 入門",
-    "hours": "1–2 hrs"
+    "hours": "1–2 hrs",
+    "repo_private": true
   },
   {
     "slug": "2026-05-10-xiao-esp32s3-led-matrix",
@@ -132,6 +137,7 @@
     ],
     "repo": "xiao-esp32s3-led-matrix",
     "level": "⭐ 入門",
-    "hours": "2–4 hrs"
+    "hours": "2–4 hrs",
+    "repo_private": true
   }
 ]
