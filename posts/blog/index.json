@@ -1,5 +1,49 @@
 [
   {
+    "slug": "2026-10-28-nyanpo-alarm-app-store",
+    "title": "[完整教學] 從課堂計步器到 App Store：喵步鬧鐘的開發、上架與被退三次",
+    "date": "2026-10-28",
+    "excerpt": "學生專題做的 ESP32 計步器，長出了另一半：一支 iPhone App。設一個「再走 2,000 步」的鬧鐘，走完就響；路上遇到街貓，回家在像素客廳照顧自己的貓。這篇把一支 App 從「在自己手機上能跑」到「在 App Store 上架」的每一步攤開：六個上架階段、表單裡要想一下的那幾格、四條失敗路徑，以及第一次送審被退三次的經過。",
+    "author": "Henry Chao",
+    "cover": "/assets/blog/cover-nyanpo-alarm.jpg",
+    "tags": [
+      "iOS",
+      "App Store",
+      "TestFlight",
+      "SwiftUI",
+      "Apple Watch",
+      "上架流程",
+      "失敗路徑",
+      "AI協作"
+    ],
+    "level": "⭐⭐⭐ 進階",
+    "hours": "閱讀約 12 分鐘",
+    "category": "專案分享",
+    "order": 1
+  },
+  {
+    "slug": "2026-10-28-esp32-pedometer-rebuild",
+    "title": "[完整教學] 學生的原始碼不見了：一支 ESP32 計步器的逆向、重製與第二輪改良",
+    "date": "2026-10-28",
+    "excerpt": "學生的專題做好了，然後他的電腦壞了，原始碼只存在那台電腦裡。這篇記錄怎麼把一台只剩硬體的計步器救回來：先唯讀備份、把取回的文字當行為規格，重做成一份同一套 C++ 既能燒進板子、也能在瀏覽器裡跑的中文教材；後半段是實際用了兩天後的四條失敗路徑——包括一個把諧波當成步頻的錯。",
+    "author": "Henry Chao",
+    "cover": "/assets/blog/cover-pedometer-lab.jpg",
+    "tags": [
+      "ESP32",
+      "計步器",
+      "ADXL345",
+      "模擬器",
+      "WebAssembly",
+      "藍牙",
+      "失敗路徑",
+      "專題製作"
+    ],
+    "level": "⭐⭐ 中階",
+    "hours": "閱讀約 12 分鐘",
+    "category": "專案分享",
+    "order": 2
+  },
+  {
     "slug": "2026-08-31-monthly-report",
     "title": "[每月專案] 八月做了十件事，其中三件是「原本以為是程式的錯」",
     "date": "2026-08-31",

@@ -86,6 +86,16 @@
 
 <script>
 const CATALOG = [
+  { title: 'ESP32 中文計步器：先在瀏覽器裡跑，再燒進板子', search: { q: '計步器' }, repo: 'pedometer-lab', private: true, level: 2, hours: '焊接＋燒錄 2–3 小時；改演算法、寫卡帶程式 4–6 小時',
+    hardware: ['TTGO T-Display（ESP32）', 'ADXL345（GY-291）加速度計', '蜂鳴器', '1000 mAh 鋰電池', '3D 列印外殼'],
+    description: '學生專題的原始碼遺失後重做的中文版：同一份 C++ 既燒進板子、也編成 WebAssembly 在網頁裡模擬。含 81 頁講義、七段焊接短片、瀏覽器燒錄。',
+    skills: ['焊接', '硬體抽象層', 'WebAssembly 模擬器', '自相關計步', 'BLE（NimBLE）', 'Web Serial 燒錄'], cost: 'ADXL345 模組 NT$ 60～150；材料清單見講義附錄 E',
+    links: [['專案網站與模擬器', 'https://henrychao521.github.io/pedometer-lab/'], ['完整教學', '/posts/blog/2026-10-28-esp32-pedometer-rebuild.html']] },
+  { title: '從專題到 App Store：iPhone App 開發與上架', search: { q: '喵步' }, repo: 'pedometer-lab', private: true, level: 3, hours: '開發依題目而定；上架流程（會員、TestFlight、表單、送審）約 1–2 週',
+    hardware: ['Mac（Xcode）', 'iPhone', 'Apple Watch（選用）', '自製 ESP32 計步器（選用）'],
+    description: '喵步鬧鐘的實戰紀錄：一個人＋AI 程式助手五天做出第一版，從開發者會員、TestFlight、上架表單到被退三次，附上架檢查清單。',
+    skills: ['SwiftUI', 'HealthKit', 'WidgetKit', 'TestFlight', 'App Store 審查', 'AI 協作'], cost: '開發免費；上架需 Apple 開發者會員 US$ 99／年',
+    links: [['App Store', 'https://apps.apple.com/tw/app/id6823018207'], ['完整教學', '/posts/blog/2026-10-28-nyanpo-alarm-app-store.html']] },
   { title: '16×16 LED 中文跑馬燈', search: { q: 'LED' }, repo: 'xiao-esp32s3-led-matrix', private: true, level: 1, hours: '2–4 小時',
     hardware: ['Seeed XIAO ESP32S3', 'WS2812B 16×16（4×8×8）', '5V 10A 變壓器'],
     description: '用 ESP32S3 驅動 256 顆 RGB LED，從中文跑馬燈到貪吃蛇遊戲，6 個版本逐步演進。',
@@ -151,6 +161,7 @@ function render() {
           ${item.private
             ? `<span title="程式碼未公開，課程使用時提供">程式碼於課程中提供</span>`
             : `<a href="https://github.com/henrychao521/${esc(item.repo)}" target="_blank" rel="noopener">GitHub</a>`}
+          ${(item.links || []).map(([label, url]) => `<a href="${esc(url)}"${url.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${esc(label)}</a>`).join('')}
           ${item.search ? `<a href="${searchURL(item.search)}">找相關教學文（${esc(item.search.label || item.search.q)}）</a>` : ''}
         </div>
       </span>
