@@ -180,18 +180,22 @@ document.querySelectorAll('.filter-tag').forEach(btn => {
 });
 render();
 
-// 站內 Maker 教學文（posts/maker/index.json）
+// 站內 Maker 教學文（posts/maker/index.json＋posts/blog 裡設了 maker: true 的專案手記）
 async function loadLocalPosts() {
   const container = document.getElementById('local-posts');
   const empty = `<div class="b-empty">目前還沒有文章。</div>`;
+  const get = async (name, keep) => {
+    try {
+      const r = await fetch(`/posts/${name}/index.json?_=` + Date.now());
+      return r.ok ? (await r.json()).filter(keep).map(p => ({ ...p, col: name })) : [];
+    } catch (e) { return []; }
+  };
   try {
-    const res = await fetch('/posts/maker/index.json?_=' + Date.now());
-    if (!res.ok) throw new Error('No posts yet');
-    const posts = await res.json();
+    const posts = [...await get('maker', () => true), ...await get('blog', p => p.maker === true)];
     if (!Array.isArray(posts) || posts.length === 0) { container.innerHTML = empty; return; }
     posts.sort((a, b) => new Date(b.date) - new Date(a.date));
     container.innerHTML = posts.map((p, i) => `
-      <a href="/posts/maker/${encodeURIComponent(p.slug)}.html" class="toc-row">
+      <a href="/posts/${p.col}/${encodeURIComponent(p.slug)}.html" class="toc-row">
         <span class="n">3.2.${i + 1}</span>
         <span>
           <span class="t">${esc(p.title)}</span>

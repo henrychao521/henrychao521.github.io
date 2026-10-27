@@ -32,6 +32,7 @@ OPTIONAL_FIELDS = [
     "author", "cover", "categories", "tags",
     "repo", "level", "hours", "category", "subtitle",
     "order",  # 同一天多篇時的排序（小的在前），articles.html 讀這個
+    "maker",  # posts/blog 的文章設 maker: true，maker.html 3.2 也會列出（不必在兩個資料夾各放一份）
 ]
 SITE = "https://henrychao521.github.io"
 TEMPLATE = ROOT / "post.html"

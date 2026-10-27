@@ -19,7 +19,8 @@
     "level": "⭐⭐⭐ 進階",
     "hours": "閱讀約 12 分鐘",
     "category": "專案分享",
-    "order": 1
+    "order": 1,
+    "maker": true
   },
   {
     "slug": "2026-10-28-esp32-pedometer-rebuild",
@@ -41,7 +42,8 @@
     "level": "⭐⭐ 中階",
     "hours": "閱讀約 12 分鐘",
     "category": "專案分享",
-    "order": 2
+    "order": 2,
+    "maker": true
   },
   {
     "slug": "2026-08-31-monthly-report",
