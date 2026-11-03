@@ -24,7 +24,8 @@ def body(src, name, width=1440, q=80):
 
 cover(SRC / "kindle_landscape.png", "cover-kindle-dashboard", 589)   # 三天預報＋底部動畫
 for src, name, w in [("kindle_landscape.png", "kindle-dashboard-live", 1440), ("jojo_actions.png", "kindle-jojo-actions", 1200),
-                     ("sky_tests.png", "kindle-sky-tests", 1440), ("kindle_portrait.png", "kindle-portrait-v1", 720)]:
+                     ("sky_tests.png", "kindle-sky-tests", 1440), ("kindle_portrait.png", "kindle-portrait-v1", 720),
+                     ("web_settings_mobile.png", "kindle-web-settings", 750)]:
     body(SRC / src, name, w)
 shutil.copy2(KIT, ROOT / "assets/downloads/kindlehack-kit.zip")
 total = 0
