@@ -1,5 +1,29 @@
 [
   {
+    "slug": "2026-11-03-kindle-eink-dashboard",
+    "title": "[完整教學] 把抽屜裡的舊 Kindle 改造成電子紙天氣時鐘：JoJo 跟著真實天氣散步",
+    "date": "2026-11-03",
+    "excerpt": "一台反應變慢、原本要丟掉的 Kindle Paperwhite 3，改造成擺在書桌上的電子紙看板：七段時鐘、即時天氣、三天預報，底部是貓咪 JoJo 跟著真實天氣散步——太陽照日出日落移動、月亮是真實月相，晚上背光自動打開。不用寫程式，照著步驟 0～6 和讀者套件就能做完，另附 7 則失敗路徑。",
+    "author": "Henry Chao",
+    "cover": "/assets/blog/cover-kindle-dashboard.jpg",
+    "tags": [
+      "Kindle",
+      "電子紙",
+      "破解",
+      "WinterBreak2",
+      "Shell Script",
+      "FBInk",
+      "Open-Meteo",
+      "再設計",
+      "失敗路徑"
+    ],
+    "level": "⭐⭐ 中階",
+    "hours": "閱讀約 15 分鐘；動手約 1 小時",
+    "category": "專案分享",
+    "order": 3,
+    "maker": true
+  },
+  {
     "slug": "2026-10-28-nyanpo-alarm-app-store",
     "title": "[完整教學] 從課堂計步器到 App Store：喵步鬧鐘的開發、上架與被退三次",
     "date": "2026-10-28",
