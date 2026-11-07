@@ -220,7 +220,7 @@ const PROJECT_META = {
     title: 'ESP32 AI 實驗室 — 在手機上接電路、寫程式、推到板子',
     blurb: '打開就是電路模擬器：把 LED、按鍵、感測器、OLED 拉到麵包板上接線，寫 MicroPython 按執行就亮；LED 沒串電阻會燒掉、腳位接錯會直接告訴你為什麼。四塊 ESP32 板子各有 12 個範例，含分步接線提示。同一份程式可以一鍵推到同一個 Wi-Fi 裡的真板子。iPhone／iPad App 已上架 App Store，網頁版免安裝。',
     tags: ['離線電路模擬器', 'MicroPython 一鍵推板', '四塊板子 48 個範例', 'iOS App 已上架'],
-    demo: 'https://henrychao521.github.io/esp32-ai-lab-web/',
+    demo: 'https://henrychao521.github.io/esp32-ai-lab-web/sim/',
     gradient: 'from-orange-500 via-amber-600 to-slate-900',
   },
   'esp32-camera-display': {
