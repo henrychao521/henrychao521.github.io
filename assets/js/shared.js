@@ -223,6 +223,22 @@ const PROJECT_META = {
     demo: 'https://henrychao521.github.io/esp32-ai-lab-web/sim/',
     gradient: 'from-orange-500 via-amber-600 to-slate-900',
   },
+  'aware-watch': {
+    theme: 'maker', featured: true, emoji: '⌚',
+    title: '察覺錶 — 重複行為察覺手錶與地點信標',
+    blurb: '自製圓形智慧手錶：用手腕動作與錶上 AI 偵測洗手、使用者自己示範的重複動作，在發生時溫和提示「察覺一下」；搭配洗手台、門口的藍牙信標判斷地點。網頁上可以直接操作模擬器，也能用 Chrome 把手錶與信標韌體燒進板子，信標程式碼公開。研究原型，非醫療器材。',
+    tags: ['ESP32-S3 圓形手錶', '錶上 AI 洗手偵測', 'iBeacon 地點信標', '網頁燒錄'],
+    demo: 'https://henrychao521.github.io/aware-watch/',
+    gradient: 'from-slate-800 via-cyan-700 to-emerald-600',
+  },
+  'pedometer-lab': {
+    theme: 'maker', featured: true, emoji: '👟',
+    title: '計步器實驗室 — 學生計步器的中文重製與模擬器',
+    blurb: '學生作品的電腦壞了、只剩板子：從整片快閃記憶體備份開始，把計步器重寫成中文介面，同一份程式可以燒進 T-Display／T-Display S3，也能直接在瀏覽器模擬操作。附接線圖、講義、焊接短片與網頁燒錄。',
+    tags: ['T-Display／S3', '瀏覽器模擬器', '網頁燒錄', '講義與短片'],
+    demo: 'https://henrychao521.github.io/pedometer-lab/',
+    gradient: 'from-amber-600 via-orange-600 to-slate-800',
+  },
   'esp32-camera-display': {
     theme: 'maker', featured: true, emoji: '📷',
     title: 'XIAO ESP32-S3 手作迷你相機',
@@ -243,6 +259,8 @@ const PROJECT_META = {
 /** 精選專案在首頁/專案頁的固定排序 */
 const FEATURED_ORDER = [
   'esp32-ai-lab',
+  'aware-watch',
+  'pedometer-lab',
   'terrain-gp',
   'camera-looks',
   'x5-roomtour-viewer',
