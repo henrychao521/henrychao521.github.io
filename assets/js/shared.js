@@ -231,6 +231,14 @@ const PROJECT_META = {
     demo: 'https://henrychao521.github.io/aware-watch/',
     gradient: 'from-slate-800 via-cyan-700 to-emerald-600',
   },
+  'token-meter': {
+    theme: 'maker', featured: true, emoji: '📟',
+    title: '額度顯示器 — 桌上的 AI 剩餘額度小螢幕',
+    blurb: '用 LILYGO T-QT Pro 小板子在桌上輪播 Gemini、Claude／GPT 的週額度與 5 小時額度、生圖剩餘張數、Colab 運算單元與 Claude Code 今日用量。資料由自己電腦上的小服務整理，板子經家裡 Wi-Fi 讀取，不連雲端、不放金鑰；支援 Wi-Fi 無線更新。附完整程式、中文字型工具與實作教學，連同螢幕破裂、整片畫面被註解掉這些失敗經驗一起寫。',
+    tags: ['ESP32-S3 T-QT Pro', '128×128 中文介面', 'Wi-Fi 無線更新', '程式全公開'],
+    demo: 'https://henrychao521.github.io/token-meter/',
+    gradient: 'from-slate-900 via-emerald-700 to-cyan-700',
+  },
   'pedometer-lab': {
     theme: 'maker', featured: true, emoji: '👟',
     title: '計步器實驗室 — 學生計步器的中文重製與模擬器',
@@ -260,6 +268,7 @@ const PROJECT_META = {
 const FEATURED_ORDER = [
   'esp32-ai-lab',
   'aware-watch',
+  'token-meter',
   'pedometer-lab',
   'terrain-gp',
   'camera-looks',
