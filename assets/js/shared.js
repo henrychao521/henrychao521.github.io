@@ -239,6 +239,14 @@ const PROJECT_META = {
     demo: 'https://henrychao521.github.io/token-meter/',
     gradient: 'from-slate-900 via-emerald-700 to-cyan-700',
   },
+  'k230-workshop-tools': {
+    theme: 'maker', featured: true, emoji: '🛠️',
+    title: '工坊工具辨識 — K230 AI 相機的資料收集工具鏈',
+    blurb: '讓教室裡的 K230 AI 相機（Yahboom AIMOTION 2）認得電烙鐵、三用電表、斜口鉗等 8 種工坊工具。板子上自製「工坊拍照」App 觸控選類別、拍照存 SD 卡，電腦用 USB 抓回、檢查人臉、Colab 自動預標，再轉成 YOLO 資料集；附 kmodel 轉檔驗證與 8 條失敗紀錄。模型訓練中。',
+    tags: ['CanMV K230', '板上拍照 App', 'Grounding DINO 預標', '程式全公開'],
+    demo: 'https://henrychao521.github.io/k230-workshop-tools/',
+    gradient: 'from-slate-900 via-orange-700 to-amber-600',
+  },
   'pedometer-lab': {
     theme: 'maker', featured: true, emoji: '👟',
     title: '計步器實驗室 — 學生計步器的中文重製與模擬器',
@@ -269,6 +277,7 @@ const FEATURED_ORDER = [
   'esp32-ai-lab',
   'aware-watch',
   'token-meter',
+  'k230-workshop-tools',
   'pedometer-lab',
   'terrain-gp',
   'camera-looks',
